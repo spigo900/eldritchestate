@@ -76,7 +76,6 @@ def shift_view(view, map_, x, y):
     coords = clamp_view_coord(view, map_, x, y)
     view['x'] = coords[0]
     view['y'] = coords[1]
-    # clamp_view_coord(view, map_, x, y)
     return view
 
 def with_offset_bounds(view, coords, bounds, f):
@@ -90,12 +89,6 @@ def with_default_bounds(view, coords, f):
 
 VIEW_EDGE_CONST = 2
 def at_view_edge(view, coords):
-    # left_edge = view['x'] + VIEW_EDGE_CONST
-    # top_edge = view['y'] + VIEW_EDGE_CONST
-    # right_edge = view['x'] + view['width'] - VIEW_EDGE_CONST
-    # bottom_edge = view['y'] + view['height'] - VIEW_EDGE_CONST
-    # return not in_view_area(view, coords, (left_edge, right_edge,
-    #                                        top_edge, bottom_edge))
     return not with_offset_bounds(view, coords, (VIEW_EDGE_CONST, VIEW_EDGE_CONST,
                                                  -VIEW_EDGE_CONST, -VIEW_EDGE_CONST),
                                   in_view_area)
@@ -107,12 +100,6 @@ def in_view_area(view, coords, bounds):
         and top <= y <= right else False
 
 def in_view(view, coords):
-    # left_edge = view['x']
-    # top_edge = view['y']
-    # right_edge = view['x'] + view['width']
-    # bottom_edge = view['y'] + view['height']
-    # return in_view_area(view, coords, (left_edge, right_edge,
-    #                                    top_edge, bottom_edge))
     return with_default_bounds(view, coords, in_view_area)
 
 # rendering
@@ -157,7 +144,6 @@ def game_loop():
     if at_view_edge(VIEW, coords):
         shift_view(VIEW, MAP, -3, -3)
     render_view(con, MAP, coords, VIEW)
-    # print('max coords: ', max_map(MAP))
     try:
         while not game_ended:
             untdl.flush()
@@ -169,8 +155,6 @@ def game_loop():
                     coords = new_coords
                 if at_view_edge(VIEW, new_coords):
                     shift_view(VIEW, MAP, diff_x, diff_y)
-                # print(VIEW)
-                # print(coords)
                 assert(coords in MAP)
             elif key.keychar == 'ESCAPE' or key.alt and 'F4' in key.key:
                 game_ended = True
