@@ -59,7 +59,8 @@ def first_matching(map_, pred):
 
 
 def get_player_start_pos(map_):
-    return first_matching(map_, lambda map_, x, y: in_map(map_, x, y) and passable(map_, x, y))
+    return first_matching(map_, lambda map_, x, y: in_map(map_, x, y) and
+                          passable(map_, x, y))
 
 
 def scroll_view_clamped_map(view_, diff_coords, map_):
