@@ -59,20 +59,6 @@ def get_player_start_pos(map_):
     return first_matching(map_, lambda map_, x, y: in_map(map_, x, y) and passable(map_, x, y))
 
 # view functions
-def render_view(con, map_, player_coords, view):
-    x = view['x']
-    y = view['y']
-    width = view['width']
-    height = view['height']
-    for i in range(0, width+1):
-        for j in range(0, height+1):
-            try:
-                tile = map_[(x+i, y+j)]
-                render_tile(con, tile, i, j)
-            except KeyError:
-                pass
-    con.draw_char(player_coords[0] - x, player_coords[1] - y, '@')
-
 def clamp_coord(view, x, y, map_):
     newx = clamp(view['x'] + x, min_map(map_)[0] - 5, max_map[0] + 5)
     newy = clamp(view['y'] + y, min_map(map_)[1] - 5, max_map[1] + 5)
@@ -90,6 +76,20 @@ def render_tile(con, tile, x, y):
     bg = tile_def.get('bg', (0, 0, 0))
     char = tile_def['char']
     con.draw_char(x, y, char, fg, bg)
+
+def render_view(con, map_, player_coords, view):
+    x = view['x']
+    y = view['y']
+    width = view['width']
+    height = view['height']
+    for i in range(0, width+1):
+        for j in range(0, height+1):
+            try:
+                tile = map_[(x+i, y+j)]
+                render_tile(con, tile, i, j)
+            except KeyError:
+                pass
+    con.draw_char(player_coords[0] - x, player_coords[1] - y, '@')
 
 # player functions
 def player_move(map_, player_coords, diff_x, diff_y):
