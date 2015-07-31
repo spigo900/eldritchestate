@@ -1,5 +1,6 @@
 import untdl
 import gc
+import view
 import errors
 from utils import clamp, in_range, to_local_coords
 from copy import deepcopy
@@ -26,10 +27,10 @@ MAP = {(x, y): ('wall' if x == 1 or x == 25 or
                 y == 1 or y == 15 else 'floor')
        for x in range(1,26) for y in range (1,16)}
 
-VIEW = {'x': 1,
-        'y': 1,
-        'width': 40,
-        'height': 15}
+# VIEW = {'x': 1,
+#         'y': 1,
+#         'width': 20,
+#         'height': 10}
 
 
 # map functions
@@ -60,41 +61,18 @@ def first_matching(map_, pred):
 def get_player_start_pos(map_):
     return first_matching(map_, lambda map_, x, y: in_map(map_, x, y) and passable(map_, x, y))
 
-# view functions
-def clamp_view_coord(view, map_, x, y):
-    newx = clamp(view['x'] + x, min_map(map_)[0] - 5, max_map(map_)[0] + 5)
-    newy = clamp(view['y'] + y, min_map(map_)[1] - 5, max_map(map_)[1] + 5)
-    return (newx, newy)
 
-def shift_view(view, map_, x, y):
-    coords = clamp_view_coord(view, map_, x, y)
-    view['x'] = coords[0]
-    view['y'] = coords[1]
-    return view
+def scroll_view_clamped_map(view_, diff_coords, map_):
+    SCROLL_VIEW_CLAMP_AMOUNT = 5
+    map_min = min_map(map_)
+    map_max = max_map(map_)
+    clamp_min = (map_min[0] - SCROLL_VIEW_CLAMP_AMOUNT,
+                 map_min[1] - SCROLL_VIEW_CLAMP_AMOUNT)
+    clamp_max = (map_max[0] + SCROLL_VIEW_CLAMP_AMOUNT,
+                 map_max[1] + SCROLL_VIEW_CLAMP_AMOUNT)
+    return view.scroll_view_clamped(view_, diff_coords,
+                                    clamp_min, clamp_max)
 
-def with_offset_bounds(view, coords, bounds, f):
-    (l, r, t, b) = bounds
-    return f(view, coords, (view['x'] + l, view['x'] + view['width'] + r,
-                            view['y'] + t, view['y'] + view['width'] + b))
-
-def with_default_bounds(view, coords, f):
-    return f(view, coords, (view['x'], view['x'] + view['width'],
-                            view['y'], view['y'] + view['height']))
-
-VIEW_EDGE_CONST = 2
-def at_view_edge(view, coords):
-    return not with_offset_bounds(view, coords, (VIEW_EDGE_CONST, VIEW_EDGE_CONST,
-                                                 -VIEW_EDGE_CONST, -VIEW_EDGE_CONST),
-                                  in_view_area)
-
-def in_view_area(view, coords, bounds):
-    (x, y) = coords
-    (left, right, top, bottom) = bounds
-    return True if left <= x <= right \
-        and top <= y <= right else False
-
-def in_view(view, coords):
-    return with_default_bounds(view, coords, in_view_area)
 
 # rendering
 def render_tile(con, tile, x, y):
@@ -105,18 +83,21 @@ def render_tile(con, tile, x, y):
     con.draw_char(x, y, char, fg, bg)
 
 def render_view(con, map_, player_coords, view):
-    x = view['x']
-    y = view['y']
-    width = view['width']
-    height = view['height']
-    for i in range(0, width):
-        for j in range(0, height):
+    # x = view['x']
+    # y = view['y']
+    # width = view['width']
+    # height = view['height']
+    for i in range(0, view.width):
+        for j in range(0, view.height):
             try:
-                tile = map_[(x+i, y+j)]
+                tile = map_[(view.x+i, view.y+j)]
                 render_tile(con, tile, i, j)
             except KeyError:
                 pass
-    con.draw_char(player_coords[0] - x, player_coords[1] - y, '@')
+    # print("view: ", view)
+    # print("player_coords: ", player_coords)
+    # print("player_coords minus: ", player_coords[0] - view.x, player_coords[1] - view.y)
+    con.draw_char(player_coords[0] - view.x, player_coords[1] - view.y, '@')
 
 # player functions
 def player_move_coords(map_, player_coords, diff_x, diff_y):
@@ -134,10 +115,12 @@ def game_loop():
     untdl.event.set_key_repeat(500, 100)
     game_ended = False
     coords = get_player_start_pos(MAP)
+    view_ = view.View(-2, -2, 25, 15)
     # FONT_SIZE = (8, 8)
-    if at_view_edge(VIEW, coords):
-        shift_view(VIEW, MAP, -3, -3)
-    render_view(con, MAP, coords, VIEW)
+    # if at_view_edge(view_, coords):
+    #     shift_view(view_, MAP, -2, -2)
+    view_ = view.scroll_view(view_, (-2, -2))
+    render_view(con, MAP, coords, view_)
     try:
         while not game_ended:
             untdl.flush()
@@ -147,13 +130,20 @@ def game_loop():
                 new_coords = player_move_coords(MAP, coords, diff_x, diff_y)
                 if new_coords != coords:
                     coords = new_coords
-                if at_view_edge(VIEW, new_coords):
-                    shift_view(VIEW, MAP, diff_x, diff_y)
+                    # scroll_x, scroll_y = get_view_scroll(view_,
+                    # to_local_coords((view_['x'], view_['y']), coords))
+                    scroll_coords = view.get_view_scroll_abs(view_, coords)
+                    # print('Coords: ', scroll_x, ', ', scroll_y)
+                    # shift_view(view_, MAP, coords[0], coords[1])
+                    view_ = scroll_view_clamped_map(view_, scroll_coords, MAP)
+                    # if at_view_edge(view_, new_coords):
+                    #     shift_view(view_, MAP, diff_x, diff_y)
+                # print(at_view_edge(view_, new_coords))
                 assert(coords in MAP)
             elif key.keychar == 'ESCAPE' or key.alt and 'F4' in key.key:
                 game_ended = True
             con.clear()
-            render_view(con, MAP, coords, VIEW)
+            render_view(con, MAP, coords, view_)
     finally:
         del con
         gc.collect()
