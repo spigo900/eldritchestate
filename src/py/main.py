@@ -71,8 +71,6 @@ def render_view(con, map_, player_coords, view):
         for j in range(0, height+1):
             try:
                 tile = map_[(x+i, y+j)]
-                # type_ = TILES[tile]
-                # con.draw_char(i, j, type_['char'])
                 render_tile(con, tile, i, j)
             except KeyError:
                 pass
@@ -110,33 +108,21 @@ def player_move(map_, player_coords, diff_x, diff_y):
 def game_loop():
     con = untdl.init(CONSOLE_WIDTH, CONSOLE_HEIGHT, title='testme')
     untdl.event.set_key_repeat(500, 100)
-    # untdl.event.set_key_repeat(200, 10)
     game_ended = False
     coords = first_passable(MAP)
-    # player_pos_x = coords[0]
-    # player_pos_y = coords[1]
     # FONT_SIZE = (8, 8)
-    # render_view(con, MAP, (player_pos_x, player_pos_y), VIEW)
     render_view(con, MAP, coords, VIEW)
-    # con.draw_char(player_pos_x - 1, player_pos_y - 1, '@')
     try:
         while not game_ended:
             untdl.flush()
             key = untdl.event.key_wait()
             if key.char in MOVE_CONTROLS_MAP:
                 diff_x, diff_y = MOVE_CONTROLS_MAP[key.char]
-                # newx, newy = player_pos_x + x, player_pos_y + y
-                # if -1 < newx < CONSOLE_WIDTH and -1 < newy < CONSOLE_HEIGHT \
-                # and in_map(MAP, newx, newy) and passable(MAP, newx, newy):
-                #     player_pos_x += x
-                #     player_pos_y += y
                 coords = player_move(MAP, coords, diff_x, diff_y)
             elif key.keychar == 'ESCAPE' or key.alt and 'F4' in key.key:
                 game_ended = True
             con.clear()
-            # render_view(con, MAP, (player_pos_x, player_pos_y), VIEW)
             render_view(con, MAP, coords, VIEW)
-            # con.draw_char(player_pos_x - 1, player_pos_y - 1, '@')
     finally:
         del con
         gc.collect()
