@@ -46,6 +46,8 @@ def in_map(map_, x, y):
 def passable(map_, x, y):
     '''Return true if the given coordinate is present in the map and contains
     a passable tile.'''
+    if not in_map(map_, x, y):
+        return False
     tile = map_[x, y]
     return TILES[tile]['passable']
 
@@ -72,8 +74,7 @@ def first_matching(map_, pred):
 
 def get_player_start_pos(map_):
     '''Take the map and return a valid starting tile for the player.'''
-    return first_matching(map_, lambda map_, x, y: in_map(map_, x, y) and
-                          passable(map_, x, y))
+    return first_matching(map_, passable)
 
 
 def scroll_view_clamped_map(view_, diff_coords, map_):
