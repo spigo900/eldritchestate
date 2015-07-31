@@ -135,8 +135,7 @@ def player_move_coords(map_, player_coords, diff_x, diff_y):
     player_y = player_coords[1]
     new_x = player_x + diff_x
     new_y = player_y + diff_y
-    return (new_x, new_y) if in_map(map_, new_x, new_y) \
-        and passable(map_, new_x, new_y) else player_coords
+    return (new_x, new_y) if passable(map_, new_x, new_y) else player_coords
 
 
 # game logic
