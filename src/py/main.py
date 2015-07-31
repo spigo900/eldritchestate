@@ -1,6 +1,7 @@
 import untdl
 import gc
 import errors
+from utils import clamp, in_range, to_local_coords
 from copy import deepcopy
 from pprint import pprint
 
@@ -30,13 +31,6 @@ VIEW = {'x': 1,
         'width': 40,
         'height': 15}
 
-
-# utilities
-def clamp(val, min_, max_):
-    return min(max(val, min_), max_)
-
-def in_range(val, min_, max_):
-    return True if min_ <= val <= max_ else False
 
 # map functions
 def min_map(map_):
