@@ -35,6 +35,9 @@ VIEW = {'x': 1,
 def clamp(val, min_, max_):
     return min(max(val, min_), max_)
 
+def in_range(val, min_, max_):
+    return True if min_ <= val <= max_ else False
+
 # map functions
 def min_map(map_):
     return min(map_.keys())
@@ -49,6 +52,11 @@ def passable(map_, x, y):
     tile = map_[x, y]
     return TILES[tile]['passable']
 
+def clamp_coord(map_, x, y):
+    newx = clamp(x, min_map(map_)[0], max_map(map_)[0])
+    newy = clamp(y, min_map(map_)[1], max_map(map_)[1])
+    return (newx, newy)
+
 def first_matching(map_, pred):
     for (x, y), _ in sorted(map_.items()):
         if pred(map_, x, y):
@@ -59,15 +67,53 @@ def get_player_start_pos(map_):
     return first_matching(map_, lambda map_, x, y: in_map(map_, x, y) and passable(map_, x, y))
 
 # view functions
-def clamp_coord(view, x, y, map_):
-    newx = clamp(view['x'] + x, min_map(map_)[0] - 5, max_map[0] + 5)
-    newy = clamp(view['y'] + y, min_map(map_)[1] - 5, max_map[1] + 5)
+def clamp_view_coord(view, map_, x, y):
+    newx = clamp(view['x'] + x, min_map(map_)[0] - 5, max_map(map_)[0] + 5)
+    newy = clamp(view['y'] + y, min_map(map_)[1] - 5, max_map(map_)[1] + 5)
     return (newx, newy)
 
-def shift_view(view, x, y, map_):
-    coords = clamp_coord(view, x, y, map_)
-    view['x'] += coords[0]
-    view['y'] += coords[1]
+def shift_view(view, map_, x, y):
+    coords = clamp_view_coord(view, map_, x, y)
+    view['x'] = coords[0]
+    view['y'] = coords[1]
+    # clamp_view_coord(view, map_, x, y)
+    return view
+
+def with_offset_bounds(view, coords, bounds, f):
+    (l, r, t, b) = bounds
+    return f(view, coords, (view['x'] + l, view['x'] + view['width'] + r,
+                            view['y'] + t, view['y'] + view['width'] + b))
+
+def with_default_bounds(view, coords, f):
+    return f(view, coords, (view['x'], view['x'] + view['width'],
+                            view['y'], view['y'] + view['height']))
+
+VIEW_EDGE_CONST = 2
+def at_view_edge(view, coords):
+    # left_edge = view['x'] + VIEW_EDGE_CONST
+    # top_edge = view['y'] + VIEW_EDGE_CONST
+    # right_edge = view['x'] + view['width'] - VIEW_EDGE_CONST
+    # bottom_edge = view['y'] + view['height'] - VIEW_EDGE_CONST
+    # return not in_view_area(view, coords, (left_edge, right_edge,
+    #                                        top_edge, bottom_edge))
+    return not with_offset_bounds(view, coords, (VIEW_EDGE_CONST, VIEW_EDGE_CONST,
+                                                 -VIEW_EDGE_CONST, -VIEW_EDGE_CONST),
+                                  in_view_area)
+
+def in_view_area(view, coords, bounds):
+    (x, y) = coords
+    (left, right, top, bottom) = bounds
+    return True if left <= x <= right \
+        and top <= y <= right else False
+
+def in_view(view, coords):
+    # left_edge = view['x']
+    # top_edge = view['y']
+    # right_edge = view['x'] + view['width']
+    # bottom_edge = view['y'] + view['height']
+    # return in_view_area(view, coords, (left_edge, right_edge,
+    #                                    top_edge, bottom_edge))
+    return with_default_bounds(view, coords, in_view_area)
 
 # rendering
 def render_tile(con, tile, x, y):
@@ -92,7 +138,7 @@ def render_view(con, map_, player_coords, view):
     con.draw_char(player_coords[0] - x, player_coords[1] - y, '@')
 
 # player functions
-def player_move(map_, player_coords, diff_x, diff_y):
+def player_move_coords(map_, player_coords, diff_x, diff_y):
     player_x = player_coords[0]
     player_y = player_coords[1]
     new_x = player_x + diff_x
@@ -108,14 +154,24 @@ def game_loop():
     game_ended = False
     coords = get_player_start_pos(MAP)
     # FONT_SIZE = (8, 8)
+    if at_view_edge(VIEW, coords):
+        shift_view(VIEW, MAP, -3, -3)
     render_view(con, MAP, coords, VIEW)
+    # print('max coords: ', max_map(MAP))
     try:
         while not game_ended:
             untdl.flush()
             key = untdl.event.key_wait()
             if key.char in MOVE_CONTROLS_MAP:
                 diff_x, diff_y = MOVE_CONTROLS_MAP[key.char]
-                coords = player_move(MAP, coords, diff_x, diff_y)
+                new_coords = player_move_coords(MAP, coords, diff_x, diff_y)
+                if new_coords != coords:
+                    coords = new_coords
+                if at_view_edge(VIEW, new_coords):
+                    shift_view(VIEW, MAP, diff_x, diff_y)
+                # print(VIEW)
+                # print(coords)
+                assert(coords in MAP)
             elif key.keychar == 'ESCAPE' or key.alt and 'F4' in key.key:
                 game_ended = True
             con.clear()
