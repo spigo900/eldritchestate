@@ -97,8 +97,8 @@ def scroll_view_clamped_map(view_, diff_coords, map_):
     map_max = max_map(map_)
     clamp_min = (map_min[0] - SCROLL_VIEW_CLAMP_AMOUNT,
                  map_min[1] - SCROLL_VIEW_CLAMP_AMOUNT)
-    clamp_max = (map_max[0] + SCROLL_VIEW_CLAMP_AMOUNT,
-                 map_max[1] + SCROLL_VIEW_CLAMP_AMOUNT)
+    clamp_max = (map_max[0] - SCROLL_VIEW_CLAMP_AMOUNT,
+                 map_max[1] - SCROLL_VIEW_CLAMP_AMOUNT)
     return view.scroll_view_clamped(view_, diff_coords,
                                     clamp_min, clamp_max)
 
