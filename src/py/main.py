@@ -55,9 +55,6 @@ def first_matching(map_, pred):
             return (x, y)
     raise NoneInMapError("No tiles in map match predicate!")
 
-def first_in_map(map_):
-    return first_matching(map_, in_map)
-
 def first_passable(map_):
     return first_matching(map_, lambda map_, x, y: in_map(map_, x, y) and passable(map_, x, y))
 
