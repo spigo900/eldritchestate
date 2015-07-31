@@ -55,7 +55,7 @@ def first_matching(map_, pred):
             return (x, y)
     raise NoneInMapError("No tiles in map match predicate!")
 
-def first_passable(map_):
+def get_player_start_pos(map_):
     return first_matching(map_, lambda map_, x, y: in_map(map_, x, y) and passable(map_, x, y))
 
 # view functions
@@ -106,7 +106,7 @@ def game_loop():
     con = untdl.init(CONSOLE_WIDTH, CONSOLE_HEIGHT, title='testme')
     untdl.event.set_key_repeat(500, 100)
     game_ended = False
-    coords = first_passable(MAP)
+    coords = get_player_start_pos(MAP)
     # FONT_SIZE = (8, 8)
     render_view(con, MAP, coords, VIEW)
     try:
