@@ -72,6 +72,17 @@ def first_matching(map_, pred):
     raise NoneInMapError("No tiles in map match predicate!")
 
 
+def all_matching(map_, pred):
+    '''Take a map and a predicate. Return a generator for all tiles in the map
+    which satisfy the predicate.
+
+    pred should take the map and the coordinates and return a boolean value.'''
+    for (x, y), _ in sorted(map.items()):
+        if pred(map_, x, y):
+            yield (x, y)
+    raise StopIteration()
+
+
 def get_player_start_pos(map_):
     '''Take the map and return a valid starting tile for the player.'''
     return first_matching(map_, passable)
