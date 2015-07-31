@@ -79,7 +79,7 @@ def game_loop():
     game_ended = False
     game_map = gmap.new_map()
     coords = gmap.get_player_start_pos(game_map)
-    view_ = view.center_view(view.View(-2, -2, 10, 10), coords)
+    view_ = view.center_view(view.View(-2, -2, 25, 15), coords)
     # FONT_SIZE = (8, 8)
     render_view(con, game_map, coords, view_)
     try:
