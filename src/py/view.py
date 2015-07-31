@@ -31,8 +31,8 @@ class Bounds:
         self.lower = lower
 
 
-# map-relative
 def view_edge(view, k):
+    '''Return the view's edge, k.'''
     if k == 'left' or k == 'top':
         return 0
     elif k == 'right':
@@ -43,6 +43,7 @@ def view_edge(view, k):
 
 
 def view_edge_abs(view, k):
+    '''Return the view's edge, k, in absolute (map-relative) coordinates.'''
     if k == 'left':
         return view.x
     elif k == 'right':
@@ -55,6 +56,8 @@ def view_edge_abs(view, k):
 
 
 def _scroll_edge_helper(view, k, view_edge_fn):
+    '''Take a view, an edge name and an edge-getter function view_edge_fn and
+    return the appropriate edge value.'''
     edge_val = view_edge_fn(view, k)
     if k == 'left' or k == 'top':
         return edge_val + View.SCROLL_EDGE_SIZE
@@ -63,14 +66,18 @@ def _scroll_edge_helper(view, k, view_edge_fn):
 
 
 def view_scroll_edge(view, k):
+    '''Take a view and an edge name and return a view-relative scroll-edge.'''
     return _scroll_edge_helper(view, k, view_edge)
 
 
 def view_scroll_edge_abs(view, k):
+    '''Take a view and an edge name and return a map-relative scroll-edge.'''
     return _scroll_edge_helper(view, k, view_edge_abs)
 
 
 def get_scroll_x(view, x):
+    '''Take a view and a view-relative x coordinate and return how much to
+    scroll the x coordinate to put the coordinate back inside the view.'''
     diff_x = 0
     if x < view_scroll_edge(view, 'left'):
         diff_x = x - view_scroll_edge(view, 'left')
@@ -80,6 +87,8 @@ def get_scroll_x(view, x):
 
 
 def get_scroll_y(view, y):
+    '''Take a view and a view-relative y coordinate and return how much to
+    scroll the y coordinate to put the coordinate back inside the view.'''
     diff_y = 0
     if y < view_scroll_edge(view, 'top'):
         diff_y = y - view_scroll_edge(view, 'top')
@@ -102,11 +111,18 @@ def get_view_scroll_abs(view, abs_coords):
 
 
 def scroll_view(view, coords):
+    '''Take a view and a coordinate pair representing how much to scroll the
+    view and in what direction. Return a new view based on the first scrolled
+    in the direction given by coords.'''
     return View(view.x + coords[0], view.y + coords[1],
                 view.width, view.height)
 
 
 def scroll_view_clamped(view, diff_coords, min_coords, max_coords):
+    '''Take a view, a coordinate pair representing how much to scroll the view
+    and in what direction, a minimum coordinate pair and a maximum coordinate
+    pair. Return a new view based on the first scrolled in the direction given
+    by coords and constrained by the min_coords and max_coords.'''
     temp_view = scroll_view(view, diff_coords)
     temp_view.coords = clamp(temp_view.coords, min_coords, max_coords)
     return temp_view
@@ -122,10 +138,20 @@ def _in_view_subarea_helper(view, coords, bounds, view_edge_fn):
 
 
 def in_view_subarea(view, coords, bounds):
+    '''Given a view, a view-relative coordinate pair and a boundary object
+    (representing the boundaries as an offset of the view), return whether or
+    not the coordinate is within the boundary.'''
+    # NOTE: This might be better implemented as a more generic function which
+    # checks if a coordinate pair is within the rectangle given by two further
+    # coordinate pairs. Then this function could be reimplemented as a
+    # specialization of that function.
     return _in_view_subarea_helper(view, coords, bounds, view_edge)
 
 
 def in_view_subarea_abs(view, coords, bounds):
+    '''Given a view, a map-relative coordinate pair and a boundary object
+    (representing the boundaries as an offset of the view), return whether or
+    not the coordinate is within the boundary.'''
     return _in_view_subarea_helper(view, coords, bounds, view_edge_abs)
 
 
@@ -140,10 +166,14 @@ def in_view_abs(view, coords):
 
 
 def at_view_edge(view, coords):
+    '''Given a view and view-relative coordinate pair, return whether the
+    coordinates are inside the view's edge.'''
     return get_view_scroll(view, coords) != (0, 0)
 
 
 def at_view_edge_abs(view, coords):
+    '''Given a view and map-relative coordinate pair, return whether the
+    coordinates are inside the view's edge.'''
     return get_view_scroll_abs(view, coords) != (0, 0)
 
 

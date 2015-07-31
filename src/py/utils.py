@@ -1,10 +1,15 @@
 #!/bin/env python3
+
+
 # utilities
 def clamp(val, min_, max_):
+    '''Ensure a value is within a given range.'''
     return min(max(val, min_), max_)
 
 
 def in_range(val, min_, max_):
+    '''Take a value, a minimum and a maximum and return whether the value is
+    within the range.'''
     return True if min_ <= val <= max_ else False
 
 
