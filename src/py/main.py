@@ -112,7 +112,6 @@ def game_loop():
     coords = get_player_start_pos(MAP)
     view_ = view.View(-2, -2, 25, 15)
     # FONT_SIZE = (8, 8)
-    view_ = view.scroll_view(view_, (-2, -2))
     render_view(con, MAP, coords, view_)
     try:
         while not game_ended:
@@ -124,7 +123,14 @@ def game_loop():
                 if new_coords != coords:
                     coords = new_coords
                     scroll_coords = view.get_view_scroll_abs(view_, coords)
-                    view_ = scroll_view_clamped_map(view_, scroll_coords, MAP)
+                    if scroll_coords != (0, 0):
+                        if diff_x != 0 and scroll_coords[0] == 0:
+                            scroll_coords = (diff_x, scroll_coords[1])
+                        elif diff_y != 0 and scroll_coords[1] == 0:
+                            scroll_coords = (scroll_coords[0], diff_y)
+                        view_ = scroll_view_clamped_map(view_,
+                                                        scroll_coords,
+                                                        MAP)
                 assert(coords in MAP)
             elif key.keychar == 'ESCAPE' or key.alt and 'F4' in key.key:
                 game_ended = True

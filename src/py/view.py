@@ -73,18 +73,18 @@ def view_scroll_edge_abs(view, k):
 def get_scroll_x(view, x):
     diff_x = 0
     if x < view_scroll_edge(view, 'left'):
-        diff_x -= 1
+        diff_x = x - view_scroll_edge(view, 'left')
     elif x >= view_scroll_edge(view, 'right'):
-        diff_x += 1
+        diff_x = x - view_scroll_edge(view, 'right') + 1
     return diff_x
 
 
 def get_scroll_y(view, y):
     diff_y = 0
     if y < view_scroll_edge(view, 'top'):
-        diff_y -= 1
+        diff_y = y - view_scroll_edge(view, 'top')
     elif y >= view_scroll_edge(view, 'bottom'):
-        diff_y += 1
+        diff_y = y - view_scroll_edge(view, 'bottom') + 1
     return diff_y
 
 
@@ -137,3 +137,11 @@ def in_view(view, coords):
 def in_view_abs(view, coords):
     '''Find if the given absolute map coordinates are in the view.'''
     return in_view_subarea_abs(view, coords, Bounds(0, 0, 0, 0))
+
+
+def at_view_edge(view, coords):
+    return get_view_scroll(view, coords) != (0, 0)
+
+
+def at_view_edge_abs(view, coords):
+    return get_view_scroll_abs(view, coords) != (0, 0)
