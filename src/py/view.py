@@ -8,7 +8,6 @@ class View:
     def __init__(self, x, y, width, height):
         assert(type(x) is int and type(y) is int and
                type(width) is int and type(height) is int)
-        # self.coords = (x, y)
         self.x = x
         self.y = y
         self.width = width
@@ -22,22 +21,6 @@ class View:
     def coords(self, value):
         self.x = value[0]
         self.y = value[1]
-
-    # @property
-    # def x(self):
-    #     return self.coords[0]
-
-    # @x.setter
-    # def x(self, value):
-    #     self.coords = (value, self.coords[1])
-
-    # @property
-    # def y(self, value):
-    #     return self.coords[1]
-
-    # @y.setter
-    # def y(self, value):
-    #     self.coords = (self.coords[0], value)
 
 
 class Bounds:
@@ -80,24 +63,10 @@ def _scroll_edge_helper(view, k, view_edge_fn):
 
 
 def view_scroll_edge(view, k):
-    # edge_val = view_edge(view, k)
-    # return edge_val + (View.SCROLL_EDGE_SIZE if k == 'left' or k == 'top'
-    #                    else -View.SCROLL_EDGE_SIZE)
-    # if k == 'left' or k == 'top':
-    #     return edge_val + View.SCROLL_EDGE_SIZE
-    # else:
-    #     return edge_val - View.SCROLL_EDGE_SIZE
     return _scroll_edge_helper(view, k, view_edge)
 
 
 def view_scroll_edge_abs(view, k):
-    # edge_val = view_edge_abs(view, k)
-    # return edge_val + (View.SCROLL_EDGE_SIZE if k == 'left' or k == 'top'
-    #                    else -View.SCROLL_EDGE_SIZE)
-    # if k == 'left' or k == 'top':
-    #     return edge_val + View.SCROLL_EDGE_SIZE
-    # else:
-    #     return edge_val - View.SCROLL_EDGE_SIZE
     return _scroll_edge_helper(view, k, view_edge_abs)
 
 
@@ -124,18 +93,6 @@ def get_view_scroll(view, coords):
     coordinates.'''
     x, y = coords[0], coords[1]
     return get_scroll_x(view, x), get_scroll_y(view, y)
-
-    # diff_x, diff_y = 0, 0
-    # if x < view_scroll_edge(view, 'left'):
-    #     diff_x -= 1
-    # elif x > view_scroll_edge(view, 'right'):
-    #     diff_x += 1
-
-    # if y < view_scroll_edge(view, 'top'):
-    #     diff_y -= 1
-    # elif y > view_scroll_edge(view, 'bottom'):
-    #     diff_y += 1
-    # return diff_x, diff_y
 
 
 def get_view_scroll_abs(view, abs_coords):
@@ -174,19 +131,9 @@ def in_view_subarea_abs(view, coords, bounds):
 
 def in_view(view, coords):
     '''Find if the given view-relative coordinates are in the view.'''
-    # if coords[0] >= view.x and coords[1] >= view.y \
-    #    and coords[0] < (view.x + view.width) \
-    #    and coords[1] < (view.y + view.height):
-    #     return True
-    # return False
     return in_view_subarea(view, coords, Bounds(0, 0, 0, 0))
 
 
 def in_view_abs(view, coords):
     '''Find if the given absolute map coordinates are in the view.'''
-    # if coords[0] >= view.x and coords[1] >= view.y \
-    #    and coords[0] < (view.x + view.width) \
-    #    and coords[1] < (view.y + view.height):
-    #     return True
-    # return False
     return in_view_subarea_abs(view, coords, Bounds(0, 0, 0, 0))
