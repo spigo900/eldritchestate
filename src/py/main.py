@@ -115,8 +115,8 @@ def render_view(con, map_, player_coords, view):
     y = view['y']
     width = view['width']
     height = view['height']
-    for i in range(0, width+1):
-        for j in range(0, height+1):
+    for i in range(0, width):
+        for j in range(0, height):
             try:
                 tile = map_[(x+i, y+j)]
                 render_tile(con, tile, i, j)
