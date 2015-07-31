@@ -110,7 +110,7 @@ def game_loop():
     untdl.event.set_key_repeat(500, 100)
     game_ended = False
     coords = get_player_start_pos(MAP)
-    view_ = view.View(-2, -2, 25, 15)
+    view_ = view.center_view(view.View(-2, -2, 10, 10), coords)
     # FONT_SIZE = (8, 8)
     render_view(con, MAP, coords, view_)
     try:
@@ -122,15 +122,8 @@ def game_loop():
                 new_coords = player_move_coords(MAP, coords, diff_x, diff_y)
                 if new_coords != coords:
                     coords = new_coords
-                    scroll_coords = view.get_view_scroll_abs(view_, coords)
-                    if scroll_coords != (0, 0):
-                        if diff_x != 0 and scroll_coords[0] == 0:
-                            scroll_coords = (diff_x, scroll_coords[1])
-                        elif diff_y != 0 and scroll_coords[1] == 0:
-                            scroll_coords = (scroll_coords[0], diff_y)
-                        view_ = scroll_view_clamped_map(view_,
-                                                        scroll_coords,
-                                                        MAP)
+                    view_ = view.scroll_view(view_,
+                                             (diff_x, diff_y))
                 assert(coords in MAP)
             elif key.keychar == 'ESCAPE' or key.alt and 'F4' in key.key:
                 game_ended = True

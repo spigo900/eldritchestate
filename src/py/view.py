@@ -145,3 +145,13 @@ def at_view_edge(view, coords):
 
 def at_view_edge_abs(view, coords):
     return get_view_scroll_abs(view, coords) != (0, 0)
+
+
+def center_view(view, coords):
+    '''Takes a view and a pair of absolute-value coordinates and return a new
+    view centered on those coordinates.'''
+    x, y = coords
+    center_x, center_y = view.width // 2, view.height // 2
+    center_x -= 1 if view.width % 2 == 0 else 0
+    center_y -= 1 if view.height % 2 == 0 else 0
+    return View(x - center_x, y - center_y, view.width, view.height)
