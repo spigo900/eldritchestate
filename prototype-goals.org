@@ -1,0 +1,18 @@
+* Complete a prototype of the eldritch real estate game. [0/7]
+  Remember: don't write anything extra, and no more content than is absolutely
+  necessary. We're trying to actually finish this thing.
+** TODO Code the map representation.
+** TODO Write the pseudorandom content generation system
+   It only needs to work for maps right now, but I may later want to extend it to
+   clients, items, monsters, plots, or whatever. But it really only needs to work
+   for maps at the moment, so that's what I'll code it for.
+** TODO Write the lighting system.
+** TODO Code the Fog of Fh'tagn system.
+** TODO Write the Line of Sight system.
+** TODO Code up some very basic NPCs.
+   These two could probably share some basic code with each other and/or the
+   player's internal representation.  I should try and make sure they do somehow.
+*** TODO Write player/general NPC/actor code.
+*** TODO Code the real estate clients.
+*** TODO Program the monsters' existence/behavior.
+** TODO Write the UI code.
