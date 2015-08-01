@@ -1,4 +1,5 @@
-#!/bin/env python3
+from eldestrl.errors import NoneInMapError
+from eldestrl.utils import clamp
 
 
 TILES = {'floor': {'char': '.',

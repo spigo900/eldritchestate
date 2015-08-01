@@ -2,8 +2,6 @@ import untdl
 import gc
 import eldestrl.view as view
 import eldestrl.map as gmap
-from eldestrl.errors import NoneInMapError
-from eldestrl.utils import clamp
 # from pprint import pprint
 
 CONSOLE_WIDTH = 80
