@@ -1,9 +1,5 @@
 #!/bin/env python3
-import utils
-# import src.py.utils as utils
-# import ..eld.utils as utils
-# from ..eld import utils
-# print('utils: ', utils)
+import eldestrl.utils as utils
 
 
 def test_clamp():
