@@ -11,5 +11,8 @@ setup(
     tests_require=['pytest'],
     classifiers=[
         'Developent Status :: 3 - Alpha'
-    ]
+    ],
+    entry_points={'game': [
+        'eldestrl = eldestrl.main:game_loop'
+    ]}
 )
