@@ -2,12 +2,10 @@
 import view as v
 import pytest
 
-VIEW = v.View(1, 1, 25, 25)
-
 
 @pytest.fixture
 def view():
-    return VIEW
+    return v.View(1, 1, 25, 25)
 
 
 def test_view_edge(view):
