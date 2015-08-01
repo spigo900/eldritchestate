@@ -18,9 +18,9 @@ MOVE_CONTROLS_MAP = {'h': (-1, 0),
 
 
 def scroll_view_clamped_map(view_, diff_coords, map_):
-    '''Takes a view, a pair of diff coordinates and a map and returns a new view
-    scrolled such that it does not fall more than SCROLL_VIEW_CLAMP_AMOUNT units
-    outside the bounds of the map.'''
+    '''Takes a view, a pair of diff coordinates and a map and returns a new
+    view scrolled such that it does not fall more than SCROLL_VIEW_CLAMP_AMOUNT
+    units outside the bounds of the map.'''
     SCROLL_VIEW_CLAMP_AMOUNT = 5
     map_min = gmap.min_map(map_)
     map_max = gmap.max_map(map_)
@@ -34,7 +34,8 @@ def scroll_view_clamped_map(view_, diff_coords, map_):
 
 # rendering
 def render_tile(con, tile, x, y):
-    '''Takes a tile type name and renders it on con at the given coordinates.'''
+    '''Takes a tile type name and renders it on con at the given
+    coordinates.'''
     tile_def = gmap.get_tile_type(tile)
     fg = tile_def.get('color', (255, 255, 255))
     bg = tile_def.get('bg', (0, 0, 0))
