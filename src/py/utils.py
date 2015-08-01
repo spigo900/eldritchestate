@@ -14,8 +14,7 @@ def in_range(val, min_, max_):
 
 
 def to_local_coords(coords_a, coords_b):
-    '''
-    Return a new coordinate pair which represents the difference between
+    '''Return a new coordinate pair which represents the difference between
     coords_a and coords_b (used to get coords relative to view, for example).
     '''
     return (coords_b[0] - coords_a[0], coords_b[1] - coords_a[1])
@@ -24,5 +23,5 @@ def to_local_coords(coords_a, coords_b):
 def subtract_iterables(iter_a, iter_b):
     '''Take two iterables a and b and return a new iterable whose value is a - b
     for each member of a and each member of b.'''
-    import operator.sub
-    return map(operator.sub, iter_a, iter_b)
+    from operator import sub
+    return map(sub, iter_a, iter_b)
