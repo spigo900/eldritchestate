@@ -1,4 +1,4 @@
-from utils import to_local_coords, clamp
+from eldestrl.utils import to_local_coords, clamp
 
 
 # View should look like this:

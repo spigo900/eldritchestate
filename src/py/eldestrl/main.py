@@ -1,9 +1,9 @@
 import untdl
 import gc
 import view
-import game.map as gmap
-from errors import NoneInMapError
-from utils import clamp
+import eldestrl.game.map as gmap
+from eldestrl.errors import NoneInMapError
+from eldestrl.utils import clamp
 # from pprint import pprint
 
 CONSOLE_WIDTH = 80
