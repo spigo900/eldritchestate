@@ -1,5 +1,5 @@
 #!/bin/env python3
-import eldestrl.utils as utils
+import utils as utils
 
 
 def test_clamp():

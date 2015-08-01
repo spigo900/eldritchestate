@@ -1,5 +1,5 @@
 #!/bin/env python3
-import eldestrl.view as v
+import view as v
 import pytest
 
 VIEW = v.View(1, 1, 25, 25)
@@ -34,7 +34,7 @@ def test_get_scroll(view):
 
 
 def test_center_view(view):
-    from eldestrl.utils import subtract_iterables
+    from utils import subtract_iterables
     coords = ((5, 5), (0, 5), (5, 0), (1, 1))
     for coord_pair in coords:
         current_view = v.center_view(view, coord_pair)
