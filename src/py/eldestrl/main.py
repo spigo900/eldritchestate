@@ -1,6 +1,6 @@
 import untdl
 import gc
-import view
+import eldestrl.view as view
 import eldestrl.game.map as gmap
 from eldestrl.errors import NoneInMapError
 from eldestrl.utils import clamp
