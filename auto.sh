@@ -1,2 +1,4 @@
 #!/bin/sh
-ls src/py/*.py | entr -r python src/py/main.py
+while sleep 1; do
+    ls src/py/eldestrl/**.py | entr -r python src/py/eldestrl/main.py
+done
