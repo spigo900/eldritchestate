@@ -20,9 +20,9 @@ MOVE_CONTROLS_MAP = {'h': (-1, 0),
 
 
 def scroll_view_clamped_map(view_, diff_coords, map_):
-    '''Take a view, a pair of diff coordinates and a map and return a new view
-    scrolled such that it does not fall more than SCROLL_VIEW_CLAMP_AMOUNT
-    units outside the bounds of the map.'''
+    '''Takes a view, a pair of diff coordinates and a map and returns a new view
+    scrolled such that it does not fall more than SCROLL_VIEW_CLAMP_AMOUNT units
+    outside the bounds of the map.'''
     SCROLL_VIEW_CLAMP_AMOUNT = 5
     map_min = gmap.min_map(map_)
     map_max = gmap.max_map(map_)
@@ -36,7 +36,7 @@ def scroll_view_clamped_map(view_, diff_coords, map_):
 
 # rendering
 def render_tile(con, tile, x, y):
-    '''Take a tile type name and render it on con at the given coordinates.'''
+    '''Takes a tile type name and renders it on con at the given coordinates.'''
     tile_def = gmap.get_tile_type(tile)
     fg = tile_def.get('color', (255, 255, 255))
     bg = tile_def.get('bg', (0, 0, 0))
@@ -45,8 +45,8 @@ def render_tile(con, tile, x, y):
 
 
 def render_view(con, map_, player_coords, view):
-    '''Take a view, map and player coordinates and render the map and player to
-    the view.'''
+    '''Takes a view, map and player coordinates and renders the map and player
+    to the view.'''
     for i in range(0, view.width):
         for j in range(0, view.height):
             try:
@@ -57,10 +57,19 @@ def render_view(con, map_, player_coords, view):
     con.draw_char(player_coords[0] - view.x, player_coords[1] - view.y, '@')
 
 
+def render_msgs(con, coords, msgs, n=5):
+    '''Takes a console, a coordinate pair, a sliceable collection of messages
+    and optionally a number of messages, and renderr the messages to the
+    console.'''
+    x, y = coords
+    for i in range(1, n+1):
+        con.draw_str(x, y + i, msgs[:-i])
+
+
 # player functions
 def player_move_coords(map_, player_coords, diff_x, diff_y):
-    '''Take a map, the player's current coordinates and the diff coordinates
-    (which represent the direction the player wants to move in) and return the
+    '''Takes a map, the player's current coordinates and the diff coordinates
+    (which represent the direction the player wants to move in) and returns the
     new coordinates.'''
     player_x = player_coords[0]
     player_y = player_coords[1]
