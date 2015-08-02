@@ -8,7 +8,7 @@ SOURCE_DIR='src/py'
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = ["tests"]
+        self.test_args = ["tests", "--flake8"]
         self.test_suite = True
 
     def run_tests(self):
@@ -22,7 +22,7 @@ setup(
     package_dir={'': SOURCE_DIR},
     packages=find_packages(SOURCE_DIR),
     install_requires=['untdl'],
-    tests_require=['pytest'],
+    tests_require=['pytest', 'flake8', 'pytest-flake8'],
     cmdclass={'test': PyTest},
     classifiers=[
         'Developent Status :: 3 - Alpha'
