@@ -30,7 +30,7 @@ def subtract_iterables(iter_a, iter_b):
     return map(sub, iter_a, iter_b)
 
 
-def write_centered_string(con, str_, y, *args, **kwargs):
+def draw_str_centered(con, str_, y, *args, **kwargs):
     str_length = len(str_)
     con_width = con.width
     con.draw_str(con_width // 2 - str_length // 2, y, str_, *args, **kwargs)

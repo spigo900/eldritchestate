@@ -1,7 +1,7 @@
 import untdl
 import untdl.event as event
 from untdl.event import App
-from eldestrl.utils import write_centered_string
+from eldestrl.utils import draw_str_centered
 
 
 class SimpleMenu(App):
@@ -69,15 +69,15 @@ class SimpleMenu(App):
     def write_option(self, idx, y, *args, **kwargs):
         if idx == self.idx and not args and 'bgcolor' not in kwargs:
             kwargs['bgcolor'] = (80, 80, 80)
-        write_centered_string(self.console, self.opts[idx][0], y,
-                              *args, **kwargs)
+        draw_str_centered(self.console, self.opts[idx][0], y,
+                          *args, **kwargs)
 
     def update(self, time_delta):
         self.console.clear()
         num_opts = len(self.opts)
         # _, height = self.console.get_size()
         height = self.console.height
-        write_centered_string(self.console, self.header, 3)
+        draw_str_centered(self.console, self.header, 3)
         for i, (option, _) in enumerate(self.opts):
             self.write_option(i, height // 2 - num_opts + i)
         untdl.flush()
