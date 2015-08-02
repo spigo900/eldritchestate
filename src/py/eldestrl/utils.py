@@ -35,6 +35,15 @@ def adjacent(coords_a, coords_b):
     return -1 <= ax - bx <= 1 and -1 <= ay - by <= 1
 
 
+def orthogonal(coords_a, coords_b):
+    '''Returns true if the given coordinates are either in the same row or the same
+    column.
+    '''
+    ax, ay = coords_a
+    bx, by = coords_b
+    return ax == bx or ay == by
+
+
 def ortho_adjacent(coords_a, coords_b):
     '''Works like adjacent, but returns true only if the tiles are orthogonally
     adjacent.
@@ -43,6 +52,7 @@ def ortho_adjacent(coords_a, coords_b):
     bx, by = coords_b
     return (-1 <= ax - bx <= 1 and ay == by) or \
         (-1 <= ay - by <= 1 and ax == bx)
+    # return adjacent(coords_a, coords_b) and orthogonal(coords_a, coords_b)
 
 
 def subtract_iterables(iter_a, iter_b):
