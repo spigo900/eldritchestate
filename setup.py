@@ -28,7 +28,7 @@ setup(
     classifiers=[
         'Developent Status :: 3 - Alpha'
     ],
-    entry_points={'game': [
+    entry_points={'console_scripts': [
         'eldestrl = eldestrl.main:game_loop'
     ]}
 )
