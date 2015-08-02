@@ -2,7 +2,7 @@ from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages
 import sys
 
-SOURCE_DIR='src/py'
+SOURCE_DIR = 'src/py'
 
 
 class PyTest(TestCommand):
