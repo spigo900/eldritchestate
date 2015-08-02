@@ -41,8 +41,8 @@ def ortho_adjacent(coords_a, coords_b):
     '''
     ax, ay = coords_a
     bx, by = coords_b
-    return (-1 <= ax - bx <= 1 and ay - by == 0) or \
-        (-1 <= ay - by <= 1 and ax - bx == 0)
+    return (-1 <= ax - bx <= 1 and ay == by) or \
+        (-1 <= ay - by <= 1 and ax == bx)
 
 
 def subtract_iterables(iter_a, iter_b):
