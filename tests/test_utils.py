@@ -1,5 +1,4 @@
 #!/bin/env python3
-# import eldestrl.utils as utils
 from eldestrl.utils import *  # noqa
 
 
