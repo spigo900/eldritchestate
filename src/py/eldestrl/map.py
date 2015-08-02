@@ -1,4 +1,3 @@
-from eldestrl.errors import NoneInMapError
 from eldestrl.utils import clamp
 
 
@@ -10,6 +9,13 @@ TILES = {'floor': {'char': '.',
 MAP = {(x, y): ('wall' if x == 1 or x == 25 or
                 y == 1 or y == 15 else 'floor')
        for x in range(1, 26) for y in range(1, 16)}
+
+
+class NoneInMapError(Exception):
+    # def __init__(self, message):
+    #     super(NoneInMapError, self).__init__(message)
+    #     self.message = message
+    pass
 
 
 # map functions
