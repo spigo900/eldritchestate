@@ -29,6 +29,6 @@ setup(
         'Developent Status :: 3 - Alpha'
     ],
     entry_points={'console_scripts': [
-        'eldestrl = eldestrl.main:game_loop'
+        'eldestrl = eldestrl.main:main'
     ]}
 )

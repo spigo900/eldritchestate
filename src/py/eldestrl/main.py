@@ -1,11 +1,18 @@
 import untdl
+import untdl.event as event
 import gc
 import eldestrl.view as view
 import eldestrl.map as gmap
+from eldestrl.menu import SimpleMenu
 # from pprint import pprint
 
 CONSOLE_WIDTH = 80
 CONSOLE_HEIGHT = 25
+TITLE = 'Eldritch Estate'
+
+MAIN_MENU_OPTIONS = [('New Game', lambda con: game_loop(con)),
+                     ('Options', lambda _: None),
+                     ('Quit', lambda _: event.push(event.Quit()))]
 
 MOVE_CONTROLS_MAP = {'h': (-1, 0),
                      'j': (0, 1),
@@ -79,10 +86,9 @@ def player_move_coords(map_, player_coords, diff_x, diff_y):
 
 
 # game logic
-def game_loop():
+def game_loop(con):
     '''The main game loop.'''
     # TODO: Split this into separate input, output and render loops.
-    con = untdl.init(CONSOLE_WIDTH, CONSOLE_HEIGHT, title='testme')
     untdl.event.set_key_repeat(500, 100)
     game_ended = False
     game_map = gmap.new_map()
@@ -90,26 +96,30 @@ def game_loop():
     view_ = view.center_view(view.View(-2, -2, 25, 15), coords)
     # FONT_SIZE = (8, 8)
     render_view(con, game_map, coords, view_)
-    try:
-        while not game_ended:
-            untdl.flush()
-            key = untdl.event.key_wait()
-            if key.char in MOVE_CONTROLS_MAP:
-                diff_x, diff_y = MOVE_CONTROLS_MAP[key.char]
-                new_coords = player_move_coords(game_map, coords,
-                                                diff_x, diff_y)
-                if new_coords != coords:
-                    coords = new_coords
-                    view_ = view.scroll_view(view_,
-                                             (diff_x, diff_y))
-                assert(coords in game_map)
-            elif key.keychar == 'ESCAPE' or key.alt and 'F4' in key.key:
-                game_ended = True
-            con.clear()
-            render_view(con, game_map, coords, view_)
-    finally:
-        del con
-        gc.collect()
+    while not game_ended:
+        untdl.flush()
+        key = untdl.event.key_wait()
+        if key.char in MOVE_CONTROLS_MAP:
+            diff_x, diff_y = MOVE_CONTROLS_MAP[key.char]
+            new_coords = player_move_coords(game_map, coords,
+                                            diff_x, diff_y)
+            if new_coords != coords:
+                coords = new_coords
+                view_ = view.scroll_view(view_,
+                                         (diff_x, diff_y))
+            assert(coords in game_map)
+        elif key.keychar == 'ESCAPE' or key.alt and 'F4' in key.key:
+            game_ended = True
+        con.clear()
+        render_view(con, game_map, coords, view_)
+
+
+def main(argv=[]):
+    main_con = untdl.init(CONSOLE_WIDTH, CONSOLE_HEIGHT, TITLE)
+    app = SimpleMenu(main_con, TITLE, MAIN_MENU_OPTIONS)
+    app.run()
+    del main_con
+    gc.collect()
 
 if __name__ == '__main__':
-    game_loop()
+    main()
