@@ -23,6 +23,12 @@ def to_local_coords(coords_a, coords_b):
     return (coords_b[0] - coords_a[0], coords_b[1] - coords_a[1])
 
 
+def adjacent(coords_a, coords_b):
+    ax, ay = coords_a
+    bx, by = coords_b
+    return -1 <= ax - bx <= 1 and -1 <= ay - by <= 1
+
+
 def subtract_iterables(iter_a, iter_b):
     '''Takes two iterables a and b and return a new iterable whose value is a -
     b for each member of a and each member of b.'''
