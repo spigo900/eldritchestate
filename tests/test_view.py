@@ -37,6 +37,7 @@ def test_center_view(view):
     for coord_pair in coords:
         current_view = v.center_view(view, coord_pair)
         assert current_view.coords == \
-            tuple(subtract_iterables(coord_pair, (view.width // 2, view.height // 2)))
+            tuple(subtract_iterables(coord_pair, (view.width // 2,
+                                                  view.height // 2)))
         assert current_view.width == view.width
         assert current_view.height == view.height
