@@ -1,7 +1,7 @@
 import untdl
 import untdl.event as event
 from untdl.event import App
-from eldestrl.utils import draw_str_centered
+from eldestrl.utils import center_offset, draw_str_centered
 
 
 class SimpleMenu(App):
@@ -52,19 +52,57 @@ class SimpleMenu(App):
         self.cursor_down()
 
     def key_ENTER(self, e):
-        option = self.opts[self.idx][1]
-        self.console.clear()
-        option(self.console)
+        self._do_choose()
 
     def key_ESCAPE(self, e):
         event.push(event.Quit())
 
     def ev_MOUSEMOTION(self, e):
-        # TODO: mouse handling code
-        pass
+        self._handle_mouse(e)
+
+    def ev_MOUSEDOWN(self, e):
+        self._handle_mouse(e)
+        self._do_choose()
 
     def ev_QUIT(self, e):
         self.suspend()
+
+    def _handle_mouse(self, e):
+        opt = self.over_opt(e.cell)
+        if opt is not None:
+            self.idx = opt
+
+    def _do_choose(self):
+        option = self.opts[self.idx][1]
+        self.console.clear()
+        option(self.console)
+
+    def _opt_pos(self, opt_num):
+        # add a 'length=None' param later, if it needs optimization
+        opt_str = self.opts[opt_num][0]
+        # and set this part to check if it's non-None before setting it
+        length = len(opt_str)
+        x = center_offset(self.console.width, length)
+        num_opts = len(self.opts)
+        y = self.console.height // 2 - num_opts + opt_num
+        return x, y
+
+    def _opt_bounds(self, opt_num):
+        opt_str = self.opts[opt_num][0]
+        length = len(opt_str)
+        left_x, y = self._opt_pos(opt_num)
+        return (left_x, y), (left_x + length - 1, y)
+
+    def in_opt_bounds(self, cell, opt_num):
+        x, y = cell
+        (left_bx, by), (right_bx, _) = self._opt_bounds(opt_num)
+        return y == by and left_bx <= x <= right_bx
+
+    def over_opt(self, cell):
+        for opt_num in range(len(self.opts)):
+            if self.in_opt_bounds(cell, opt_num):
+                return opt_num
+        return None
 
     def write_option(self, idx, y, *args, **kwargs):
         if idx == self.idx and not args and 'bgcolor' not in kwargs:
