@@ -30,7 +30,17 @@ def subtract_iterables(iter_a, iter_b):
     return map(sub, iter_a, iter_b)
 
 
+def center_offset(size_a, size_b):
+    '''Takes the size of two objects a and b along one dimension (i.e. both
+    parameters must be of the same dimension; a's width and b's width, for
+    example) and returns the offset needed to place b perfectly centered within
+    a along that dimension.
+    '''
+    return size_a // 2 - size_b // 2
+
+
 def draw_str_centered(con, str_, y, *args, **kwargs):
     str_length = len(str_)
     con_width = con.width
-    con.draw_str(con_width // 2 - str_length // 2, y, str_, *args, **kwargs)
+    con.draw_str(center_offset(con_width, str_length), y, str_,
+                 *args, **kwargs)
