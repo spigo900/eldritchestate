@@ -24,12 +24,21 @@ def to_local_coords(coords_a, coords_b):
 
 
 def adjacent(coords_a, coords_b):
+    '''Takes a pair of coordinates and returns whether or not they're adjacent.
+    Does not take into account whether the tiles are passable or even exist
+    within the map -- or in any map, for that matter. Remember to check that
+    they do exist and, optionally, are passable as necessary.
+    '''
+
     ax, ay = coords_a
     bx, by = coords_b
     return -1 <= ax - bx <= 1 and -1 <= ay - by <= 1
 
 
 def ortho_adjacent(coords_a, coords_b):
+    '''Works like adjacent, but returns true only if the tiles are orthogonally
+    adjacent.
+    '''
     ax, ay = coords_a
     bx, by = coords_b
     return (-1 <= ax - bx <= 1 and ay - by == 0) or \
