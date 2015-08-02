@@ -31,7 +31,7 @@ def max_map(map_):
 
 def in_map(map_, x, y):
     '''Return true if the coordinates are present in the map.'''
-    return True if (x, y) in map_ else False
+    return (x, y) in map_
 
 
 def passable(map_, x, y):

@@ -12,7 +12,7 @@ def clamp(val, min_, max_):
 def in_range(val, min_, max_):
     '''Takes a value, a minimum and a maximum and returns whether the value is
     within the range.'''
-    return True if min_ <= val <= max_ else False
+    return min_ <= val <= max_
 
 
 def to_local_coords(coords_a, coords_b):

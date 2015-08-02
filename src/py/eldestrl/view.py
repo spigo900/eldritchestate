@@ -134,8 +134,7 @@ def _in_view_subarea_helper(view, coords, bounds, view_edge_fn):
     right = view_edge_fn(view, 'right') + bounds.right
     upper = view_edge_fn(view, 'top') + bounds.upper
     lower = view_edge_fn(view, 'bottom') + bounds.lower
-    return True if left < coords[0] < right \
-        and upper < coords[1] < lower else False
+    return left < coords[0] < right and upper < coords[1] < lower
 
 
 def in_view_subarea(view, coords, bounds):
