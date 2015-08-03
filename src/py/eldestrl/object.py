@@ -30,8 +30,8 @@ class ObjectType(type):
             mcs.types[type_name] = {}
             mcs.objs[type_name] = weakref.WeakSet()
         else:
-            raise ValueError('Cannot have two object types named %(type_name)!'
-                             % locals())
+            raise ValueError('Cannot have two object types'
+                             'named %(type_name)s!' % locals())
 
         def del_dec(del_fn):
             def __del__(self):
