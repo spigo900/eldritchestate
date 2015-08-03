@@ -85,6 +85,20 @@ def player_move_coords(map_, player_coords, diff_x, diff_y):
         else player_coords
 
 
+def render(con, objs, refpoint):
+    '''Render the list of objects objs to the console or window con, localizing
+    coordinates relative to refpoint.'''
+    from untdl import TDLError
+    from eldestrl.utils import to_local_coords
+    for obj in objs:
+        try:
+            obj.draw(to_local_coords(refpoint, obj.coords))
+        except AttributeError:
+            print('Object %s is not drawable; skipping...' % repr(obj))
+        except TDLError:
+            print('Object %s not in map; skipping...' % repr(obj))
+
+
 # game logic
 def game_loop(con):
     '''The main game loop.'''
