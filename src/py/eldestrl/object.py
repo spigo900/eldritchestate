@@ -124,3 +124,28 @@ def new_goblin(coords):
         'displayname': 'goblin',
         'display': {'fn': draw_goblin}
     })
+
+
+class MetaComponent(type):
+    '''Metaclass for component types, which handles automatic registering of new
+    types.
+
+    '''
+    types = {}
+
+    def __new__(mcs, clsname, bases, attrs):
+        type_name = clsname.lower()
+        print('LOG: Creating new component type %(type_name)s.' % locals())
+        if type_name not in MetaComponent.types:
+            new_class = super(MetaComponent, mcs) \
+                        .__new__(mcs, clsname, bases, attrs)
+            mcs.types[type_name] = {}
+        else:
+            raise ValueError('Multiple component types %(type_name)s!'
+                             % locals())
+
+        return new_class
+
+    def __call__(cls, *args, **kwargs):
+        print('LOG: Creating new object of type %(type_name)s.' % locals())
+        return type.__call__(cls, *args, **kwargs)
