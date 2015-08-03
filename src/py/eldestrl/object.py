@@ -114,7 +114,7 @@ def new_monster(coords, type_, properties={}):
     if 'fn' in properties['display']:
         monster.draw = properties['display']['fn']
     else:
-        monster.draw = make_drawfn(**properties.display)
+        monster.draw = make_drawfn(**properties['display'])
     return monster
 
 
