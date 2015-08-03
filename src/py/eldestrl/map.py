@@ -20,23 +20,24 @@ class NoneInMapError(Exception):
 
 # map functions
 def min_map(map_):
-    '''Return the lowest coordinates in the map (upper-left corner).'''
+    '''Returns the lowest coordinates in the map (upper-left corner).'''
     return min(map_.keys())
 
 
 def max_map(map_):
-    '''Return the highest coordinates in the map (lower-right corner).'''
+    '''Returns the highest coordinates in the map (lower-right corner).'''
     return max(map_.keys())
 
 
 def in_map(map_, x, y):
-    '''Return true if the coordinates are present in the map.'''
+    '''Returns true if the coordinates are present in the map.'''
     return (x, y) in map_
 
 
 def passable(map_, x, y):
-    '''Return true if the given coordinate is present in the map and contains
-    a passable tile.'''
+    '''Returns true if the given coordinate is present in the map and contains
+    a passable tile.
+    '''
     if not in_map(map_, x, y):
         return False
     tile = map_[x, y]
@@ -44,8 +45,9 @@ def passable(map_, x, y):
 
 
 def clamp_coord(map_, x, y):
-    '''Take a pair of coordinates and return a new pair which is guranteed to be
-    within the map\'s boundaries.'''
+    '''Takes a pair of coordinates and returns a new pair which is guranteed to
+    be within the map\'s boundaries.
+    '''
     newx = clamp(x, min_map(map_)[0], max_map(map_)[0])
     newy = clamp(y, min_map(map_)[1], max_map(map_)[1])
     return (newx, newy)
@@ -62,11 +64,12 @@ def map_tiles(map_):
 
 
 def first_matching(map_, pred):
-    '''Take a map and a predicate. Return the first tile in the map (starting
-    from the upper right and cycling x first, y second) which matches the given
-    predicate.
+    '''Takes a map and a predicate and returns the first tile in the map
+    (starting from the upper right and cycling x first, y second) which matches
+    the given predicate.
 
-    pred should take the map and the coordinates and return a boolean value.'''
+    pred should take the map and the coordinates and return a boolean value.
+    '''
     for (x, y), _ in sorted(map_.items()):
         if pred(map_, x, y):
             return (x, y)
@@ -74,10 +77,11 @@ def first_matching(map_, pred):
 
 
 def all_matching(map_, pred):
-    '''Take a map and a predicate. Return a generator for all tiles in the map
-    which satisfy the predicate.
+    '''Takes a map and a predicate and returns a generator for all tiles in the
+    map which satisfy the predicate.
 
-    pred should take the map and the coordinates and return a boolean value.'''
+    pred should take the map and the coordinates and return a boolean value.
+    '''
     for (x, y), _ in sorted(map.items()):
         if pred(map_, x, y):
             yield (x, y)
@@ -85,12 +89,12 @@ def all_matching(map_, pred):
 
 
 def get_player_start_pos(map_):
-    '''Take the map and return a valid starting tile for the player.'''
+    '''Takes the map and returns a valid starting tile for the player.'''
     return first_matching(map_, passable)
 
 
 def get_tile_type(name):
-    '''Take a type type name and return the corresponding tile definition.'''
+    '''Takes a type type name and returns the corresponding tile definition.'''
     return TILES[name]
 
 
