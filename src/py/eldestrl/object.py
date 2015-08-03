@@ -1,6 +1,6 @@
 import weakref
 from copy import deepcopy
-from eldestrl.utils import adjacent, ortho_adjacent
+from eldestrl.utils import adjacent
 
 
 # Thought: Maybe I should make a metaclass here. I could have it register the
