@@ -16,6 +16,10 @@ from eldestrl.utils import adjacent, ortho_adjacent
 # TODO: add proper docstrings and comments for this monster.
 
 class ObjectType(type):
+    '''Metaclass for object types, which handles registering new types and
+    registering/deregistering objects.
+
+    '''
     types = {}
     objs = {}
 
