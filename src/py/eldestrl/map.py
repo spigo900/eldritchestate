@@ -70,7 +70,7 @@ def first_matching(map_, pred):
 
     pred should take the map and the coordinates and return a boolean value.
     '''
-    for (x, y), _ in sorted(map_.items()):
+    for (x, y) in map_coords(map_):
         if pred(map_, x, y):
             return (x, y)
     raise NoneInMapError("No tiles in map match predicate!")
@@ -82,10 +82,7 @@ def all_matching(map_, pred):
 
     pred should take the map and the coordinates and return a boolean value.
     '''
-    for (x, y), _ in sorted(map.items()):
-        if pred(map_, x, y):
-            yield (x, y)
-    raise StopIteration()
+    return ((x, y) for (x, y) in map_coords(map_) if pred(map_, x, y))
 
 
 def get_player_start_pos(map_):
