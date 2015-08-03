@@ -108,7 +108,7 @@ def new_player(coords):
     return player
 
 
-def new_monster(coords, type, properties={}):
+def new_monster(coords, type_, properties={}):
     monster = GameObject(coords)
     monster.displayname = properties['displayname']
     if 'fn' in properties['display']:
