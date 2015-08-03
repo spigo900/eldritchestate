@@ -36,8 +36,6 @@ class ObjectType(type):
         def del_dec(del_fn):
             def __del__(self):
                 mcs.objs[type_name].remove(self)
-                # gen = (str(x) for x in mcs.objs[type_name])
-                # print('LOG: New set: %s' % ", ".join(gen))
                 del_fn(self)
             return __del__
 
@@ -45,8 +43,6 @@ class ObjectType(type):
             def __deepcopy__(self, memodict):
                 new_obj = deepcopy_fn(self, memodict)
                 mcs.objs[type_name].add(new_obj)
-                # gen = (str(x) for x in mcs.objs[type_name])
-                # print('LOG: New set: %s' % ", ".join(gen))
                 return new_obj
             return __deepcopy__
 
@@ -54,12 +50,6 @@ class ObjectType(type):
             attrs['__del__'] = lambda _: None
         attrs['__del__'] = del_dec(attrs['__del__'])
 
-        # if '__deepcopy__' not in attrs:
-        #     def default_deepcopy(self, memo):
-        #         return deepcopy(self)
-        #     # attrs['__deepcopy__'] = lambda self, dic: super(type(self), self)
-        #     attrs['__deepcopy__'] = default_deepcopy
-        #     # attrs['__deepcopy__'] = lambda x, dic: type(x)
         if '__deepcopy__' not in attrs:
             def tricky_copy(self, memo):
                 try:
