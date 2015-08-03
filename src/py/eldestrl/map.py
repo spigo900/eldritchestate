@@ -94,7 +94,7 @@ def get_player_start_pos(map_):
 
 
 def get_tile_type(name):
-    '''Takes a type type name and returns the corresponding tile definition.'''
+    '''Takes a tile type name and returns the corresponding tile definition.'''
     return TILES[name]
 
 
