@@ -87,43 +87,39 @@ class GameObject(metaclass=ObjectType):
 # coordinate, and a time delta and renders itself to the given coordinate and
 # does nothing else.
 
-def make_drawfn(char, fg=(255, 255, 255), bg=(0, 0, 0)):
-    def drawfn(con, cell, _time_delta):
-        x, y = cell
-        con.draw_char(x, y, char)
-    return drawfn
-
-
-draw_player = make_drawfn('@')
-draw_goblin = make_drawfn('g', (35, 80, 50))
-
-
 def new_player(coords):
     player = GameObject(coords)
     player.displayname = 'you'
-    player.draw = draw_player
+    player.draw = DrawChar('@')
     return player
 
 
-def new_monster(coords, type_, properties={}):
-    monster = GameObject(coords)
-    monster.displayname = properties['displayname']
-    if 'fn' in properties['display']:
-        monster.draw = properties['display']['fn']
-    else:
-        monster.draw = make_drawfn(**properties['display'])
-    return monster
+# TODO: figure out how to implement monster types properly. Will probably
+# involve (chain) mappings and the global object type registry somehow.
+
+# def new_monster(coords, type_, properties={}):
+#     monster = GameObject(coords)
+#     monster.displayname = properties['displayname']
+#     if 'fn' in properties['display']:
+#         monster.draw = properties['display']['fn']
+#     else:
+#         monster.draw = make_drawfn(**properties['display'])
+#     return monster
 
 
-def new_monster_type(properties):
-    pass
+# def new_monster_type(properties):
+#     pass
 
 
 def new_goblin(coords):
-    return new_monster(coords, {
-        'displayname': 'goblin',
-        'display': {'fn': draw_goblin}
-    })
+    goblin = GameObject(coords)
+    goblin.displayname = 'goblin'
+    goblin.draw = DrawChar('g', (35, 80, 50))
+    return goblin
+#     return new_monster(coords, {
+#         'displayname': 'goblin',
+#         'display': {'fn': DrawChar('g', (35, 80, 50))}
+#     })
 
 
 class MetaComponent(type):
@@ -149,3 +145,18 @@ class MetaComponent(type):
     def __call__(cls, *args, **kwargs):
         print('LOG: Creating new object of type %(type_name)s.' % locals())
         return type.__call__(cls, *args, **kwargs)
+
+
+class DrawChar(metaclass=MetaComponent):
+    '''A simple drawing component. Renders a single character to the given
+    console.
+
+    '''
+    def __init__(self, char, fgcolor=(255, 255, 255), bgcolor=None):
+        self._char = char
+        self._fg = fgcolor
+        self._bg = bgcolor
+
+    def __call__(self, con, cell, time_delta):
+        x, y = cell
+        con.draw_char(x, y, self._char, self._fg, self._bg)
