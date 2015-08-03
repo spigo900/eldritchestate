@@ -51,6 +51,16 @@ def clamp_coord(map_, x, y):
     return (newx, newy)
 
 
+def map_coords(map_):
+    '''Takes a map and returns an iterator over all coordinates in the map.'''
+    return sorted(map_.keys())
+
+
+def map_tiles(map_):
+    '''Takes a map and returns an iterator over the map's tiles.'''
+    return sorted(map_.items())
+
+
 def first_matching(map_, pred):
     '''Take a map and a predicate. Return the first tile in the map (starting
     from the upper right and cycling x first, y second) which matches the given
