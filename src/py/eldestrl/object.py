@@ -75,9 +75,6 @@ class GameObject(metaclass=ObjectType):
     def __init__(self, coords):
         self.coords = coords
 
-    # def __deepcopy__(self, memo):
-    #     self
-
     def move(self, map_, coords):
         from eldestrl.map import passable
         if self.coords and \
