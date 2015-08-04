@@ -89,10 +89,11 @@ def render(con, objs, refpoint):
     '''Render the list of objects objs to the console or window con, localizing
     coordinates relative to refpoint.'''
     from untdl import TDLError
-    from eldestrl.utils import to_local_coords
     for obj in objs:
         try:
-            obj.draw(to_local_coords(refpoint, obj.coords))
+            obj.draw(con, tuple((x1 - x2, y1 - y2)
+                                for (x1, y1) in refpoint
+                                for (x2, y2) in obj.coords), 0)
         except AttributeError:
             print('Object %s is not drawable; skipping...' % repr(obj))
         except TDLError:
