@@ -168,7 +168,11 @@ class DrawChar(metaclass=MetaComponent):
         con.draw_char(x, y, self._char, self._fg, self._bg)
 
 
-class PlayerActor(metaclass=MetaComponent):
+class InputActor(metaclass=MetaComponent):
+    '''An actor component. This one is meant to by used by the player object and to
+    get its actions from the input code.
+
+    '''
     def __init__(self):
         self.actions = deque()
 
