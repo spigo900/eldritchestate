@@ -1,6 +1,7 @@
 import weakref
 from copy import deepcopy
 from eldestrl.utils import adjacent
+from collections import deque
 
 
 # Thought: Maybe I should make a metaclass here. I could have it register the
@@ -165,3 +166,16 @@ class DrawChar(metaclass=MetaComponent):
     def __call__(self, con, cell, time_delta):
         x, y = cell
         con.draw_char(x, y, self._char, self._fg, self._bg)
+
+
+class PlayerActor(metaclass=MetaComponent):
+    def __init__(self):
+        self.actions = deque()
+
+    def update(self, actor):
+        for (x, y) in self.actions:
+            try:
+                actor.travel((x, y))
+            except:
+                print('Actor %s couldn\'t move to coords (%d, %d).'
+                      % (actor, x, y))
