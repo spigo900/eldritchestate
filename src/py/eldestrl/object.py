@@ -77,6 +77,10 @@ class GameObject(metaclass=ObjectType):
 
     def move(self, map_, coords):
         from eldestrl.map import passable
+        # I should really probably remove these checks... maybe move the
+        # passability logic into a component or something. I mean, these are
+        # eldritch abominations. What if I end up wanting one that can walk
+        # through walls or something?
         if self.coords and \
            adjacent(self.coords, coords) and passable(map_, *coords):
             self.coords = coords
