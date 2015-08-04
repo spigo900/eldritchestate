@@ -143,7 +143,8 @@ class MetaComponent(type):
         return new_class
 
     def __call__(cls, *args, **kwargs):
-        print('LOG: Creating new object of type %(type_name)s.' % locals())
+        type_name = cls.__name__.lower()
+        print('LOG: Creating new component of type %(type_name)s.' % locals())
         return type.__call__(cls, *args, **kwargs)
 
 
