@@ -76,3 +76,11 @@ def draw_str_centered(con, str_, y, *args, **kwargs):
     con_width = con.width
     con.draw_str(center_offset(con_width, str_length), y, str_,
                  *args, **kwargs)
+
+
+def constantly(value):
+    '''Return a function which accepts any number of arguments whose return is
+    always `value` (i.e. a constant function.).
+
+    '''
+    return lambda *_s, **_kws: value
