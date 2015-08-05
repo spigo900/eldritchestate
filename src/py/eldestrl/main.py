@@ -1,6 +1,7 @@
 import untdl
 import untdl.event as event
 import gc
+import ecs.models as ecs
 import eldestrl.view as view
 import eldestrl.map as gmap
 from eldestrl.menu import SimpleMenu

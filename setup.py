@@ -22,7 +22,8 @@ setup(
     version='0.1.0.dev0',
     package_dir={'': SOURCE_DIR},
     packages=find_packages(SOURCE_DIR),
-    install_requires=['untdl'],
+    install_requires=['untdl',
+                      'ecs'],
     tests_require=['pytest', 'flake8', 'pytest-flake8'],
     cmdclass={'test': PyTest},
     classifiers=[
