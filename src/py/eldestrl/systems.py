@@ -71,12 +71,13 @@ class ActorSys(System):
                     new_pos = ((x1 + x2, y1 + y2)
                                for (x1, y1) in pos
                                for (x2, y2) in action[1])
-                    map_ = ent_mgr.component_for_entity(entity, World)
+                    world_map = ent_mgr.component_for_entity(entity, World) \
+                                       .world
                     blocked = False
-                    if not passable(map_, new_pos[0], new_pos[1]):
+                    if not passable(world_map, new_pos[0], new_pos[1]):
                         blocked = True
                     else:
-                        for other_ent in map_.ents:
+                        for other_ent in world_map.ents:
                             try:
                                 ent_mgr.component_for_entity(entity,
                                                              BlocksMove)
@@ -107,7 +108,7 @@ class RenderDisplaySys(System):
                         display.con.height - display_y)
             try:
                 world_map = ent_mgr.component_for_entity(display_ent,
-                                                         World).map_
+                                                         World).world
                 con = display.con
                 con.clear()
                 render_map(con, world_map, refpoint)
