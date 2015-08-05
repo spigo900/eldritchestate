@@ -1,12 +1,12 @@
 import untdl
 import untdl.event as event
 import gc
-import ecs.models as ecs
+from ecs.managers import EntityManager, SystemManager
 import eldestrl.view as view
 import eldestrl.map as gmap
+import eldestrl.ent_templates as ents
+import eldestrl.systems as systems
 from eldestrl.menu import SimpleMenu
-from eldestrl.render import render_view
-from eldestrl.input import MOVE_CONTROLS_MAP
 # from pprint import pprint
 
 CONSOLE_WIDTH = 80
@@ -49,30 +49,28 @@ def player_move_coords(map_, player_coords, diff_x, diff_y):
 # game logic
 def game_loop(con):
     '''The main game loop.'''
-    # TODO: Split this into separate input, output and render loops.
     untdl.event.set_key_repeat(500, 100)
-    game_ended = False
     game_map = gmap.new_map()
-    coords = gmap.get_player_start_pos(game_map)
-    view_ = view.center_view(view.View(-2, -2, 25, 15), coords)
+    ent_mgr = EntityManager()
+
+    player_coords = gmap.get_player_start_pos(game_map)
+    player = ents.new_player(ent_mgr, game_map, player_coords)
+    main_display = untdl.Window(con, 0, 0, 25, 15)
+    ents.new_tracking_camera(ent_mgr, game_map, main_display, player)
+
+    sys_mgr = SystemManager(ent_mgr)
+    sys_mgr.add_system(systems.UpdateWorldSys())
+    sys_mgr.add_system(systems.FollowEntitySys())
+
+    event_sys = systems.EventSys()
+    sys_mgr.add_system(event_sys)
+    sys_mgr.add_system(systems.ActorSys())
+    sys_mgr.add_system(systems.RenderDisplaySys())
     # FONT_SIZE = (8, 8)
-    render_view(con, game_map, coords, view_)
-    while not game_ended:
-        untdl.flush()
-        key = untdl.event.key_wait()
-        if key.char in MOVE_CONTROLS_MAP:
-            diff_x, diff_y = MOVE_CONTROLS_MAP[key.char]
-            new_coords = player_move_coords(game_map, coords,
-                                            diff_x, diff_y)
-            if new_coords != coords:
-                coords = new_coords
-                view_ = view.scroll_view(view_,
-                                         (diff_x, diff_y))
-            assert(coords in game_map)
-        elif key.keychar == 'ESCAPE' or key.alt and 'F4' in key.key:
-            game_ended = True
-        con.clear()
-        render_view(con, game_map, coords, view_)
+    while not event_sys.game_ended:
+        # elif key.keychar == 'ESCAPE' or key.alt and 'F4' in key.key:
+        #     game_ended = True
+        sys_mgr.update(ent_mgr)
 
 
 def main(argv=[]):
