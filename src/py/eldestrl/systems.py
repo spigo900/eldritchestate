@@ -93,6 +93,7 @@ class RenderDisplaySys(System):
             try:
                 world_map = dt.component_for_entity(display_ent, World).map_
                 con = display.con
+                con.clear()
                 render_map(con, world_map, refpoint)
             except NonexistentComponentTypeForEntity:
                 print('Display entity %s has no associated world!'
