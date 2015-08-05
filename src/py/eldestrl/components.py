@@ -49,5 +49,5 @@ class BlocksSight(Component):
 
 
 class Display(Component):
-    def __init__(self, con, refpoint):
+    def __init__(self, con):
         self.con = con
