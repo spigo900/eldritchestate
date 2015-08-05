@@ -20,9 +20,8 @@ def to_local_coords(ref_coords, localized):
     represents the difference between ref_coords and localized (used to get
     coords relative to view, for example).
     '''
-    return tuple(ref_point - local_point
-                 for ref_point in ref_coords
-                 for local_point in localized)
+    from operator import sub
+    return tuple(map(sub, ref_coords, localized))
 
 
 def adjacent(coords_a, coords_b):
