@@ -3,7 +3,7 @@ from ecs.exceptions import NonexistentComponentTypeForEntity
 
 
 class UpdateWorldSys(System):
-    def update(self, ent_mgr, _dt):
+    def update(self, ent_mgr):
         from eldestrl.components import World, Position
         new_ents = {}
         for (entity, world) in ent_mgr.pairs_for_type(World):
@@ -17,7 +17,7 @@ class UpdateWorldSys(System):
 
 
 class FollowEntitySys(System):
-    def update(self, ent_mgr, _dt):
+    def update(self, ent_mgr):
         from eldestrl.components import Position, Display, FollowsEntity
         (entity, display) = next(ent_mgr.pairs_for_type(Display))
         for (entity, follower) in ent_mgr.pairs_for_type(FollowsEntity):
@@ -32,7 +32,7 @@ class EventSys(System):
         self.game_ended = False
         super(EventSys, self).__init__()
 
-    def update(self, ent_mgr, _dt):
+    def update(self, ent_mgr):
         import untdl.event as ev
         import eldestrl.input as eldinput
         from eldestrl.components import PlayerControlled, Actor
@@ -59,7 +59,7 @@ class EventSys(System):
 
 
 class ActorSys(System):
-    def update(self, ent_mgr, _dt):
+    def update(self, ent_mgr):
         from eldestrl.map import passable
         from eldestrl.components import Actor, World, Position, BlockMove
         for (entity, actor) in ent_mgr.pairs_for_type(Actor):
@@ -90,7 +90,7 @@ class ActorSys(System):
 
 
 class RenderDisplaySys(System):
-    def update(self, ent_mgr, _dt):
+    def update(self, ent_mgr):
         from eldestrl.utils import to_local_coords
         from eldestrl.render import render_map
         from eldestrl.components import Char, Position, World, Display
