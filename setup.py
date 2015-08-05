@@ -1,9 +1,24 @@
 #!/usr/bin/env python3
 from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages
+from setuptools.command.install import install as _install
+from setuptools.command.develop import develop as _develop
 import sys
+from shutil import sh
 
 SOURCE_DIR = 'src/py'
+
+
+class install(_install):
+    def run(self):
+        sh('untdl.patch')
+        _install.run(self)
+
+
+class develop(_develop):
+    def run(self):
+        sh('untdl.patch')
+        _develop.run(self)
 
 
 class PyTest(TestCommand):
@@ -25,7 +40,9 @@ setup(
     install_requires=['untdl',
                       'ecs'],
     tests_require=['pytest', 'flake8', 'pytest-flake8'],
-    cmdclass={'test': PyTest},
+    cmdclass={'test': PyTest,
+              'install': install,
+              'develop': develop},
     classifiers=[
         'Developent Status :: 3 - Alpha'
     ],
