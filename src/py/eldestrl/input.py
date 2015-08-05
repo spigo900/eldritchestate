@@ -7,5 +7,6 @@ MOVE_CONTROLS_MAP = {'h': (-1, 0),
                      'b': (-1, 1),
                      'n': (1, 1)}
 
+
 def get_move_diff(key_event):
     return MOVE_CONTROLS_MAP.get(key_event.char, (0, 0))
