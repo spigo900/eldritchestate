@@ -35,17 +35,16 @@ def render_msgs(con, coords, msgs, n=5):
 
 
 def render_map(con, map_, refpoint):
+    from eldestrl.utils import to_local_coords
     from untdl import TDLError
     for (coord, tile_type) in map_.items():
         try:
             tile_info = gmap.get_tile_type(tile_type)
-            draw_x, draw_y = tuple(ref_coord - tile_coord
-                                   for ref_coord in refpoint
-                                   for tile_coord in coord)
+            draw_x, draw_y = to_local_coords(refpoint, coord)
             tile_char = tile_info['char']
             tile_fg = tile_info.get('fg', (255, 255, 255))
             tile_bg = tile_info.get('bg', None)
-            con.draw_char(tile_char, draw_x, draw_y, tile_fg, tile_bg)
+            con.draw_char(draw_x, draw_y, tile_char, tile_fg, tile_bg)
         except AttributeError:
             print('ERROR! Tile type %s does not exist'
                   'or has no display character defined!'
