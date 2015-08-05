@@ -11,10 +11,11 @@ def new_player(dt, map_, coords):
     return player
 
 
-def new_camera(dt, map_, con_, coords):
+def new_camera(dt, map_, con, coords):
     camera = dt.create_entity()
     dt.add_component(camera, components.Position(coords))
     dt.add_component(camera, components.World(map_))
+    dt.add_component(camera, components.Display(con))
     return camera
 
 
