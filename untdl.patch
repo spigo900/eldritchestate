@@ -1,0 +1,19 @@
+*** __init__.py	2015-08-05 19:13:51.554597535 -0400
+--- __init__.py	2015-08-05 19:13:56.230990967 -0400
+***************
+*** 526,532 ****
+                                   (ctypes.c_int(y) for y in range(y, y + height)))
+          # zip the single character in a batch variable
+          batch = zip(grid, itertools.repeat(char, width * height))
+!         self._set_char_batch(batch, fgcolor, bgcolor, nullChar=(char is None))
+  
+      def draw_frame(self, x, y, width, height, string, fgcolor=(255, 255, 255), bgcolor=(0, 0, 0)):
+          """Similar to L{draw_rect} but only draws the outline of the rectangle.
+--- 526,532 ----
+                                   (ctypes.c_int(y) for y in range(y, y + height)))
+          # zip the single character in a batch variable
+          batch = zip(grid, itertools.repeat(char, width * height))
+!         self._set_char_batch(batch, fgcolor, bgcolor, null_char=(char is None))
+  
+      def draw_frame(self, x, y, width, height, string, fgcolor=(255, 255, 255), bgcolor=(0, 0, 0)):
+          """Similar to L{draw_rect} but only draws the outline of the rectangle.
