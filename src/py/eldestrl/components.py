@@ -25,7 +25,7 @@ class Char(Component):
 class Actor(Component):
     def __init__(self):
         from collections import deque
-        self.queue = deque
+        self.queue = deque()
 
 
 class PlayerControlled(Component):
