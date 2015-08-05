@@ -5,6 +5,7 @@ import ecs.models as ecs
 import eldestrl.view as view
 import eldestrl.map as gmap
 from eldestrl.menu import SimpleMenu
+from eldestrl.render import render_view
 # from pprint import pprint
 
 CONSOLE_WIDTH = 80
@@ -31,39 +32,6 @@ def scroll_view_clamped_map(view_, diff_coords, map_):
                                     clamp_min, clamp_max)
 
 
-# rendering
-def render_tile(con, tile, x, y):
-    '''Takes a tile type name and renders it on con at the given
-    coordinates.'''
-    tile_def = gmap.get_tile_type(tile)
-    fg = tile_def.get('color', (255, 255, 255))
-    bg = tile_def.get('bg', (0, 0, 0))
-    char = tile_def['char']
-    con.draw_char(x, y, char, fg, bg)
-
-
-def render_view(con, map_, player_coords, view):
-    '''Takes a view, map and player coordinates and renders the map and player
-    to the view.'''
-    for i in range(0, view.width):
-        for j in range(0, view.height):
-            try:
-                tile = map_[(view.x+i, view.y+j)]
-                render_tile(con, tile, i, j)
-            except KeyError:
-                pass
-    con.draw_char(player_coords[0] - view.x, player_coords[1] - view.y, '@')
-
-
-def render_msgs(con, coords, msgs, n=5):
-    '''Takes a console, a coordinate pair, a sliceable collection of messages
-    and optionally a number of messages, and render the messages to the
-    console.'''
-    x, y = coords
-    for i in range(1, n+1):
-        con.draw_str(x, y + i, msgs[:-i])
-
-
 # player functions
 def player_move_coords(map_, player_coords, diff_x, diff_y):
     '''Takes a map, the player's current coordinates and the diff coordinates
@@ -75,21 +43,6 @@ def player_move_coords(map_, player_coords, diff_x, diff_y):
     new_y = player_y + diff_y
     return (new_x, new_y) if gmap.passable(map_, new_x, new_y) \
         else player_coords
-
-
-def render(con, objs, refpoint):
-    '''Render the list of objects objs to the console or window con, localizing
-    coordinates relative to refpoint.'''
-    from untdl import TDLError
-    for obj in objs:
-        try:
-            obj.draw(con, tuple((x1 - x2, y1 - y2)
-                                for (x1, y1) in refpoint
-                                for (x2, y2) in obj.coords), 0)
-        except AttributeError:
-            print('Object %s is not drawable; skipping...' % repr(obj))
-        except TDLError:
-            print('Object %s not in map; skipping...' % repr(obj))
 
 
 # game logic
