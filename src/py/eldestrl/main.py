@@ -6,6 +6,7 @@ import eldestrl.view as view
 import eldestrl.map as gmap
 from eldestrl.menu import SimpleMenu
 from eldestrl.render import render_view
+from eldestrl.input import MOVE_CONTROLS_MAP
 # from pprint import pprint
 
 CONSOLE_WIDTH = 80
