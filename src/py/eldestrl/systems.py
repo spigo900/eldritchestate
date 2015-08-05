@@ -16,29 +16,38 @@ class UpdateWorldSys(System):
         world.ents = new_ents
 
 
-class RenderCharSys(System):
+class RenderDisplaySys(System):
     def update(self, dt):
-        from eldestrl.components import Char, Position, Display
+        from eldestrl.utils import to_local_coords
+        from eldestrl.render import render_map
+        from eldestrl.components import Char, Position, World, Display
+        import untdl.flush
         from untdl import TDLError
         for (display_ent, display) in dt.pairs_for_type(Display):
             (display_x, display_y) = \
                 dt.component_for_entity(display_ent, Position).coords
             refpoint = (display.con.width - display_x,
                         display.con.height - display_y)
-            con = display.con
-            for (entity, renderinfo) in dt.pairs_for_type(Char):
-                try:
-                    pos = dt.component_for_entity(entity, Position)
-                    draw_x, draw_y = tuple((x1 - x2, y1 - y2)
-                                           for (x1, y1) in refpoint
-                                           for (x2, y2) in pos.coords)
-                    con.draw_char(draw_x, draw_y,
-                                  renderinfo.char, renderinfo.color)
-                except NonexistentComponentTypeForEntity:
-                    print('Entity %s has no position; skipping...'
-                          % repr(entity))
-                except TDLError as err:
-                    print('Got TDLError %s, skipping...' % str(err))
+            try:
+                world_map = dt.component_for_entity(display_ent, World).map_
+                con = display.con
+                render_map(con, world_map, refpoint)
+            except NonexistentComponentTypeForEntity:
+                print('Display entity %s has no associated world!'
+                      % repr(display_ent))
+            else:
+                for (entity, renderinfo) in dt.pairs_for_type(Char):
+                    try:
+                        pos = dt.component_for_entity(entity, Position)
+                        draw_x, draw_y = to_local_coords(refpoint, pos.coords)
+                        con.draw_char(draw_x, draw_y,
+                                      renderinfo.char, renderinfo.color)
+                    except NonexistentComponentTypeForEntity as err:
+                        print('Entity %s has no %s; skipping...'
+                              % (repr(entity), str(err)))
+                    except TDLError as err:
+                        print('Got TDLError %s, skipping...' % str(err))
+                untdl.flush()
 
 
 class EventSys(System):
