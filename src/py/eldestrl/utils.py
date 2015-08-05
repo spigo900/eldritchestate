@@ -15,12 +15,14 @@ def in_range(val, min_, max_):
     return min_ <= val <= max_
 
 
-def to_local_coords(coords_a, coords_b):
-    '''Takes two coordinate pairs and returns a new coordinate pair which
-    represents the difference between coords_a and coords_b (used to get coords
-    relative to view, for example).
+def to_local_coords(ref_coords, localized):
+    '''Takes two coordinate tuples and returns a new coordinate tuple which
+    represents the difference between ref_coords and localized (used to get
+    coords relative to view, for example).
     '''
-    return (coords_b[0] - coords_a[0], coords_b[1] - coords_a[1])
+    return tuple(ref_point - local_point
+                 for ref_point in ref_coords
+                 for local_point in localized)
 
 
 def adjacent(coords_a, coords_b):
