@@ -18,8 +18,7 @@ class UpdateWorldSys(System):
 
 class FollowEntitySys(System):
     def update(self, ent_mgr):
-        from eldestrl.components import Position, Display, FollowsEntity
-        (entity, display) = next(ent_mgr.pairs_for_type(Display))
+        from eldestrl.components import Position, FollowsEntity
         for (entity, follower) in ent_mgr.pairs_for_type(FollowsEntity):
             pos = ent_mgr.component_for_entity(entity, Position)
             followed_pos = ent_mgr.component_for_entity(follower.followed,
@@ -61,7 +60,7 @@ class EventSys(System):
 class ActorSys(System):
     def update(self, ent_mgr):
         from eldestrl.map import passable
-        from eldestrl.components import Actor, World, Position, BlockMove
+        from eldestrl.components import Actor, World, Position, BlocksMove
         for (entity, actor) in ent_mgr.pairs_for_type(Actor):
             try:
                 action = actor.queue.popleft()
@@ -79,14 +78,19 @@ class ActorSys(System):
                     else:
                         for other_ent in map_.ents:
                             try:
-                                ent_mgr.component_for_entity(entity, BlockMove)
+                                ent_mgr.component_for_entity(entity,
+                                                             BlocksMove)
                                 blocked = True
                             except NonexistentComponentTypeForEntity:
                                 pass
                     if not blocked:
                         entity_position.coords = new_pos
+            except IndexError:
+                print('Entity %s\'s action queue is empty, skipping...'
+                      % repr(entity))
+                continue
             except NonexistentComponentTypeForEntity:
-                pass
+                continue
 
 
 class RenderDisplaySys(System):
@@ -94,7 +98,7 @@ class RenderDisplaySys(System):
         from eldestrl.utils import to_local_coords
         from eldestrl.render import render_map
         from eldestrl.components import Char, Position, World, Display
-        import untdl.flush
+        import untdl
         from untdl import TDLError
         for (display_ent, display) in ent_mgr.pairs_for_type(Display):
             (display_x, display_y) = \
