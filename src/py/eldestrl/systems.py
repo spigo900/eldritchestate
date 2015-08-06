@@ -129,4 +129,4 @@ class RenderDisplaySys(System):
                               % (repr(entity), str(err)))
                     except TDLError as err:
                         print('Got TDLError %s, skipping...' % str(err))
-                untdl.flush()
+        untdl.flush()
