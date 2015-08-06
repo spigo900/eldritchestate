@@ -106,8 +106,8 @@ class RenderDisplaySys(System):
         for (display_ent, display) in ent_mgr.pairs_for_type(Display):
             (display_x, display_y) = \
                 ent_mgr.component_for_entity(display_ent, Position).coords
-            refpoint = (display.con.width - display_x,
-                        display.con.height - display_y)
+            refpoint = (display_x - display.con.width // 2,
+                        display_y - display.con.height // 2)
             try:
                 world_map = ent_mgr.component_for_entity(display_ent,
                                                          World).world
