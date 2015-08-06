@@ -47,7 +47,7 @@ class EventSys(System):
                     move_diff = eldinput.get_move_diff(event)
                     if move_diff != (0, 0):
                         actor = ent_mgr.component_for_entity(entity, Actor)
-                        actor.queue.push(('do_action_tile', move_diff))
+                        actor.queue.append(('do_action_tile', move_diff))
                     elif event.keychar == 'ESCAPE' or \
                          event.alt and 'F4' in event.key:  # noqa
                         ev.push(ev.Quit())
