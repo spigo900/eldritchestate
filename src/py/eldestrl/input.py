@@ -9,4 +9,4 @@ MOVE_CONTROLS_MAP = {'h': (-1, 0),
 
 
 def get_move_diff(key_event):
-    return MOVE_CONTROLS_MAP.get(key_event.char, (0, 0))
+    return MOVE_CONTROLS_MAP.get(key_event.char.lower(), (0, 0))
