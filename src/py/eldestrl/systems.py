@@ -39,6 +39,9 @@ class EventSys(System):
         for event in events:
             if event.type == 'QUIT':
                 self.game_ended = True
+                return
+            elif isinstance(event, ev.KeyUp):
+                return
             for (entity, _) in ent_mgr.pairs_for_type(PlayerControlled):
                 try:
                     move_diff = eldinput.get_move_diff(event)
