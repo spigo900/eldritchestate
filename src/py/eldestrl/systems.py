@@ -64,6 +64,7 @@ class ActorSys(System):
     def update(self, ent_mgr):
         from eldestrl.map import passable
         from eldestrl.components import Actor, World, Position, BlocksMove
+        from operator import add
         for (entity, actor) in ent_mgr.pairs_for_type(Actor):
             try:
                 action = actor.queue.popleft()
@@ -71,9 +72,7 @@ class ActorSys(System):
                     entity_position = ent_mgr.component_for_entity(entity,
                                                                    Position)
                     pos = entity_position.coords
-                    new_pos = ((x1 + x2, y1 + y2)
-                               for (x1, y1) in pos
-                               for (x2, y2) in action[1])
+                    new_pos = tuple(map(add, pos, action[1]))
                     world_map = ent_mgr.component_for_entity(entity, World) \
                                        .world
                     blocked = False
