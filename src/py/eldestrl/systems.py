@@ -112,12 +112,12 @@ class RenderDisplaySys(System):
                 world_map = ent_mgr.component_for_entity(display_ent,
                                                          World).world
                 con = display.con
-                con.clear()
-                render_map(con, world_map, refpoint)
             except NonexistentComponentTypeForEntity:
                 print('Display entity %s has no associated world!'
                       % repr(display_ent))
             else:
+                con.clear()
+                render_map(con, world_map, refpoint)
                 for (entity, renderinfo) in ent_mgr.pairs_for_type(Char):
                     try:
                         pos = ent_mgr.component_for_entity(entity, Position)
