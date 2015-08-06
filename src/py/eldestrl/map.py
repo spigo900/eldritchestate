@@ -105,4 +105,4 @@ def get_tile_type(name):
 def new_map():
     '''Return a new map.'''
     from copy import deepcopy
-    return deepcopy(MAP)
+    return Map(deepcopy(MAP))
