@@ -47,8 +47,11 @@ class EventSys(System):
                     move_diff = eldinput.get_move_diff(event)
                     if move_diff != (0, 0):
                         actor = ent_mgr.component_for_entity(entity, Actor)
+                        if actor.queue:
+                            return
                         if event.shift:
-                            actor.queue.extend(('do_action_tile', move_diff) for _ in range(100))
+                            actor.queue.extend(('do_action_tile', move_diff)
+                                               for _ in range(100))
                         else:
                             actor.queue.append(('do_action_tile', move_diff))
                     elif event.keychar == 'ESCAPE' or \
