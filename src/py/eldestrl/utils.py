@@ -21,7 +21,7 @@ def to_local_coords(ref_coords, localized):
     coords relative to view, for example).
     '''
     from operator import sub
-    return tuple(map(sub, ref_coords, localized))
+    return tuple(map(sub, localized, ref_coords))
 
 
 def adjacent(coords_a, coords_b):
