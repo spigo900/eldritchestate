@@ -68,33 +68,37 @@ class ActorSys(System):
         from eldestrl.map import passable
         from eldestrl.components import Actor, World, Position, BlocksMove
         from operator import add
-        for (entity, actor) in ent_mgr.pairs_for_type(Actor):
-            try:
-                action = actor.queue.popleft()
-                if action[0] == 'do_action_tile':
-                    entity_position = ent_mgr.component_for_entity(entity,
-                                                                   Position)
-                    pos = entity_position.coords
-                    new_pos = tuple(map(add, pos, action[1]))
-                    world_map = ent_mgr.component_for_entity(entity, World) \
-                                       .world
-                    blocked = False
-                    if not passable(world_map, new_pos[0], new_pos[1]):
-                        blocked = True
-                    else:
-                        for other_ent in world_map.ents:
-                            try:
-                                ent_mgr.component_for_entity(entity,
-                                                             BlocksMove)
-                                blocked = True
-                            except NonexistentComponentTypeForEntity:
-                                pass
-                    if not blocked:
-                        entity_position.coords = new_pos
-            except IndexError:
-                continue
-            except NonexistentComponentTypeForEntity:
-                continue
+        ent_pairs = tuple(ent_mgr.pairs_for_type(Actor))
+        shortest = min(len(actor.queue) for (_, actor) in ent_pairs)
+        for i in range(shortest):
+            print('Iteration no. #%d' % i)
+            for (entity, actor) in ent_pairs:
+                try:
+                    action = actor.queue.popleft()
+                    if action[0] == 'do_action_tile':
+                        entity_position = \
+                            ent_mgr.component_for_entity(entity, Position)
+                        pos = entity_position.coords
+                        new_pos = tuple(map(add, pos, action[1]))
+                        world_map = \
+                            ent_mgr.component_for_entity(entity, World).world
+                        blocked = False
+                        if not passable(world_map, new_pos[0], new_pos[1]):
+                            blocked = True
+                        else:
+                            for other_ent in world_map.ents:
+                                try:
+                                    ent_mgr.component_for_entity(entity,
+                                                                 BlocksMove)
+                                    blocked = True
+                                except NonexistentComponentTypeForEntity:
+                                    pass
+                        if not blocked:
+                            entity_position.coords = new_pos
+                except IndexError:
+                    continue
+                except NonexistentComponentTypeForEntity:
+                    continue
 
 
 class RenderDisplaySys(System):
