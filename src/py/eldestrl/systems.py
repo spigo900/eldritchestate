@@ -57,8 +57,12 @@ class EventSys(System):
                     elif event.keychar == 'ESCAPE' or \
                          event.alt and 'F4' in event.key:  # noqa
                         ev.push(ev.Quit())
-                except AttributeError:
-                    print('Got unknown event type %s!' % repr(event))
+                except AttributeError as err:
+                    print('AttributeError! Event was:' '\n'
+                          '%s' '\n\n'
+                          'Error was:'
+                          '%s' '\n'
+                          % (repr(event), repr(err)))
                 except NonexistentComponentTypeForEntity as err:
                     print('Player-controlled entity %(entity)s'
                           'has no component %(component)s!'
