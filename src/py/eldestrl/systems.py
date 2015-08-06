@@ -92,8 +92,6 @@ class ActorSys(System):
                     if not blocked:
                         entity_position.coords = new_pos
             except IndexError:
-                print('Entity %s\'s action queue is empty, skipping...'
-                      % repr(entity))
                 continue
             except NonexistentComponentTypeForEntity:
                 continue
