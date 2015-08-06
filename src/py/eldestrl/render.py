@@ -41,10 +41,11 @@ def render_map(con, map_, refpoint):
         try:
             tile_info = gmap.get_tile_type(tile_type)
             draw_x, draw_y = to_local_coords(refpoint, coord)
-            tile_char = tile_info['char']
-            tile_fg = tile_info.get('fg', (255, 255, 255))
-            tile_bg = tile_info.get('bg', None)
-            con.draw_char(draw_x, draw_y, tile_char, tile_fg, tile_bg)
+            if (draw_x, draw_y) in con:
+                tile_char = tile_info['char']
+                tile_fg = tile_info.get('fg', (255, 255, 255))
+                tile_bg = tile_info.get('bg', None)
+                con.draw_char(draw_x, draw_y, tile_char, tile_fg, tile_bg)
         except AttributeError:
             print('ERROR! Tile type %s does not exist'
                   'or has no display character defined!'
