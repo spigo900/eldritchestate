@@ -80,19 +80,6 @@ def map_tiles(map_):
     return sorted(map_.items())
 
 
-def first_matching(map_, pred):
-    '''Takes a map and a predicate and returns the first tile in the map
-    (starting from the upper right and cycling x first, y second) which matches
-    the given predicate.
-
-    pred should take the map and the coordinates and return a boolean value.
-    '''
-    for (x, y) in map_coords(map_):
-        if pred(map_, x, y):
-            return (x, y)
-    raise NoneInMapError("No tiles in map match predicate!")
-
-
 def all_matching(map_, pred):
     '''Takes a map and a predicate and returns a generator for all tiles in the
     map which satisfy the predicate.
@@ -102,18 +89,17 @@ def all_matching(map_, pred):
     return ((x, y) for (x, y) in map_coords(map_) if pred(map_, x, y))
 
 
-def first_matching_ents(ent_mgr, map_, pred):
+def first_matching(map_, pred):
     '''Takes a map and a predicate and returns the first tile in the map
-    (starting from the upper right and cycling x first, y second) whose entity
-    list satisfies the given predicate.
+    (starting from the upper right and cycling x first, y second) which matches
+    the given predicate.
 
     pred should take the map and the coordinates and return a boolean value.
-
     '''
-    for coords in map_.ents.keys():
-        if pred(ent_mgr, map_, coords):
-            return coords
-    raise NoneInMapError("No tiles in map match predicate!")
+    try:
+        return next(all_matching(map_, pred))
+    except StopIteration:
+        raise NoneInMapError("No tiles in map match predicate!")
 
 
 def all_matching_ents(ent_mgr, map_, pred):
@@ -124,6 +110,20 @@ def all_matching_ents(ent_mgr, map_, pred):
     '''
     return (coords for coords in map_.ents.keys()
             if pred(ent_mgr, map_, coords))
+
+
+def first_matching_ents(ent_mgr, map_, pred):
+    '''Takes a map and a predicate and returns the first tile in the map
+    (starting from the upper right and cycling x first, y second) whose entity
+    list satisfies the given predicate.
+
+    pred should take the map and the coordinates and return a boolean value.
+
+    '''
+    try:
+        return next(all_matching_ents(ent_mgr, map_, pred))
+    except StopIteration:
+        raise NoneInMapError("No tiles in map match predicate!")
 
 
 def first_unoccupied(ent_mgr, map_):
