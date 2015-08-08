@@ -9,7 +9,7 @@ class UpdateWorldSys(System):
         for (entity, world) in ent_mgr.pairs_for_type(World):
             try:
                 coords = ent_mgr.component_for_entity(entity, Position).coords
-                if not new_ents[coords]:
+                if not new_ents.get(coords, None):
                     new_ents[coords] = []
                 new_ents[coords].append(entity)
             except NonexistentComponentTypeForEntity:
