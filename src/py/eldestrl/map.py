@@ -13,9 +13,6 @@ MAP = {(x, y): ('wall' if x == 1 or x == 25 or
 
 
 class NoneInMapError(Exception):
-    # def __init__(self, message):
-    #     super(NoneInMapError, self).__init__(message)
-    #     self.message = message
     pass
 
 
