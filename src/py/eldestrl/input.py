@@ -1,11 +1,12 @@
-MOVE_CONTROLS_MAP = {'h': (-1, 0),
-                     'j': (0, 1),
-                     'k': (0, -1),
-                     'l': (1, 0),
-                     'y': (-1, -1),
-                     'u': (1, -1),
-                     'b': (-1, 1),
-                     'n': (1, 1)}
+MOVE_CONTROLS_MAP = {'h': ('do_action_tile', (-1, 0)),
+                     'j': ('do_action_tile', (0, 1)),
+                     'k': ('do_action_tile', (0, -1)),
+                     'l': ('do_action_tile', (1, 0)),
+                     'y': ('do_action_tile', (-1, -1)),
+                     'u': ('do_action_tile', (1, -1)),
+                     'b': ('do_action_tile', (-1, 1)),
+                     'n': ('do_action_tile', (1, 1)),
+                     '.': ('pass')}
 
 
 def get_move_diff(key_event):
