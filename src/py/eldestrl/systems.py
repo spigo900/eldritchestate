@@ -5,8 +5,11 @@ from ecs.exceptions import NonexistentComponentTypeForEntity
 class UpdateWorldSys(System):
     def update(self, ent_mgr):
         from eldestrl.components import World, Position
-        new_ents = {}
+        worlds = {}
         for (entity, world) in ent_mgr.pairs_for_type(World):
+            world = World.world
+            worlds.setdefault(world, {})
+            new_ents = worlds[world]
             try:
                 coords = ent_mgr.component_for_entity(entity, Position).coords
                 if not new_ents.get(coords, None):
@@ -15,7 +18,8 @@ class UpdateWorldSys(System):
             except NonexistentComponentTypeForEntity:
                 print('Entity %s has world but no position! Skipping...'
                       % repr(entity))
-        world.ents = new_ents
+        for (world, new_ents) in worlds:
+            world.ents = new_ents
 
 
 class FollowEntitySys(System):
