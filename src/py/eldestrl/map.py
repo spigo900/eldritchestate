@@ -120,8 +120,7 @@ def all_matching_ents(ent_mgr, map_, pred):
 
 def first_matching_ents(ent_mgr, map_, pred):
     '''Takes a map and a predicate and returns the first tile in the map
-    (starting from the upper right and cycling x first, y second) whose entity
-    list satisfies the given predicate.
+    whose entity list satisfies the given predicate.
 
     pred should take the map and the coordinates and return a boolean value.
 
