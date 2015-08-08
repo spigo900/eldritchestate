@@ -3,13 +3,16 @@ from ecs.exceptions import NonexistentComponentTypeForEntity
 
 
 class UpdateWorldSys(System):
-    def update(self, ent_mgr):
+    def update(self, dt):
+        ent_mgr = self.entity_manager
         from eldestrl.components import World, Position
         new_ents = {}
         for (entity, world) in ent_mgr.pairs_for_type(World):
             try:
                 coords = ent_mgr.component_for_entity(entity, Position).coords
-                new_ents[coords] = entity
+                if not new_ents.get(coords, None):
+                    new_ents[coords] = []
+                new_ents[coords].append(entity)
             except NonexistentComponentTypeForEntity:
                 print('Entity %s has world but no position! Skipping...'
                       % repr(entity))
@@ -17,7 +20,8 @@ class UpdateWorldSys(System):
 
 
 class FollowEntitySys(System):
-    def update(self, ent_mgr):
+    def update(self, dt):
+        ent_mgr = self.entity_manager
         from eldestrl.components import Position, FollowsEntity
         for (entity, follower) in ent_mgr.pairs_for_type(FollowsEntity):
             pos = ent_mgr.component_for_entity(entity, Position)
@@ -31,7 +35,8 @@ class EventSys(System):
         self.game_ended = False
         super(EventSys, self).__init__()
 
-    def update(self, ent_mgr):
+    def update(self, dt):
+        ent_mgr = self.entity_manager
         import untdl.event as ev
         import eldestrl.input as eldinput
         from eldestrl.components import PlayerControlled, Actor
@@ -70,15 +75,25 @@ class EventSys(System):
                              'component': str(err.compoent_type)})
 
 
+class AISys(System):
+    def update(self, dt):
+        import eldestrl.ai as ai
+        from eldestrl.components import AI
+        ent_mgr = self.entity_manager
+        for (ent, ai_comp) in ent_mgr.pairs_for_type(AI):
+            ai_function = ai.AI_TYPES[ai_comp.type]
+            ai_function(ent_mgr, ent)
+
+
 class ActorSys(System):
-    def update(self, ent_mgr):
+    def update(self, dt):
         from eldestrl.map import passable
         from eldestrl.components import Actor, World, Position, BlocksMove
         from operator import add
+        ent_mgr = self.entity_manager
         ent_pairs = tuple(ent_mgr.pairs_for_type(Actor))
         shortest = min(len(actor.queue) for (_, actor) in ent_pairs)
         for i in range(shortest):
-            print('Iteration no. #%d' % i)
             for (entity, actor) in ent_pairs:
                 try:
                     action = actor.queue.popleft()
@@ -90,10 +105,10 @@ class ActorSys(System):
                         world_map = \
                             ent_mgr.component_for_entity(entity, World).world
                         blocked = False
-                        if not passable(world_map, new_pos[0], new_pos[1]):
+                        if not passable(ent_mgr, world_map, new_pos):
                             blocked = True
                         else:
-                            for other_ent in world_map.ents:
+                            for other_ent in world_map.ents.get(new_pos, []):
                                 try:
                                     ent_mgr.component_for_entity(entity,
                                                                  BlocksMove)
@@ -109,12 +124,13 @@ class ActorSys(System):
 
 
 class RenderDisplaySys(System):
-    def update(self, ent_mgr):
+    def update(self, dt):
         from eldestrl.utils import to_local_coords
         from eldestrl.render import render_map
         from eldestrl.components import Char, Position, World, Display
         import untdl
         from untdl import TDLError
+        ent_mgr = self.entity_manager
         for (display_ent, display) in ent_mgr.pairs_for_type(Display):
             (display_x, display_y) = \
                 ent_mgr.component_for_entity(display_ent, Position).coords
@@ -134,6 +150,8 @@ class RenderDisplaySys(System):
                     try:
                         pos = ent_mgr.component_for_entity(entity, Position)
                         draw_x, draw_y = to_local_coords(refpoint, pos.coords)
+                        if not (draw_x, draw_y) in con:
+                            continue
                         con.draw_char(draw_x, draw_y,
                                       renderinfo.char, renderinfo.color)
                     except NonexistentComponentTypeForEntity as err:

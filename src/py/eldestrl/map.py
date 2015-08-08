@@ -1,11 +1,15 @@
 from collections import UserDict
-from eldestrl.utils import clamp
+from ecs.exceptions import NonexistentComponentTypeForEntity
+import eldestrl.components as components
+from eldestrl.utils import first_helper
 
 
 TILES = {'floor': {'char': '.',
-                   'passable': True},
+                   'passable': True,
+                   'blocks_sight': False},
          'wall': {'char': '+',
-                  'passable': False}}
+                  'passable': False,
+                  'blocks_sight': True}}
 
 MAP = {(x, y): ('wall' if x == 1 or x == 25 or
                 y == 1 or y == 15 else 'floor')
@@ -13,9 +17,6 @@ MAP = {(x, y): ('wall' if x == 1 or x == 25 or
 
 
 class NoneInMapError(Exception):
-    # def __init__(self, message):
-    #     super(NoneInMapError, self).__init__(message)
-    #     self.message = message
     pass
 
 
@@ -26,61 +27,40 @@ class Map(UserDict):
 
 
 # map functions
-def min_map(map_):
-    '''Returns the lowest coordinates in the map (upper-left corner).'''
-    return min(map_.keys())
+def map_width(map_):
+    '''Return the map's width.'''
+    return max(map_.keys())[0]
 
 
-def max_map(map_):
-    '''Returns the highest coordinates in the map (lower-right corner).'''
-    return max(map_.keys())
+def map_height(map_):
+    '''Return the map's height.'''
+    return max(map_.keys())[1]
 
 
-def in_map(map_, x, y):
-    '''Returns true if the coordinates are present in the map.'''
-    return (x, y) in map_
+def _entlist_passable(ent_mgr, ents):
+    for ent in ents:
+        try:
+            ent_mgr.component_for_entity(ent, components.BlocksMove)
+            return False
+        except NonexistentComponentTypeForEntity:
+            return True
+    return True
 
 
-def passable(map_, x, y):
-    '''Returns true if the given coordinate is present in the map and contains
-    a passable tile.
+def passable(ent_mgr, map_, coords):
+    '''Returns true if the given coordinate is passable.
     '''
-    if not in_map(map_, x, y):
+    if coords not in map_ and coords not in map_.ents:
         return False
-    tile = map_[x, y]
-    return get_tile_type(tile)['passable']
-
-
-def clamp_coord(map_, x, y):
-    '''Takes a pair of coordinates and returns a new pair which is guranteed to
-    be within the map\'s boundaries.
-    '''
-    newx = clamp(x, min_map(map_)[0], max_map(map_)[0])
-    newy = clamp(y, min_map(map_)[1], max_map(map_)[1])
-    return (newx, newy)
+    tiletype = get_tile_type(map_[coords])
+    passable = tiletype['passable']
+    ents = map_.ents.get(coords, [])
+    return passable and _entlist_passable(ent_mgr, ents)
 
 
 def map_coords(map_):
     '''Takes a map and returns an iterator over all coordinates in the map.'''
     return sorted(map_.keys())
-
-
-def map_tiles(map_):
-    '''Takes a map and returns an iterator over the map's tiles.'''
-    return sorted(map_.items())
-
-
-def first_matching(map_, pred):
-    '''Takes a map and a predicate and returns the first tile in the map
-    (starting from the upper right and cycling x first, y second) which matches
-    the given predicate.
-
-    pred should take the map and the coordinates and return a boolean value.
-    '''
-    for (x, y) in map_coords(map_):
-        if pred(map_, x, y):
-            return (x, y)
-    raise NoneInMapError("No tiles in map match predicate!")
 
 
 def all_matching(map_, pred):
@@ -92,9 +72,87 @@ def all_matching(map_, pred):
     return ((x, y) for (x, y) in map_coords(map_) if pred(map_, x, y))
 
 
-def get_player_start_pos(map_):
+def first_matching(map_, pred):
+    '''Takes a map and a predicate and returns the first tile in the map
+    (starting from the upper right and cycling x first, y second) which matches
+    the given predicate.
+
+    pred should take the map and the coordinates and return a boolean value.
+    '''
+    return first_helper(all_matching(map_, pred),
+                        NoneInMapError("No tiles in map match predicate!"))
+
+
+def all_matching_ents(ent_mgr, map_, pred):
+    '''Takes a map and a predicate and returns a generator for all tiles in the
+    map whose entity lists satisfy the predicate.
+
+    pred should take the entity manager, the map and the coordinates and return
+    a boolean value.
+
+    '''
+    return (coords for coords in map_.ents.keys()
+            if pred(ent_mgr, map_, coords))
+
+
+def first_matching_ents(ent_mgr, map_, pred):
+    '''Takes a map and a predicate and returns the first tile in the map
+    whose entity list satisfies the given predicate.
+
+    pred should take the map and the coordinates and return a boolean value.
+
+    '''
+    return first_helper(all_matching_ents(ent_mgr, map_, pred),
+                        NoneInMapError("No tiles in map match predicate!"))
+
+
+def all_matching_map(ent_mgr, map_, pred):
+    '''Takes a map and a predicate and returns a generator for the coordinates
+    of all tiles in the map which satisfy the predicate.
+
+    pred should take the entity manager, the map and the coordinates and return
+    a boolean value.
+
+    '''
+    return (coords for coords in map_coords(map_)
+            if pred(ent_mgr, map_, coords))
+
+
+def first_matching_map(ent_mgr, map_, pred):
+    '''Takes a map and a predicate and returns the first tile in the map
+     whose entity
+    list satisfies the given predicate.
+
+    pred should take the map and the coordinates and return a boolean value.
+
+    '''
+    return first_helper(all_matching_map(ent_mgr, map_, pred),
+                        NoneInMapError("No tiles in map match predicate!"))
+
+
+def first_unoccupied(ent_mgr, map_):
     '''Takes the map and returns a valid starting tile for the player.'''
-    return first_matching(map_, passable)
+    return first_matching_map(ent_mgr, map_, passable)
+
+
+def new_tile_type(name, char, color, bgcolor=(0, 0, 0),
+                  passable=True, blocks_sight=False):
+    '''Define a new tile type.
+
+    Name is the ID by which the tiletype should be accessed, and which should
+    be passed when creating a new tile via the entity template for tiles. If
+    the given tile type already exists, this function throws an error rather
+    than mutate it.
+
+    _Note that this mutates the map dictionary._ Use with care.
+
+    '''
+    assert name not in TILES
+    TILES['name'] = {'char': char,
+                     'fg': color,
+                     'bg': bgcolor,
+                     'passable': passable,
+                     'blocks_sight': blocks_sight}
 
 
 def get_tile_type(name):

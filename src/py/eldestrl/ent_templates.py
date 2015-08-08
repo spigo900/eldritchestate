@@ -1,4 +1,5 @@
 import eldestrl.components as components
+import eldestrl.map as eldmap
 
 
 def new_player(dt, map_, coords):
@@ -8,6 +9,7 @@ def new_player(dt, map_, coords):
     dt.add_component(player, components.Char('@'))
     dt.add_component(player, components.Actor())
     dt.add_component(player, components.PlayerControlled())
+    dt.add_component(player, components.BlocksMove())
     return player
 
 
@@ -23,3 +25,35 @@ def new_tracking_camera(dt, map_, con, tracked_entity):
     camera = new_camera(dt, map_, con, (1, 1))
     dt.add_component(camera, components.FollowsEntity(tracked_entity))
     return camera
+
+
+def new_tile(dt, map_, coords, tiletype):
+    props = eldmap.get_tile_type(tiletype)
+    tile = dt.create_entity()
+    dt.add_component(tile, components.Position(coords))
+    dt.add_component(tile, components.World(map_))
+    dt.add_component(tile, components.Char(props['char'],
+                                           props.get('fg', (255, 255, 255))))
+    if not props['passable']:
+        dt.add_component(tile, components.BlocksMove())
+    if not props['blocks_sight']:
+        dt.add_component(tile, components.BlocksSight())
+    return tile
+
+
+def tiles_from_map(dt, map_):
+    '''Takes an entity manager and a map and creates entities for each tile.
+
+    Take a dictionary-like association of coordinates '''
+    for (coords, tiletype) in map_.items():
+        new_tile(dt, map_, coords, tiletype)
+
+
+def new_client(dt, map_, coords):
+    npc = dt.create_entity()
+    dt.add_component(npc, components.Position(coords))
+    dt.add_component(npc, components.World(map_))
+    dt.add_component(npc, components.Char('@', (200, 120, 30)))
+    dt.add_component(npc, components.Actor())
+    dt.add_component(npc, components.AI('client'))
+    return npc
