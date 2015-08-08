@@ -9,6 +9,7 @@ def new_player(dt, map_, coords):
     dt.add_component(player, components.Char('@'))
     dt.add_component(player, components.Actor())
     dt.add_component(player, components.PlayerControlled())
+    dt.add_component(player, components.BlocksMove())
     return player
 
 
