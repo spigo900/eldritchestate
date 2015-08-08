@@ -15,15 +15,6 @@ MAIN_MENU_OPTIONS = [('New Game', lambda con: game_loop(con)),
                      ('Options', lambda _: None),
                      ('Quit', lambda _: event.push(event.Quit()))]
 
-MOVE_CONTROLS_MAP = {'h': (-1, 0),
-                     'j': (0, 1),
-                     'k': (0, -1),
-                     'l': (1, 0),
-                     'y': (-1, -1),
-                     'u': (1, -1),
-                     'b': (-1, 1),
-                     'n': (1, 1)}
-
 
 def scroll_view_clamped_map(view_, diff_coords, map_):
     '''Takes a view, a pair of diff coordinates and a map and returns a new

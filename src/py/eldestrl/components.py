@@ -6,6 +6,11 @@ class Position(Component):
         self.coords = coords
 
 
+class World(Component):
+    def __init__(self, world):
+        self.world = world  # world being a name for map
+
+
 class Velocity(Component):
     def __init__(self):
         self.velocity_vector = (0, 0)
@@ -17,11 +22,32 @@ class Char(Component):
         self.color = color
 
 
+class Actor(Component):
+    def __init__(self):
+        from collections import deque
+        self.queue = deque
+
+
 class PlayerControlled(Component):
     def __init__(self):
         pass
 
 
-class Blocks(Component):
+class FollowsEntity(Component):
+    def __init__(self, ent):
+        self.followed = ent
+
+
+class BlocksMove(Component):
     def __init__(self):
         pass
+
+
+class BlocksSight(Component):
+    def __init__(self):
+        pass
+
+
+class Display(Component):
+    def __init__(self, con, refpoint):
+        self.con = con

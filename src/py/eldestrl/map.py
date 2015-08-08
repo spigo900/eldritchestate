@@ -1,3 +1,4 @@
+from collections import UserDict
 from eldestrl.utils import clamp
 
 
@@ -16,6 +17,12 @@ class NoneInMapError(Exception):
     #     super(NoneInMapError, self).__init__(message)
     #     self.message = message
     pass
+
+
+class Map(UserDict):
+    def __init__(self, map_tiles=MAP):
+        self.data = map_tiles
+        self.ents = {}
 
 
 # map functions
