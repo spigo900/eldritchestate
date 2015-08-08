@@ -127,6 +127,18 @@ def first_matching_ents(ent_mgr, map_, pred):
         raise NoneInMapError("No tiles in map match predicate!")
 
 
+def all_matching_map(ent_mgr, map_, pred):
+    '''Takes a map and a predicate and returns a generator for the coordinates
+    of all tiles in the map which satisfy the predicate.
+
+    pred should take the entity manager, the map and the coordinates and return
+    a boolean value.
+
+    '''
+    return (coords for coords in map_coords(map_)
+            if pred(ent_mgr, map_, coords))
+
+
 def first_unoccupied(ent_mgr, map_):
     '''Takes the map and returns a valid starting tile for the player.'''
     return first_matching_ents(ent_mgr, map_, passable)
