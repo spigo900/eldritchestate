@@ -6,8 +6,8 @@ class UpdateWorldSys(System):
     def update(self, ent_mgr):
         from eldestrl.components import World, Position
         worlds = {}
-        for (entity, world) in ent_mgr.pairs_for_type(World):
-            world = World.world
+        for (entity, world_) in ent_mgr.pairs_for_type(World):
+            world = world_.world
             worlds.setdefault(world, {})
             new_ents = worlds[world]
             try:
