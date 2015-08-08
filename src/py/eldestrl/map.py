@@ -100,6 +100,16 @@ def get_player_start_pos(map_):
 
 def new_tile_type(name, char, color, bgcolor=(0, 0, 0),
                   passable=True, blocks_sight=False):
+    '''Define a new tile type.
+
+    Name is the ID by which the tiletype should be accessed, and which should
+    be passed when creating a new tile via the entity template for tiles. If
+    the given tile type already exists, this function throws an error rather
+    than mutate it.
+
+    _Note that this mutates the map dictionary._ Use with care.
+
+    '''
     assert name not in TILES
     TILES['name'] = {'char': char,
                      'fg': color,
