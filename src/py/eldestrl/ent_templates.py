@@ -47,3 +47,13 @@ def tiles_from_map(dt, map_):
     Take a dictionary-like association of coordinates '''
     for (coords, tiletype) in map_.items():
         new_tile(dt, map_, coords, tiletype)
+
+
+def new_client(dt, map_, coords):
+    npc = dt.create_entity()
+    dt.add_component(npc, components.Position(coords))
+    dt.add_component(npc, components.World(map_))
+    dt.add_component(npc, components.Char('@', (200, 120, 30)))
+    dt.add_component(npc, components.Actor())
+    dt.add_component(npc, components.AI('client'))
+    return npc
