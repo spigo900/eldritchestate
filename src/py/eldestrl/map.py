@@ -126,9 +126,9 @@ def all_matching_ents(ent_mgr, map_, pred):
             if pred(ent_mgr, map_, coords))
 
 
-def first_unoccupied(map_):
+def first_unoccupied(ent_mgr, map_):
     '''Takes the map and returns a valid starting tile for the player.'''
-    return first_matching(map_, passable)
+    return first_matching_ents(ent_mgr, map_, passable)
 
 
 def new_tile_type(name, char, color, bgcolor=(0, 0, 0),
