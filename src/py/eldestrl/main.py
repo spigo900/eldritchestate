@@ -33,6 +33,7 @@ def game_loop(con):
 
     event_sys = systems.EventSys()
     sys_mgr.add_system(event_sys)
+    sys_mgr.add_system(systems.AISys())
     sys_mgr.add_system(systems.ActorSys())
     sys_mgr.add_system(systems.FollowEntitySys())
     sys_mgr.add_system(systems.RenderDisplaySys())
