@@ -141,9 +141,21 @@ def all_matching_map(ent_mgr, map_, pred):
             if pred(ent_mgr, map_, coords))
 
 
+def first_matching_map(ent_mgr, map_, pred):
+    '''Takes a map and a predicate and returns the first tile in the map
+     whose entity
+    list satisfies the given predicate.
+
+    pred should take the map and the coordinates and return a boolean value.
+
+    '''
+    return _first_helper(all_matching_map(ent_mgr, map_, pred),
+                         NoneInMapError("No tiles in map match predicate!"))
+
+
 def first_unoccupied(ent_mgr, map_):
     '''Takes the map and returns a valid starting tile for the player.'''
-    return first_matching_ents(ent_mgr, map_, passable)
+    return first_matching_map(ent_mgr, map_, passable)
 
 
 def new_tile_type(name, char, color, bgcolor=(0, 0, 0),
