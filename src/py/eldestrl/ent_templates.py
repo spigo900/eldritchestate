@@ -37,3 +37,11 @@ def new_tile(dt, map_, coords, tiletype):
     if not props['blocks_sight']:
         dt.add_component(tile, components.BlocksSight())
     return tile
+
+
+def tiles_from_map(dt, map_):
+    '''Takes an entity manager and a map and creates entities for each tile.
+
+    Take a dictionary-like association of coordinates '''
+    for (coords, tiletype) in map_.item():
+        new_tile(dt, map_, coords, tiletype)
