@@ -1,6 +1,7 @@
 from collections import UserDict
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.components as components
+from eldestrl.utils import first_helper
 
 
 TILES = {'floor': {'char': '.',
@@ -75,8 +76,8 @@ def first_matching(map_, pred):
 
     pred should take the map and the coordinates and return a boolean value.
     '''
-    return _first_helper(all_matching(map_, pred),
-                         NoneInMapError("No tiles in map match predicate!"))
+    return first_helper(all_matching(map_, pred),
+                        NoneInMapError("No tiles in map match predicate!"))
 
 
 def all_matching_ents(ent_mgr, map_, pred):
@@ -98,8 +99,8 @@ def first_matching_ents(ent_mgr, map_, pred):
     pred should take the map and the coordinates and return a boolean value.
 
     '''
-    return _first_helper(all_matching_ents(ent_mgr, map_, pred),
-                         NoneInMapError("No tiles in map match predicate!"))
+    return first_helper(all_matching_ents(ent_mgr, map_, pred),
+                        NoneInMapError("No tiles in map match predicate!"))
 
 
 def all_matching_map(ent_mgr, map_, pred):
@@ -122,8 +123,8 @@ def first_matching_map(ent_mgr, map_, pred):
     pred should take the map and the coordinates and return a boolean value.
 
     '''
-    return _first_helper(all_matching_map(ent_mgr, map_, pred),
-                         NoneInMapError("No tiles in map match predicate!"))
+    return first_helper(all_matching_map(ent_mgr, map_, pred),
+                        NoneInMapError("No tiles in map match predicate!"))
 
 
 def first_unoccupied(ent_mgr, map_):
