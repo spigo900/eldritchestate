@@ -29,12 +29,12 @@ class Map(UserDict):
 # map functions
 def map_width(map_):
     '''Return the map's width.'''
-    return max(map_.keys()[0])
+    return max(map_.keys())[0]
 
 
 def map_height(map_):
     '''Return the map's height.'''
-    return max(map_.keys()[1])
+    return max(map_.keys())[1]
 
 
 def _entlist_passable(ent_mgr, ents):
