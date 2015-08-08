@@ -2,7 +2,7 @@ import untdl
 import untdl.event as event
 import gc
 from ecs.managers import EntityManager, SystemManager
-import eldestrl.map as gmap
+import eldestrl.map as eldmap
 import eldestrl.ent_templates as ents
 import eldestrl.systems as systems
 from eldestrl.menu import SimpleMenu
@@ -20,10 +20,10 @@ MAIN_MENU_OPTIONS = [('New Game', lambda con: game_loop(con)),
 def game_loop(con):
     '''The main game loop.'''
     untdl.event.set_key_repeat(500, 100)
-    game_map = gmap.new_map()
+    game_map = eldmap.new_map()
     ent_mgr = EntityManager()
 
-    player_coords = gmap.first_unoccupied(ent_mgr, game_map)
+    player_coords = eldmap.first_unoccupied(ent_mgr, game_map)
     player = ents.new_player(ent_mgr, game_map, player_coords)
     main_display = untdl.Window(con, 0, 0, 25, 15)
     ents.new_tracking_camera(ent_mgr, game_map, main_display, player)
