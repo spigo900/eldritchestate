@@ -66,10 +66,7 @@ def game_loop(con):
     sys_mgr.add_system(systems.ActorSys())
     sys_mgr.add_system(systems.FollowEntitySys())
     sys_mgr.add_system(systems.RenderDisplaySys())
-    # FONT_SIZE = (8, 8)
     while not event_sys.game_ended:
-        # elif key.keychar == 'ESCAPE' or key.alt and 'F4' in key.key:
-        #     game_ended = True
         sys_mgr.update(ent_mgr)
 
 
