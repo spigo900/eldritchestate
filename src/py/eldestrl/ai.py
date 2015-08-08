@@ -6,12 +6,13 @@ from eldestrl.utils import has_component, to_local_coords
 
 
 def _manhattan_cost(pos, new_pos):
-    coord_diff = tuple(a - b for b in pos for a in new_pos)
+    coord_diff = tuple(a - b for (a, b) in zip(new_pos, pos))
     return sum(abs(x) for x in coord_diff)
 
 
-def _flat_cost(ent_mgr, pos, new_pos):
-    x_diff, y_diff = tuple(a - b for b in pos for a in new_pos)
+def _flat_cost(pos, new_pos):
+    # import ipdb; ipdb.set_trace()
+    x_diff, y_diff = tuple(a - b for (a, b) in zip(new_pos, pos))
     cost = sum(abs(x) for x in (x_diff, y_diff))
     if x_diff != 0 or y_diff != 0:
         return cost - min(x_diff, y_diff)
@@ -39,8 +40,8 @@ def client_choose_target(ent_mgr, ent):
             ent_mgr.component_for_entity(e[0], comp.World).world == this_world
 
     ents = [target_ent
-            for target_ent in filter(
-                _valid, ent_mgr.components_for_type(comp.Position))]
+            for (target_ent, _) in filter(
+                _valid, ent_mgr.pairs_for_type(comp.Position))]
     num_player_chars = len(ents)
     if num_player_chars < 1:
         return None
@@ -53,19 +54,21 @@ def client_choose_target(ent_mgr, ent):
 
 def client_ai(ent_mgr, ent):
     '''AI function for client NPCs.'''
-    def client_cost(new_pos):
-        return 1 if eldmap.passable(ent_mgr, ent, new_pos) else 0
     this_world = ent_mgr.component_for_entity(ent, comp.World).world
     this_pos = ent_mgr.component_for_entity(ent, comp.Position).coords
     actions = ent_mgr.component_for_entity(ent, comp.Actor).queue
+    actions.clear()
     ai_comp = ent_mgr.component_for_entity(ent, comp.AI)
     target = ai_comp.target
     if not target:
         ai_comp.target = client_choose_target(ent_mgr, ent)
-    print('DEBUG: ai_comp.target is %s.' % str(ai_comp.target))
-    target_pos = ent_mgr.component_for_entity(target, comp.Position)
-    target_x, target_y = target_pos.coords
-    distance = _flat_cost(to_local_coords(this_pos, target_pos))
+        target = ai_comp.target
+
+    def client_cost(new_x, new_y):
+        return 1 if eldmap.passable(ent_mgr, this_world, (new_x, new_y)) else 0
+    target_pos = ent_mgr.component_for_entity(target, comp.Position).coords
+    target_x, target_y = target_pos
+    distance = _flat_cost(this_pos, target_pos)
     if distance <= 5:
         actions.append(('do_action_tile', (random.randint(-1, 1),
                                            random.randint(-1, 1))))
@@ -75,7 +78,7 @@ def client_ai(ent_mgr, ent):
                                  client_cost, digital_cost=1)
     path = pathfinder.get_path(this_pos[0], this_pos[1], target_x, target_y)
     if path:
-        next_tile = to_local_coords(next(path), this_pos)
+        next_tile = to_local_coords(this_pos, path[0])
         actions.append(('do_action_tile', next_tile))
 
 
