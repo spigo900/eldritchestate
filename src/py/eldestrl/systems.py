@@ -9,7 +9,9 @@ class UpdateWorldSys(System):
         for (entity, world) in ent_mgr.pairs_for_type(World):
             try:
                 coords = ent_mgr.component_for_entity(entity, Position).coords
-                new_ents[coords] = entity
+                if not new_ents[coords]:
+                    new_ents[coords] = []
+                new_ents[coords].append(entity)
             except NonexistentComponentTypeForEntity:
                 print('Entity %s has world but no position! Skipping...'
                       % repr(entity))
@@ -86,7 +88,8 @@ class ActorSys(System):
                         if not passable(world_map, new_pos[0], new_pos[1]):
                             blocked = True
                         else:
-                            for other_ent in world_map.ents:
+                            for other_ent in world_map.ents[new_pos[0],
+                                                            new_pos[1]]:
                                 try:
                                     ent_mgr.component_for_entity(entity,
                                                                  BlocksMove)
