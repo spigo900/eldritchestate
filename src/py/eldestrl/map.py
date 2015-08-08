@@ -49,6 +49,7 @@ def _entlist_passable(ent_mgr, ents):
             return False
         except NonexistentComponentTypeForEntity:
             return True
+    return True
 
 
 def passable(ent_mgr, map_, coords):
@@ -58,7 +59,7 @@ def passable(ent_mgr, map_, coords):
         return False
     tiletype = get_tile_type(map_[coords])
     passable = tiletype['passable']
-    ents = map_.ents[coords]
+    ents = map_.ents.get(coords, [])
     return passable and _entlist_passable(ent_mgr, ents)
 
 
