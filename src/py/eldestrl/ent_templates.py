@@ -31,7 +31,8 @@ def new_tile(dt, map_, coords, tiletype):
     tile = dt.create_entity()
     dt.add_component(tile, components.Position(coords))
     dt.add_component(tile, components.World(map_))
-    dt.add_component(tile, components.Char(props['char'], props['fg']))
+    dt.add_component(tile, components.Char(props['char'],
+                                           props.get('fg', (255, 255, 255))))
     if not props['passable']:
         dt.add_component(tile, components.BlocksMove())
     if not props['blocks_sight']:
