@@ -89,8 +89,7 @@ class ActorSys(System):
                         if not passable(world_map, new_pos[0], new_pos[1]):
                             blocked = True
                         else:
-                            for other_ent in world_map.ents[new_pos[0],
-                                                            new_pos[1]]:
+                            for other_ent in world_map.ents.get(new_pos, []):
                                 try:
                                     ent_mgr.component_for_entity(entity,
                                                                  BlocksMove)
