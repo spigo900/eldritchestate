@@ -89,7 +89,7 @@ def all_matching(map_, pred):
     return ((x, y) for (x, y) in map_coords(map_) if pred(map_, x, y))
 
 
-def get_player_start_pos(map_):
+def first_unoccupied(map_):
     '''Takes the map and returns a valid starting tile for the player.'''
     return first_matching(map_, passable)
 

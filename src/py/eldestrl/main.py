@@ -53,7 +53,7 @@ def game_loop(con):
     game_map = gmap.new_map()
     ent_mgr = EntityManager()
 
-    player_coords = gmap.get_player_start_pos(game_map)
+    player_coords = gmap.first_unoccupied(game_map)
     player = ents.new_player(ent_mgr, game_map, player_coords)
     main_display = untdl.Window(con, 0, 0, 25, 15)
     ents.new_tracking_camera(ent_mgr, game_map, main_display, player)
