@@ -27,21 +27,6 @@ class Map(UserDict):
 
 
 # map functions
-def min_map(map_):
-    '''Returns the lowest coordinates in the map (upper-left corner).'''
-    return min(map_.keys())
-
-
-def max_map(map_):
-    '''Returns the highest coordinates in the map (lower-right corner).'''
-    return max(map_.keys())
-
-
-def in_map(map_, x, y):
-    '''Returns true if the coordinates are present in the map.'''
-    return (x, y) in map_
-
-
 def _entlist_passable(ent_mgr, ents):
     for ent in ents:
         try:
@@ -63,23 +48,9 @@ def passable(ent_mgr, map_, coords):
     return passable and _entlist_passable(ent_mgr, ents)
 
 
-def clamp_coord(map_, x, y):
-    '''Takes a pair of coordinates and returns a new pair which is guranteed to
-    be within the map\'s boundaries.
-    '''
-    newx = clamp(x, min_map(map_)[0], max_map(map_)[0])
-    newy = clamp(y, min_map(map_)[1], max_map(map_)[1])
-    return (newx, newy)
-
-
 def map_coords(map_):
     '''Takes a map and returns an iterator over all coordinates in the map.'''
     return sorted(map_.keys())
-
-
-def map_tiles(map_):
-    '''Takes a map and returns an iterator over the map's tiles.'''
-    return sorted(map_.items())
 
 
 def all_matching(map_, pred):
