@@ -85,3 +85,12 @@ def constantly(value):
 
     '''
     return lambda *_s, **_kws: value
+
+
+def has_component(ent_mgr, ent, component):
+    from ecs.exceptions import NonexistentComponentTypeForEntity
+    try:
+        ent_mgr.component_for_entity(ent, component)
+        return True
+    except NonexistentComponentTypeForEntity:
+        return False
