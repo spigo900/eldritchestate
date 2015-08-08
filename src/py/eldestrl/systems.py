@@ -74,7 +74,6 @@ class ActorSys(System):
         ent_pairs = tuple(ent_mgr.pairs_for_type(Actor))
         shortest = min(len(actor.queue) for (_, actor) in ent_pairs)
         for i in range(shortest):
-            print('Iteration no. #%d' % i)
             for (entity, actor) in ent_pairs:
                 try:
                     action = actor.queue.popleft()
