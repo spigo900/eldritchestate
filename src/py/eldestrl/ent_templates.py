@@ -44,5 +44,5 @@ def tiles_from_map(dt, map_):
     '''Takes an entity manager and a map and creates entities for each tile.
 
     Take a dictionary-like association of coordinates '''
-    for (coords, tiletype) in map_.item():
+    for (coords, tiletype) in map_.items():
         new_tile(dt, map_, coords, tiletype)
