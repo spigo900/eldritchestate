@@ -3,7 +3,8 @@ from ecs.exceptions import NonexistentComponentTypeForEntity
 
 
 class UpdateWorldSys(System):
-    def update(self, ent_mgr):
+    def update(self, dt):
+        ent_mgr = self.entity_manager
         from eldestrl.components import World, Position
         new_ents = {}
         for (entity, world) in ent_mgr.pairs_for_type(World):
@@ -19,7 +20,8 @@ class UpdateWorldSys(System):
 
 
 class FollowEntitySys(System):
-    def update(self, ent_mgr):
+    def update(self, dt):
+        ent_mgr = self.entity_manager
         from eldestrl.components import Position, FollowsEntity
         for (entity, follower) in ent_mgr.pairs_for_type(FollowsEntity):
             pos = ent_mgr.component_for_entity(entity, Position)
@@ -33,7 +35,8 @@ class EventSys(System):
         self.game_ended = False
         super(EventSys, self).__init__()
 
-    def update(self, ent_mgr):
+    def update(self, dt):
+        ent_mgr = self.entity_manager
         import untdl.event as ev
         import eldestrl.input as eldinput
         from eldestrl.components import PlayerControlled, Actor
@@ -67,10 +70,11 @@ class EventSys(System):
 
 
 class ActorSys(System):
-    def update(self, ent_mgr):
+    def update(self, dt):
         from eldestrl.map import passable
         from eldestrl.components import Actor, World, Position, BlocksMove
         from operator import add
+        ent_mgr = self.entity_manager
         ent_pairs = tuple(ent_mgr.pairs_for_type(Actor))
         shortest = min(len(actor.queue) for (_, actor) in ent_pairs)
         for i in range(shortest):
@@ -104,12 +108,13 @@ class ActorSys(System):
 
 
 class RenderDisplaySys(System):
-    def update(self, ent_mgr):
+    def update(self, dt):
         from eldestrl.utils import to_local_coords
         from eldestrl.render import render_map
         from eldestrl.components import Char, Position, World, Display
         import untdl
         from untdl import TDLError
+        ent_mgr = self.entity_manager
         for (display_ent, display) in ent_mgr.pairs_for_type(Display):
             (display_x, display_y) = \
                 ent_mgr.component_for_entity(display_ent, Position).coords

@@ -67,7 +67,7 @@ def game_loop(con):
     sys_mgr.add_system(systems.FollowEntitySys())
     sys_mgr.add_system(systems.RenderDisplaySys())
     while not event_sys.game_ended:
-        sys_mgr.update(ent_mgr)
+        sys_mgr.update(0)  # placeholder
 
 
 def main(argv=[]):
