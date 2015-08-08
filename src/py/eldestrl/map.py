@@ -5,9 +5,11 @@ from eldestrl.utils import clamp
 
 
 TILES = {'floor': {'char': '.',
-                   'passable': True},
+                   'passable': True,
+                   'blocks_sight': False},
          'wall': {'char': '+',
-                  'passable': False}}
+                  'passable': False,
+                  'blocks_sight': True}}
 
 MAP = {(x, y): ('wall' if x == 1 or x == 25 or
                 y == 1 or y == 15 else 'floor')
