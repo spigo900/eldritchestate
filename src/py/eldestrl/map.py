@@ -1,7 +1,6 @@
 from collections import UserDict
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.components as components
-from eldestrl.utils import clamp
 
 
 TILES = {'floor': {'char': '.',
