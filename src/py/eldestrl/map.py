@@ -88,6 +88,13 @@ def all_matching(map_, pred):
     return ((x, y) for (x, y) in map_coords(map_) if pred(map_, x, y))
 
 
+def _first_helper(iter_, err):
+    try:
+        return next(iter_)
+    except StopIteration:
+        raise err
+
+
 def first_matching(map_, pred):
     '''Takes a map and a predicate and returns the first tile in the map
     (starting from the upper right and cycling x first, y second) which matches
@@ -95,10 +102,8 @@ def first_matching(map_, pred):
 
     pred should take the map and the coordinates and return a boolean value.
     '''
-    try:
-        return next(all_matching(map_, pred))
-    except StopIteration:
-        raise NoneInMapError("No tiles in map match predicate!")
+    return _first_helper(all_matching(map_, pred),
+                         NoneInMapError("No tiles in map match predicate!"))
 
 
 def all_matching_ents(ent_mgr, map_, pred):
@@ -121,10 +126,8 @@ def first_matching_ents(ent_mgr, map_, pred):
     pred should take the map and the coordinates and return a boolean value.
 
     '''
-    try:
-        return next(all_matching_ents(ent_mgr, map_, pred))
-    except StopIteration:
-        raise NoneInMapError("No tiles in map match predicate!")
+    return _first_helper(all_matching_ents(ent_mgr, map_, pred),
+                         NoneInMapError("No tiles in map match predicate!"))
 
 
 def all_matching_map(ent_mgr, map_, pred):
