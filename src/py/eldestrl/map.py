@@ -102,6 +102,30 @@ def all_matching(map_, pred):
     return ((x, y) for (x, y) in map_coords(map_) if pred(map_, x, y))
 
 
+def first_matching_ents(ent_mgr, map_, pred):
+    '''Takes a map and a predicate and returns the first tile in the map
+    (starting from the upper right and cycling x first, y second) whose entity
+    list satisfies the given predicate.
+
+    pred should take the map and the coordinates and return a boolean value.
+
+    '''
+    for coords in map_.ents.keys():
+        if pred(ent_mgr, map_, coords):
+            return coords
+    raise NoneInMapError("No tiles in map match predicate!")
+
+
+def all_matching_ents(ent_mgr, map_, pred):
+    '''Takes a map and a predicate and returns a generator for all tiles in the
+    map whose entity lists satisfy the predicate.
+
+    pred should take the map and the coordinates and return a boolean value.
+    '''
+    return (coords for coords in map_.ents.keys()
+            if pred(ent_mgr, map_, coords))
+
+
 def first_unoccupied(map_):
     '''Takes the map and returns a valid starting tile for the player.'''
     return first_matching(map_, passable)
