@@ -1,5 +1,6 @@
 from collections import UserDict
 from eldestrl.utils import clamp
+import eldestrl.components as components
 
 
 TILES = {'floor': {'char': '.',
@@ -95,6 +96,16 @@ def all_matching(map_, pred):
 def get_player_start_pos(map_):
     '''Takes the map and returns a valid starting tile for the player.'''
     return first_matching(map_, passable)
+
+
+def new_tile_type(name, char, color, bgcolor=(0, 0, 0),
+                  passable=True, blocks_sight=False):
+    assert name not in TILES
+    TILES['name'] = {'char': char,
+                     'fg': color,
+                     'bg': bgcolor,
+                     'passable': passable,
+                     'blocks_sight': blocks_sight}
 
 
 def get_tile_type(name):
