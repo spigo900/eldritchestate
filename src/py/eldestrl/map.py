@@ -27,6 +27,16 @@ class Map(UserDict):
 
 
 # map functions
+def map_width(map_):
+    '''Return the map's width.'''
+    return max(map_.keys()[0])
+
+
+def map_height(map_):
+    '''Return the map's height.'''
+    return max(map_.keys()[1])
+
+
 def _entlist_passable(ent_mgr, ents):
     for ent in ents:
         try:
@@ -60,13 +70,6 @@ def all_matching(map_, pred):
     pred should take the map and the coordinates and return a boolean value.
     '''
     return ((x, y) for (x, y) in map_coords(map_) if pred(map_, x, y))
-
-
-def _first_helper(iter_, err):
-    try:
-        return next(iter_)
-    except StopIteration:
-        raise err
 
 
 def first_matching(map_, pred):
