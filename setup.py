@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages
 import sys
