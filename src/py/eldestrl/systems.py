@@ -129,6 +129,8 @@ class RenderDisplaySys(System):
                     try:
                         pos = ent_mgr.component_for_entity(entity, Position)
                         draw_x, draw_y = to_local_coords(refpoint, pos.coords)
+                        if not (draw_x, draw_y) in con:
+                            continue
                         con.draw_char(draw_x, draw_y,
                                       renderinfo.char, renderinfo.color)
                     except NonexistentComponentTypeForEntity as err:
