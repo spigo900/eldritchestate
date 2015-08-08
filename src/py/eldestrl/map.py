@@ -1,4 +1,6 @@
 from collections import UserDict
+from ecs.exceptions import NonexistentComponentTypeForEntity
+import eldestrl.components as components
 from eldestrl.utils import clamp
 
 
@@ -38,14 +40,25 @@ def in_map(map_, x, y):
     return (x, y) in map_
 
 
-def passable(map_, x, y):
-    '''Returns true if the given coordinate is present in the map and contains
-    a passable tile.
+def _entlist_passable(ent_mgr, ents):
+    for ent in ents:
+        try:
+            ent_mgr.component_for_entity(ent, components.BlocksMove)
+            return False
+        except NonexistentComponentTypeForEntity:
+            return True
+
+
+def passable(ent_mgr, map_, coords):
+    '''Returns true if the given coordinate is passable.
     '''
-    if not in_map(map_, x, y):
+    if coords not in map_ and coords not in map_.ents:
         return False
-    tile = map_[x, y]
-    return get_tile_type(tile)['passable']
+    ents = map_.ents[coords]
+    return _entlist_passable(ent_mgr, ents) and \
+        False if filter(coords for coords in map_coords(map_)
+                        if coords in map_) \
+        else True
 
 
 def clamp_coord(map_, x, y):
