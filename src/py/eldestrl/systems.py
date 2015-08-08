@@ -69,6 +69,16 @@ class EventSys(System):
                              'component': str(err.compoent_type)})
 
 
+class AISys(System):
+    def update(self, dt):
+        import eldestrl.ai as ai
+        from eldestrl.components import AI
+        ent_mgr = self.entity_manager
+        for (ent, ai_comp) in ent_mgr.pairs_for_type(AI):
+            ai_function = ai.AI_TYPES[ai_comp.type]
+            ai_function(ent_mgr, ent)
+
+
 class ActorSys(System):
     def update(self, dt):
         from eldestrl.map import passable

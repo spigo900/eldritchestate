@@ -33,6 +33,12 @@ class PlayerControlled(Component):
         pass
 
 
+class AI(Component):
+    def __init__(self, type_):
+        self.type = type_
+        self.target = None
+
+
 class FollowsEntity(Component):
     def __init__(self, ent):
         self.followed = ent
