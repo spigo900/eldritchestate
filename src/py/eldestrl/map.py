@@ -105,7 +105,9 @@ def all_matching_ents(ent_mgr, map_, pred):
     '''Takes a map and a predicate and returns a generator for all tiles in the
     map whose entity lists satisfy the predicate.
 
-    pred should take the map and the coordinates and return a boolean value.
+    pred should take the entity manager, the map and the coordinates and return
+    a boolean value.
+
     '''
     return (coords for coords in map_.ents.keys()
             if pred(ent_mgr, map_, coords))
