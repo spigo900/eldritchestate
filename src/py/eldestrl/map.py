@@ -1,6 +1,5 @@
 from collections import UserDict
 from eldestrl.utils import clamp
-import eldestrl.components as components
 
 
 TILES = {'floor': {'char': '.',
