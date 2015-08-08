@@ -54,11 +54,10 @@ def passable(ent_mgr, map_, coords):
     '''
     if coords not in map_ and coords not in map_.ents:
         return False
+    tiletype = get_tile_type(map_[coords])
+    passable = tiletype['passable']
     ents = map_.ents[coords]
-    return _entlist_passable(ent_mgr, ents) and \
-        False if filter(coords for coords in map_coords(map_)
-                        if coords in map_) \
-        else True
+    return passable and _entlist_passable(ent_mgr, ents)
 
 
 def clamp_coord(map_, x, y):
