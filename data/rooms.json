@@ -1,0 +1,63 @@
+[
+    {
+        "id": "gazebo",
+        "frequency": 5,
+        "min_type": 0,
+        "max_type": 1,
+        "loot_list": [],
+        "furnish_list": [],
+        "wall_type": "fence_low",
+        "connect_type": "step",
+        "default_fill": "wooden_floor",
+        "outside_adjacent": "yes",
+        "external": "yes",
+        "secrets": false,
+        "max_connections": 4,
+        "connect_dirs": "nsew",
+        "connect_positions": {
+            "nsew": 2
+        },
+        "rooms": [{
+            "shapes": [
+                {
+                    "type": "circle",
+                    "radius": 2
+                },
+                {
+                    "type": "rect",
+                    "x": -2,
+                    "y": -1,
+                    "size_x": 1,
+                    "size_y": 3,
+                    "furnish": "bench"
+                },
+                {
+                    "type": "point",
+                    "x": -2,
+                    "y": -2,
+                    "fill": "wooden_pillar"
+                },
+                {
+                    "type": "point",
+                    "x": 2,
+                    "y": -2,
+                    "fill": "wooden_pillar"
+                },
+                {
+                    "type": "point",
+                    "x": -2,
+                    "y": 2,
+                    "fill": "wooden_pillar"
+                },
+                {
+                    "type": "point",
+                    "x": 2,
+                    "y": 2,
+                    "fill": "wooden_pillar"
+                }
+            ],
+            "rotateable": true
+        }]
+    }
+]
+
