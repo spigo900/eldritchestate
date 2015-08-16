@@ -63,7 +63,6 @@ def passable(ent_mgr, map_, coords):
     tiletype = get_tile_type(map_[coords])
     passable = tiletype['passable']
     ents = map_.ents.get(coords, [])
-    print(passable)
     return passable and _entlist_passable(ent_mgr, ents)
 
 
