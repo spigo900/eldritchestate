@@ -1,4 +1,5 @@
-from collections import UserDict
+import random
+from collections import UserDict, namedtuple
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.components as components
 from eldestrl.utils import first_helper
@@ -14,6 +15,13 @@ TILES = {'floor': {'char': '.',
 MAP = {(x, y): ('wall' if x == 1 or x == 25 or
                 y == 1 or y == 15 else 'floor')
        for x in range(1, 26) for y in range(1, 16)}
+
+_MapInfo = namedtuple('MapInfo', 'width, height,'
+                      'min_rooms, max_rooms,'
+                      'room_width_min, room_width_max,'
+                      'room_height_min, room_height_max')
+Point = namedtuple('Point', 'x y')
+Rect = namedtuple('Rect', 'x, y, width, height')
 
 
 class NoneInMapError(Exception):
@@ -55,6 +63,7 @@ def passable(ent_mgr, map_, coords):
     tiletype = get_tile_type(map_[coords])
     passable = tiletype['passable']
     ents = map_.ents.get(coords, [])
+    print(passable)
     return passable and _entlist_passable(ent_mgr, ents)
 
 
@@ -160,7 +169,75 @@ def get_tile_type(name):
     return TILES[name]
 
 
+def map_info(width, height,
+             min_rooms=1, max_rooms=3,
+             room_width_min=3, room_width_max=10,
+             room_height_min=5, room_height_max=8):
+    return _MapInfo(width, height,
+                    min_rooms, max_rooms,
+                    room_width_min, room_width_max,
+                    room_height_min, room_height_max)
+
+
+# DEFAULT_MAP_SEED = 4359
+DEFAULT_MAP_SEED = 88
+DEFAULT_MAP_INFO = map_info(80, 80)
+
+
+def make_room(map_, x, y, width, height):
+    for x_cur in range(width):
+        for y_cur in range(height):
+            if x_cur == 0 or x_cur == width \
+               or y_cur == 0 or y_cur == height:
+                map_[x + x_cur, y + y_cur] = 'wall'
+            else:
+                map_[x + x_cur, y + y_cur] = 'floor'
+
+
+def rects_intersect(a, b):
+    # Could probably be simplified by application of the de Morgan law.
+    # not (a and b) = (not a) or (not b)?
+    #
+    # wait, that doesn't make sense -- there's no negation going on here.
+    #
+    # Could I simplify it via negation, though?
+    return ((a.x + a.width) < b.x or
+            (b.x + b.width) < a.x) and \
+           ((a.y + a.height) < b.y or
+            (b.y + b.height) < a.y)
+
+
+def map_gen(seed, map_info):
+    rand_gen = random.Random(seed)
+    # map_ = {(x, y): 'wall'
+    #         for x in range(1, map_info.width + 1)
+    #         for y in range(1, map_info.height + 1)}
+    map_ = {}
+    rooms = []
+    num_rooms = 0
+    to_gen = rand_gen.randint(map_info.min_rooms, map_info.max_rooms)
+    while num_rooms < to_gen:
+        room_width = rand_gen.randint(map_info.room_width_min,
+                                      map_info.room_width_max)
+        room_height = rand_gen.randint(map_info.room_height_min,
+                                       map_info.room_height_max)
+        for _ in range(20):
+            room_pos = Point(rand_gen.randint(1, map_info.width),
+                             rand_gen.randint(1, map_info.height))
+            room_rect = Rect(room_pos.x, room_pos.y, room_width, room_height)
+            cant_place = False
+            for rect in rooms:
+                if rects_intersect(room_rect, rect):
+                    cant_place = True
+            if cant_place:
+                continue
+            make_room(map_, room_pos.x, room_pos.y,
+                      room_width, room_height)
+            rooms.append(room_rect)
+            num_rooms += 1
+    return map_
+
+
 def new_map():
     '''Return a new map.'''
-    from copy import deepcopy
-    return Map(deepcopy(MAP))
+    return Map(map_gen(DEFAULT_MAP_SEED, DEFAULT_MAP_INFO))
