@@ -25,7 +25,7 @@ def game_loop(con):
 
     player_coords = eldmap.first_unoccupied(ent_mgr, game_map)
     player = ents.new_player(ent_mgr, game_map, player_coords)
-    ents.new_client(ent_mgr, game_map, (8, 3))
+    # ents.new_client(ent_mgr, game_map, (8, 3))
     main_display = untdl.Window(con, 0, 0, 25, 15)
     ents.new_tracking_camera(ent_mgr, game_map, main_display, player)
 
