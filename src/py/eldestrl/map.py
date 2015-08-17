@@ -186,8 +186,8 @@ DEFAULT_MAP_INFO = map_info(80, 80)
 def make_room(map_, x, y, width, height):
     for x_cur in range(width):
         for y_cur in range(height):
-            if x_cur == 0 or x_cur == width \
-               or y_cur == 0 or y_cur == height:
+            if x_cur == 0 or x_cur == (width - 1) \
+               or y_cur == 0 or y_cur == (height - 1):
                 map_[x + x_cur, y + y_cur] = 'wall'
             else:
                 map_[x + x_cur, y + y_cur] = 'floor'
