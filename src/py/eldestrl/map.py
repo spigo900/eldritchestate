@@ -206,7 +206,7 @@ def rects_intersect(a, b):
             (b.y + b.height) < a.y)
 
 
-def map_gen(seed, map_info):
+def map_gen(seed, map_info, progress_callback):
     rand_gen = random.Random(seed)
     # map_ = {(x, y): 'wall'
     #         for x in range(1, map_info.width + 1)
@@ -234,9 +234,11 @@ def map_gen(seed, map_info):
                       room_width, room_height)
             rooms.append(room_rect)
             num_rooms += 1
+            break
+        progress_callback(map_)
     return map_
 
 
 def new_map():
     '''Return a new map.'''
-    return Map(map_gen(DEFAULT_MAP_SEED, DEFAULT_MAP_INFO))
+    return Map(map_gen(DEFAULT_MAP_SEED, DEFAULT_MAP_INFO, lambda *_: None))
