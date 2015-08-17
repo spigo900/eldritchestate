@@ -216,10 +216,10 @@ def map_gen(seed, map_info):
     num_rooms = 0
     to_gen = rand_gen.randint(map_info.min_rooms, map_info.max_rooms)
     while num_rooms < to_gen:
-        room_width = rand_gen.randint(map_info.room_width_min,
-                                      map_info.room_width_max)
-        room_height = rand_gen.randint(map_info.room_height_min,
-                                       map_info.room_height_max)
+        room_width = rand_gen.randint(map_info.room_width_min + 2,
+                                      map_info.room_width_max + 2)
+        room_height = rand_gen.randint(map_info.room_height_min + 2,
+                                       map_info.room_height_max + 2)
         for _ in range(20):
             room_pos = Point(rand_gen.randint(1, map_info.width),
                              rand_gen.randint(1, map_info.height))
