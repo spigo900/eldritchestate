@@ -39,7 +39,7 @@ def game_loop(con):
     sys_mgr.add_system(systems.FollowEntitySys())
     sys_mgr.add_system(systems.RenderDisplaySys())
     while not event_sys.game_ended:
-        sys_mgr.update(0)  # placeholder
+        sys_mgr.update(0)  # 0 is a placeholder value
 
 
 def main(argv=[]):
