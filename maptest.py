@@ -25,7 +25,6 @@ def fixed_render():
 
 
 def mapgen_callback(map_):
-    print('calling!')
     r.render_map(con, map_, (1, 1))
     untdl.flush()
     sleep(5)
