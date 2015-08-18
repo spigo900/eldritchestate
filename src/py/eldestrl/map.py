@@ -234,12 +234,12 @@ def random_in_rect(rng, rect):
 
 
 def tunnel_h(map_, x1, x2, y):
-    for x in range(x1, x2 + 1):
+    for x in range(min(x1, x2), max(x1, x2) + 1):
         map_[x, y] = 'floor'
 
 
 def tunnel_v(map_, y1, y2, x):
-    for y in range(y1, y2 + 1):
+    for y in range(min(y1, y2), max(y1, y2) + 1):
         map_[x, y] = 'floor'
 
 
@@ -255,8 +255,6 @@ def connect_rooms(map_, rng, map_info, rooms, progress_callback):
                 continue
             point_a = random_in_rect(rng, room)
             point_b = random_in_rect(rng, other_room)
-            # start = max(distance_from_horiz_center(map_height, point_a[1]),
-            #             distance_from_horiz_center(map_height, point_b[1]))
             start = furthest_from_center(map_height, point_a, point_b)
             end = point_b if start == point_a else point_a
             tunnel_h(map_, start[0], end[0], start[1])
@@ -284,7 +282,7 @@ def map_gen(seed, map_info, progress_callback):
         for _ in range(20):
             room_pos = Point(rng.randint(1, map_info.width),
                              rng.randint(1, map_info.height))
-            room_rect = Rect(room_pos.x, room_pos.y,
+            room_rect = Rect(room_pos.x + 1, room_pos.y + 1,
                              room_width - 2, room_height - 2)
             cant_place = False
             for rect in rooms:
