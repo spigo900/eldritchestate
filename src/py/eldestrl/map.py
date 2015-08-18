@@ -145,7 +145,7 @@ def first_unoccupied(ent_mgr, map_):
 
 def random_unoccupied(ent_mgr, map_, seed):
     rng = random.Random(seed)
-    return rng.choice(all_matching_map(ent_mgr, map_, passable))
+    return rng.choice(list(all_matching_map(ent_mgr, map_, passable)))
 
 
 def new_tile_type(name, char, color, bgcolor=(0, 0, 0),
