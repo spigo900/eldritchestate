@@ -106,3 +106,21 @@ def has_component(ent_mgr, ent, component):
 def multiply_colors(a, b):
     """Take two colors a and b and return their product."""
     return tuple(map((lambda x, y: (x * y) // 255), a, b))
+
+
+def to_grayscale(color):
+    return (sum(color) // 3,) * 3
+
+
+PARCHMENT_RATIO = (51, 45, 31)
+
+
+def gray_to_parchment(color):
+    denominator = max(PARCHMENT_RATIO)
+    return tuple(int(x * n // denominator)
+                 for x in color
+                 for n in PARCHMENT_RATIO)
+
+
+def color_to_parchment_tone(color):
+    return gray_to_parchment(to_grayscale(color))
