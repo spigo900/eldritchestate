@@ -23,7 +23,8 @@ def game_loop(con):
     game_map = eldmap.new_map()
     ent_mgr = EntityManager()
 
-    player_coords = eldmap.first_unoccupied(ent_mgr, game_map)
+    player_coords = eldmap.random_unoccupied(ent_mgr, game_map,
+                                             eldmap.DEFAULT_MAP_SEED)
     player = ents.new_player(ent_mgr, game_map, player_coords)
     # ents.new_client(ent_mgr, game_map, (8, 3))
     main_display = untdl.Window(con, 0, 0, 25, 15)
