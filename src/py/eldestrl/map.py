@@ -211,24 +211,81 @@ def rects_intersect(a, b):
             (b.y + b.height) < a.y)
 
 
+def get_horizontal_center(map_height):
+    return map_height // 2
+
+
+def distance_from_horiz_center(map_height, y):
+    return abs(y - get_horizontal_center(map_height))
+
+
+def furthest_from_center(map_height, a, b):
+    """
+    Return the point
+    """
+    dist_a = distance_from_horiz_center(map_height, a[1])
+    dist_b = distance_from_horiz_center(map_height, b[1])
+    return a if dist_a >= dist_b else b
+
+
+def random_in_rect(rng, rect):
+    return (rng.randint(rect.x, rect.x + rect.width),
+            rng.randint(rect.y, rect.y + rect.height))
+
+
+def tunnel_h(map_, x1, x2, y):
+    for x in range(x1, x2 + 1):
+        map_[x, y] = 'floor'
+
+
+def tunnel_v(map_, y1, y2, x):
+    for y in range(y1, y2 + 1):
+        map_[x, y] = 'floor'
+
+
+def connect_rooms(map_, rng, map_info, rooms, progress_callback):
+    connections = []
+    unconnected = rooms
+    map_height = map_info.height
+    while unconnected:
+        for room in unconnected:
+            other_room = rng.choice(rooms)
+            if (room, other_room) in connections \
+               or room == other_room:
+                continue
+            point_a = random_in_rect(rng, room)
+            point_b = random_in_rect(rng, other_room)
+            # start = max(distance_from_horiz_center(map_height, point_a[1]),
+            #             distance_from_horiz_center(map_height, point_b[1]))
+            start = furthest_from_center(map_height, point_a, point_b)
+            end = point_b if start == point_a else point_a
+            tunnel_h(map_, start[0], end[0], start[1])
+            tunnel_v(map_, start[1], end[1], end[0])
+            connections.append((room, other_room))
+            unconnected.remove(room)
+            unconnected.remove(other_room)
+            progress_callback(map_)
+
+
 def map_gen(seed, map_info, progress_callback):
-    rand_gen = random.Random(seed)
+    rng = random.Random(seed)
     # map_ = {(x, y): 'wall'
     #         for x in range(1, map_info.width + 1)
     #         for y in range(1, map_info.height + 1)}
     map_ = {}
     rooms = []
     num_rooms = 0
-    to_gen = rand_gen.randint(map_info.min_rooms, map_info.max_rooms)
+    to_gen = rng.randint(map_info.min_rooms, map_info.max_rooms)
     while num_rooms < to_gen:
-        room_width = rand_gen.randint(map_info.room_width_min + 2,
-                                      map_info.room_width_max + 2)
-        room_height = rand_gen.randint(map_info.room_height_min + 2,
-                                       map_info.room_height_max + 2)
+        room_width = rng.randint(map_info.room_width_min + 2,
+                                 map_info.room_width_max + 2)
+        room_height = rng.randint(map_info.room_height_min + 2,
+                                  map_info.room_height_max + 2)
         for _ in range(20):
-            room_pos = Point(rand_gen.randint(1, map_info.width),
-                             rand_gen.randint(1, map_info.height))
-            room_rect = Rect(room_pos.x, room_pos.y, room_width, room_height)
+            room_pos = Point(rng.randint(1, map_info.width),
+                             rng.randint(1, map_info.height))
+            room_rect = Rect(room_pos.x, room_pos.y,
+                             room_width - 2, room_height - 2)
             cant_place = False
             for rect in rooms:
                 if rects_intersect(room_rect, rect):
@@ -241,6 +298,7 @@ def map_gen(seed, map_info, progress_callback):
             num_rooms += 1
             break
         progress_callback(map_)
+    connect_rooms(map_, rng, map_info, rooms, progress_callback)
     return map_
 
 
