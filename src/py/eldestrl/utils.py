@@ -101,3 +101,8 @@ def has_component(ent_mgr, ent, component):
         return True
     except NonexistentComponentTypeForEntity:
         return False
+
+
+def multiply_colors(a, b):
+    """Take two colors a and b and return their product."""
+    return tuple(map((lambda x, y: (x * y) // 255), a, b))
