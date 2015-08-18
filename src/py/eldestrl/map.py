@@ -300,6 +300,6 @@ def map_gen(seed, map_info, progress_callback):
     return map_
 
 
-def new_map():
+def new_map(seed=DEFAULT_MAP_SEED, map_info=DEFAULT_MAP_INFO):
     '''Return a new map.'''
-    return Map(map_gen(DEFAULT_MAP_SEED, DEFAULT_MAP_INFO, lambda *_: None))
+    return Map(map_gen(seed, map_info, lambda *_: None))
