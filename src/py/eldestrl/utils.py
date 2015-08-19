@@ -124,3 +124,13 @@ def gray_to_parchment(color):
 
 def color_to_parchment_tone(color):
     return gray_to_parchment(to_grayscale(color))
+
+
+def sanity_check(s):
+    """Sanity-check a string to be evaluated."""
+    assert not s.startswith('_')
+    assert '()' not in s
+    assert ';' not in s
+    assert ':' not in s
+    assert '\n' not in s
+    return s
