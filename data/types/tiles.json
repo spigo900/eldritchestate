@@ -1,0 +1,22 @@
+[
+    {
+        "type": "floor",
+        "char": "+",
+        "blocks": false,
+        "blocks_sight": false
+    },
+    {
+        "type": "wall",
+        "char": "#",
+        "blocks": true,
+        "blocks_sight": true
+    },
+    {
+        "type": "wooden_door",
+        "char": "+",
+        "color": [51, 34, 0],
+        "blocks": true,
+        "blocks_sight": true,
+        "mixins": [["door"]]
+    }
+]
