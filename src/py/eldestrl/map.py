@@ -182,12 +182,6 @@ def in_rect(rect, x, y):
 
 
 def rects_intersect(a, b):
-    # Could probably be simplified by application of the de Morgan law.
-    # not (a and b) = (not a) or (not b)?
-    #
-    # wait, that doesn't make sense -- there's no negation going on here.
-    #
-    # Could I simplify it via negation, though?
     return ((a.x + a.width) < b.x or
             (b.x + b.width) < a.x) and \
            ((a.y + a.height) < b.y or
