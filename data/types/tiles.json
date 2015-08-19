@@ -1,7 +1,7 @@
 [
     {
         "type": "floor",
-        "char": "+",
+        "char": ".",
         "blocks": false,
         "blocks_sight": false
     },
