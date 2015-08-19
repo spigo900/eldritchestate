@@ -194,9 +194,7 @@ def distance_from_horiz_center(map_height, y):
 
 
 def furthest_from_center(map_height, a, b):
-    """
-    Return the point
-    """
+    """Return the point that's further from the center of the map."""
     dist_a = distance_from_horiz_center(map_height, a[1])
     dist_b = distance_from_horiz_center(map_height, b[1])
     return a if dist_a >= dist_b else b
