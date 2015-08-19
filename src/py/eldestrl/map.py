@@ -10,7 +10,8 @@ _MapInfo = namedtuple('MapInfo', 'width, height,'
                       'min_rooms, max_rooms,'
                       'room_width_min, room_width_max,'
                       'room_height_min, room_height_max,'
-                      'default_floor, default_wall')
+                      'default_floor, default_wall,'
+                      'default_door')
 Point = namedtuple('Point', 'x y')
 Rect = namedtuple('Rect', 'x, y, width, height')
 
@@ -149,12 +150,14 @@ def map_info(width, height,
              min_rooms=1, max_rooms=3,
              room_width_min=3, room_width_max=10,
              room_height_min=5, room_height_max=8,
-             default_floor='floor', default_wall='wall'):
+             default_floor='floor', default_wall='wall',
+             default_door='wooden_door'):
     return _MapInfo(width, height,
                     min_rooms, max_rooms,
                     room_width_min, room_width_max,
                     room_height_min, room_height_max,
-                    default_floor, default_wall)
+                    default_floor, default_wall,
+                    default_door)
 
 
 # DEFAULT_MAP_SEED = 4359
