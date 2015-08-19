@@ -64,7 +64,7 @@ def subtract_iterables(iter_a, iter_b):
 
 
 def center_offset(size_a, size_b):
-    '''Takes the size of two objects a and b along one dimension (i.e. both
+    '''Takes the size of two objects a and b along one dimension (i.event. both
     parameters must be of the same dimension; a's width and b's width, for
     example) and returns the offset needed to place b perfectly centered within
     a along that dimension.
@@ -81,7 +81,7 @@ def draw_str_centered(con, str_, y, *args, **kwargs):
 
 def constantly(value):
     '''Return a function which accepts any number of arguments whose return is
-    always `value` (i.e. a constant function.).
+    always `value` (i.event. a constant function.).
 
     '''
     return lambda *_s, **_kws: value
@@ -133,6 +133,12 @@ def sane(s):
 
 
 def valid_identifier(s):
+    """Returns true if the given string is a valid Python identifier."""
     from keyword import iskeyword
     import re
     return re.match("[_A-Za-z][_a-zA-Z0-9]*$", s) and not iskeyword(s)
+
+
+def get_event_key(event):
+    """Returns the key for an UnTDL key event."""
+    return event.keychar if event.key == 'CHAR' else event.key

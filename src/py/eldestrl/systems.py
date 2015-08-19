@@ -1,7 +1,11 @@
+import logging
+import untdl.event as ev
 from ecs.models import System
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.map as emap
 import eldestrl.tiles as tiles
+import eldestrl.input as eldinput
+import eldestrl.components as comp
 
 
 class UpdateWorldSys(System):
@@ -35,35 +39,42 @@ class FollowEntitySys(System):
 class EventSys(System):
     def __init__(self):
         self.game_ended = False
+        self.input_handlers = \
+            {"do_action_tile": self.do_action_tile,
+             "run_dir": self.run_dir,
+             "quit": self.quit}
         super(EventSys, self).__init__()
 
-    def update(self, dt):
+    def _do_move_tile_common(self, player_ent, move_diff, action_type):
+        assert (-1, -1) <= move_diff <= (1, 1)
         ent_mgr = self.entity_manager
-        import untdl.event as ev
-        import eldestrl.input as eldinput
-        from eldestrl.components import PlayerControlled, Actor
+        actor = ent_mgr.component_for_entity(player_ent, comp.Actor)
+        actor.queue.append((action_type, move_diff))
+
+    def do_action_tile(self, player_ent, move_diff):
+        self._do_move_tile_common(player_ent, move_diff, 'do_action_tile')
+
+    def run_dir(self, player_ent, move_diff):
+        self._do_move_tile_common(player_ent, move_diff, 'run_dir')
+
+    def quit(self, *_):
+        self.game_ended = True
+
+    def update(self, dt):
+        from eldestrl.components import PlayerControlled
+        ent_mgr = self.entity_manager
         events = ev.get()
         for event in events:
-            if event.type == 'QUIT':
-                self.game_ended = True
-                return
-            elif isinstance(event, ev.KeyUp):
+            if isinstance(event, ev.KeyUp) or event.type == "QUIT":
                 return
             for (entity, _) in ent_mgr.pairs_for_type(PlayerControlled):
+                action, *params = eldinput.get_action(event)
                 try:
-                    move_diff = eldinput.get_move_diff(event)
-                    if move_diff != (0, 0):
-                        actor = ent_mgr.component_for_entity(entity, Actor)
-                        if actor.queue:
-                            return
-                        if event.shift:
-                            actor.queue.extend(('do_action_tile', move_diff)
-                                               for _ in range(100))
-                        else:
-                            actor.queue.append(('do_action_tile', move_diff))
-                    elif event.keychar == 'ESCAPE' or \
-                         event.alt and 'F4' in event.key:  # noqa
-                        ev.push(ev.Quit())
+                    handler_fn = self.input_handlers[action]
+                    handler_fn(entity, *params)
+                except KeyError:
+                    log = logging.getLogger(__name__)
+                    log.info("Pressed unbound key {}.".format(event))
                 except AttributeError as err:
                     print('AttributeError! Event was:' '\n'
                           '%s' '\n\n'
