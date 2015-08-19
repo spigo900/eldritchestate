@@ -20,6 +20,7 @@ def process_mixins(type_def):
             assert not mixin.startswith('_')
             assert '()' not in mixin
             assert ';' not in mixin
+            assert ':' not in mixin
             assert '\n' not in mixin
             try:
                 mixin_fn = eval("mixins." + mixin)
