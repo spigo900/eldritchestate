@@ -1,6 +1,5 @@
-from . import mixins  # noqa
-from eldestrl.utils import sane, valid_identifier
-from functools import partial
+from . import mixins, behaviors  # noqa
+from eldestrl.utils import sane
 import logging
 import json
 
@@ -40,7 +39,7 @@ def process_args(args):
     kwargs = {}
     for arg in args:
         try:
-            assert all(valid_identifier(k) for k in arg.keys())
+            assert all(k.isidentifier() for k in arg.keys())
             kwargs.update(arg)
         except AttributeError:
             new_args.append(arg)
