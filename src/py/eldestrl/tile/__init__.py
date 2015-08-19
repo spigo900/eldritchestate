@@ -8,7 +8,6 @@ import json
 # though which I'm not yet sure.
 PATH = ""
 JSON_PATH = PATH + "data/types/tiles.json"
-_tile_types = {}
 
 
 def process_mixins(type_def):
@@ -35,7 +34,6 @@ def process_mixins(type_def):
 
 
 def load_json():
-    global _tile_types
     with open(JSON_PATH) as f:
         content = json.load(f)
     tmp = {}
@@ -53,15 +51,13 @@ def load_json():
             type_name = proc_ttype['type']
             del proc_ttype['type']
             tmp.setdefault(type_name, {}).update(proc_ttype)
-    _tile_types.update(tmp)
     return tmp
 
 
-def reset_types():
-    global _tile_types
-    _tile_types.clear()
-    load_json()
+def reset_types(types):
+    types.clear()
+    types.update(load_json())
 
 
-def get_tile_def(typename):
-    return _tile_types[typename]
+def get_tile_def(types, typename):
+    return types[typename]
