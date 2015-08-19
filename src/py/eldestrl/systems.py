@@ -106,8 +106,9 @@ class ActorSys(System):
                         world_map = \
                             ent_mgr.component_for_entity(entity, World).world
                         blocked = False
-                        ttype = emap.get_tile_type(world_map,
-                                                   world_map[new_pos])
+                        ttype = emap.maybe_get_type(world_map,
+                                                    world_map.get(
+                                                        new_pos, None))
                         if not emap.passable(ent_mgr, world_map, new_pos):
                             blocked = True
                             tiles.maybe_do_action(

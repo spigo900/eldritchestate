@@ -146,6 +146,14 @@ def get_tile_type(map_, typename):
     return tiles.get_tile_def(map_.tiletypes, typename)
 
 
+def maybe_get_type(map_, typename):
+    '''Takes a tile type name and returns the corresponding tile definition,
+    if both are non-falsy (and so non-None).'''
+    if map_.tiletypes and typename:
+        return get_tile_type(map_, typename)
+    return {}
+
+
 def map_info(width, height,
              min_rooms=1, max_rooms=3,
              room_width_min=3, room_width_max=10,
