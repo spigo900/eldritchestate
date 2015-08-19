@@ -233,23 +233,6 @@ def random_connectpoints(rng, map_height, rooms, room_a, room_b):
                 if x == corner[0] or y == corner[1])
         if not intersects_anything:
             return (point_a, point_b)
-        # else:
-        #     print("Can't place tunnel between these points!")
-        #     print("Point A: {}".format(point_a))
-        #     print("Point B: {}".format(point_b))
-        #     print("Corner: {}".format(corner))
-        #     print("Points intersect geometry at points: {}"
-        #           .format([(x, y,
-        #           in_wall(room_a, x, y), in_wall(room_b, x, y),
-        #                     in_rect(room, x, y), room, room_a, room_b)
-        #                    for x in range(start[0], corner[0] + 1)
-        #                    for y in range(corner[1], end[1] + 1)
-        #                    for room in rooms
-        #                    if room != room_a and room != room_b
-        #                    if x == corner[0] or y == corner[1]
-        #                    if in_wall(room_a, x, y) or
-        #                    in_wall(room_b, x, y) or
-        #                    in_rect(room, x, y)]))
 
 
 def tunnel_h(map_, floortype, x1, x2, y):
