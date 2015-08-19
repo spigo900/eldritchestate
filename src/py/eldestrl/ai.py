@@ -11,7 +11,6 @@ def _manhattan_cost(pos, new_pos):
 
 
 def _flat_cost(pos, new_pos):
-    # import ipdb; ipdb.set_trace()
     x_diff, y_diff = tuple(a - b for (a, b) in zip(new_pos, pos))
     cost = sum(abs(x) for x in (x_diff, y_diff))
     if x_diff != 0 or y_diff != 0:
@@ -25,15 +24,9 @@ def _has_world(ent_mgr, e):
 
 
 def client_choose_target(ent_mgr, ent):
-    # ents = [pair_pos[0] for (pair_pos, pair_world, pair_player)
-    #         in zip(ent_mgr.components_for_type(comp.Position),
-    #                ent_mgr.components_for_type(comp.World),
-    #                ent_mgr.components_for_type(comp.PlayerControlled))
-    #         if (pair_pos[0] == pair_world[0] == pair_player[0])
-    #         and pair_world[1].world == this_world]
     this_world = ent_mgr.component_for_entity(ent, comp.World).world
 
-    # find player-controlled characters on the same map as us, the client(s)
+    # find player-controlled characters on the same map as us, the client
     def _valid(e):
         return has_component(ent_mgr, e[0], comp.World) and \
             has_component(ent_mgr, e[0], comp.PlayerControlled) and \
