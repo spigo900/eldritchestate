@@ -260,10 +260,10 @@ def tunnel_v(map_, floortype, y1, y2, x):
 
 def unordered_range(n1, n2, s=1):
     """Take two numbers and an optional step and return a range from the lower to
-    the higher.
+    the higher (inclusive).
 
     """
-    return range(min(n1, n2), max(n1, n2), s)
+    return range(min(n1, n2), max(n1, n2) + 1, s)
 
 
 def connect_rooms(map_, rng, map_info, rooms, progress_callback):
