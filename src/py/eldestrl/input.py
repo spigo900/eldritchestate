@@ -21,7 +21,6 @@ MOVE_CONTROLS_MAP = {'h': ('do_action_tile', (-1, 0)),
 
 def get_action_key(key_event):
     '''Get the action tuple for a given key.'''
-    print("Got key event structure!: {}".format(key_event))
     key = get_event_key(key_event)
     return MOVE_CONTROLS_MAP.get(key, (None,))
 
