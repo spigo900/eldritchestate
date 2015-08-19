@@ -6,10 +6,6 @@ import eldestrl.tile as tiles
 from eldestrl.utils import first_helper
 
 
-MAP = {(x, y): ('wall' if x == 1 or x == 25 or
-                y == 1 or y == 15 else 'floor')
-       for x in range(1, 26) for y in range(1, 16)}
-
 _MapInfo = namedtuple('MapInfo', 'width, height,'
                       'min_rooms, max_rooms,'
                       'room_width_min, room_width_max,'
@@ -24,7 +20,7 @@ class NoneInMapError(Exception):
 
 
 class Map(UserDict):
-    def __init__(self, map_tiles=MAP, tiletypes=tiles.load_json()):
+    def __init__(self, map_tiles, tiletypes=tiles.load_json()):
         self.data = map_tiles
         self.ents = {}
         self.tiletypes = tiletypes
