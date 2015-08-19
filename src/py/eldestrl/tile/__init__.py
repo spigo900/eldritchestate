@@ -30,7 +30,6 @@ def process_mixins(type_def):
                 log.error("In definition for type {0}:\n"
                           "No such function {0}!"
                           .format(type_def['type'], mixin))
-                print("In No such function {0}! Skipping...")
     return processed_def
 
 
