@@ -134,3 +134,9 @@ def sanity_check(s):
     assert ':' not in s
     assert '\n' not in s
     return s
+
+
+def valid_identifier(s):
+    from keyword import iskeyword
+    import re
+    return re.match("[_A-Za-z][_a-zA-Z0-9]*$") and not iskeyword(s)

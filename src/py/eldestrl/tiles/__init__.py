@@ -1,10 +1,8 @@
 from . import mixins  # noqa
-from eldestrl.utils import sanity_check
+from eldestrl.utils import sanity_check, valid_identifier
 from functools import partial
-from keyword import iskeyword
 import logging
 import json
-import re
 
 
 # change this at some point so it instead gets the "running directory"
@@ -42,8 +40,7 @@ def process_args(args):
     kwargs = {}
     for arg in args:
         try:
-            assert all(re.match("[_A-Za-z][_a-zA-Z0-9]*$") and not iskeyword(k)
-                       for k in arg.keys())
+            assert all(valid_identifier(k) for k in arg.keys())
             kwargs.update(arg)
         except AttributeError:
             new_args.append(arg)
