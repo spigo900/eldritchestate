@@ -43,8 +43,8 @@ def render_map(con, map_, refpoint):
             try:
                 tile_info = gmap.get_tile_type(map_, tile_type)
                 tile_char = tile_info['char']
-                tile_fg = tile_info.get('fg', (255, 255, 255))
-                tile_bg = tile_info.get('bg', None)
+                tile_fg = tile_info.get('color', (255, 255, 255))
+                tile_bg = tile_info.get('bg_color', None)
                 con.draw_char(draw_coords[0], draw_coords[1],
                               tile_char, tile_fg, tile_bg)
             except AttributeError:
