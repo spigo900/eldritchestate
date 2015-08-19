@@ -11,6 +11,29 @@ JSON_PATH = PATH + "data/types/tiles.json"
 _tile_types = {}
 
 
+def process_mixins(type_def):
+    """Process mixins for the given tile type definition."""
+    processed_def = [type_def]
+    for mixin in type_def.get('mixins', []):
+            args = mixin[1:]
+            mixin = mixin[0]
+            # replace this with safer, non-eval-using code later if possible
+            assert not mixin.startswith('_')
+            assert '()' not in mixin
+            assert ';' not in mixin
+            assert '\n' not in mixin
+            try:
+                mixin_fn = eval("mixins." + mixin)
+                processed_def = mixin_fn(processed_def, *args)
+            except NameError:
+                log = logging.getLogger(__name__)
+                log.error("In definition for type {0}:\n"
+                          "No such function {0}!"
+                          .format(type_def['type'], mixin))
+                print("In No such function {0}! Skipping...")
+    return processed_def
+
+
 def load_json():
     global _tile_types
     with open(JSON_PATH) as f:
@@ -25,24 +48,7 @@ def load_json():
         type_name = ttype['type']
         assert type_name not in tmp
         tmp[type_name] = ttype
-        processed = [ttype]
-        for mixin in ttype.get('mixins', []):
-            args = mixin[1:]
-            mixin = mixin[0]
-            # replace this with safer, non-eval-using code later if possible
-            assert not mixin.startswith('_')
-            assert '()' not in mixin
-            assert ';' not in mixin
-            assert '\n' not in mixin
-            try:
-                mixin_fn = eval("mixins." + mixin)
-                processed = mixin_fn(processed, *args)
-            except NameError:
-                log = logging.getLogger(__name__)
-                log.error("In definition for type {0}:\n"
-                          "No such function {0}!"
-                          .format(ttype['type'], mixin))
-                print("In No such function {0}! Skipping...")
+        processed = process_mixins(ttype)
         for proc_ttype in processed:
             type_name = proc_ttype['type']
             del proc_ttype['type']
