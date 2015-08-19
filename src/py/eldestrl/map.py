@@ -172,6 +172,12 @@ def make_room(map_, floortype, walltype, x, y, width, height):
                 map_[x + x_cur, y + y_cur] = floortype
 
 
+def in_rect(rect, x, y):
+    return x >= rect.x and y >= rect.y \
+        and x <= rect.x + rect.width \
+        and y <= rect.y + rect.height
+
+
 def rects_intersect(a, b):
     # Could probably be simplified by application of the de Morgan law.
     # not (a and b) = (not a) or (not b)?
@@ -205,6 +211,47 @@ def random_in_rect(rng, rect):
             rng.randint(rect.y, rect.y + rect.height - 1))
 
 
+def in_wall(rect, x, y):
+    return x == rect.x - 1 or x == rect.x + rect.width + 1 \
+        or y == rect.y - 1 or y == rect.y + rect.height + 1
+
+
+def random_connectpoints(rng, map_height, rooms, room_a, room_b):
+    while True:
+        point_a = random_in_rect(rng, room_a)
+        point_b = random_in_rect(rng, room_b)
+        start = furthest_from_center(map_height, point_a, point_b)
+        end = point_b if point_a == start else point_a
+        corner = end[0], start[1]
+        intersects_anything = \
+            any(in_wall(room_a, x, y) or in_wall(room_b, x, y) or
+                in_rect(room, x, y)
+                for x in range(start[0], corner[0] + 1)
+                for y in range(corner[1], end[1] + 1)
+                for room in rooms
+                if room != room_a and room != room_b
+                if x == corner[0] or y == corner[1])
+        if not intersects_anything:
+            return (point_a, point_b)
+        # else:
+        #     print("Can't place tunnel between these points!")
+        #     print("Point A: {}".format(point_a))
+        #     print("Point B: {}".format(point_b))
+        #     print("Corner: {}".format(corner))
+        #     print("Points intersect geometry at points: {}"
+        #           .format([(x, y,
+        #           in_wall(room_a, x, y), in_wall(room_b, x, y),
+        #                     in_rect(room, x, y), room, room_a, room_b)
+        #                    for x in range(start[0], corner[0] + 1)
+        #                    for y in range(corner[1], end[1] + 1)
+        #                    for room in rooms
+        #                    if room != room_a and room != room_b
+        #                    if x == corner[0] or y == corner[1]
+        #                    if in_wall(room_a, x, y) or
+        #                    in_wall(room_b, x, y) or
+        #                    in_rect(room, x, y)]))
+
+
 def tunnel_h(map_, floortype, x1, x2, y):
     for x in range(min(x1, x2), max(x1, x2) + 1):
         map_[x, y] = floortype
@@ -225,10 +272,8 @@ def connect_rooms(map_, rng, map_info, rooms, progress_callback):
             if (room, other_room) in connections \
                or room == other_room:
                 continue
-            point_a = random_in_rect(rng, room)
-            point_b = random_in_rect(rng, other_room)
-            start = furthest_from_center(map_height, point_a, point_b)
-            end = point_b if start == point_a else point_a
+            start, end = random_connectpoints(rng, map_height, rooms,
+                                              room, other_room)
             tunnel_h(map_, map_info.default_floor, start[0], end[0], start[1])
             tunnel_v(map_, map_info.default_floor, start[1], end[1], end[0])
             connections.append((room, other_room))
