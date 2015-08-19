@@ -126,7 +126,7 @@ def color_to_parchment_tone(color):
     return gray_to_parchment(to_grayscale(color))
 
 
-def sanity_check(s):
+def sane(s):
     """Sanity-check a string to be evaluated."""
     return (not s.startswith('_')) and '()' not in s \
         and ';' not in s and ':' in s and '\n' in s

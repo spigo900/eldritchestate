@@ -1,5 +1,5 @@
 from . import mixins  # noqa
-from eldestrl.utils import sanity_check, valid_identifier
+from eldestrl.utils import sane, valid_identifier
 from functools import partial
 import logging
 import json
@@ -18,7 +18,7 @@ def process_mixins(type_def):
     for mixin in type_def.get('mixins', []):
             args = mixin[1:]
             mixin = mixin[0]
-            assert sanity_check(mixin)
+            assert sane(mixin)
             # replace this with safer, non-eval-using code later if possible
             try:
                 mixin_fn = eval("mixins." + mixin)
