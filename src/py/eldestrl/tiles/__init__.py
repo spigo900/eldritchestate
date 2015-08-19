@@ -25,8 +25,8 @@ def process_mixins(type_def):
                 processed_def = mixin_fn(processed_def, *args)
             except NameError:
                 log = logging.getLogger(__name__)
-                log.error("In definition for type {0}:\n"
-                          "No such mixin {0}!"
+                log.error("In definition for type {}:\n"
+                          "No such mixin {}!"
                           .format(type_def['type'], mixin))
     return processed_def
 
