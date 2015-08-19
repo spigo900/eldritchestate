@@ -2,15 +2,9 @@ import random
 from collections import UserDict, namedtuple
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.components as components
+import eldestrl.tile as tiles
 from eldestrl.utils import first_helper
 
-
-TILES = {'floor': {'char': '.',
-                   'passable': True,
-                   'blocks_sight': False},
-         'wall': {'char': '+',
-                  'passable': False,
-                  'blocks_sight': True}}
 
 MAP = {(x, y): ('wall' if x == 1 or x == 25 or
                 y == 1 or y == 15 else 'floor')
@@ -19,7 +13,8 @@ MAP = {(x, y): ('wall' if x == 1 or x == 25 or
 _MapInfo = namedtuple('MapInfo', 'width, height,'
                       'min_rooms, max_rooms,'
                       'room_width_min, room_width_max,'
-                      'room_height_min, room_height_max')
+                      'room_height_min, room_height_max,'
+                      'default_floor, default_wall')
 Point = namedtuple('Point', 'x y')
 Rect = namedtuple('Rect', 'x, y, width, height')
 
@@ -29,9 +24,10 @@ class NoneInMapError(Exception):
 
 
 class Map(UserDict):
-    def __init__(self, map_tiles=MAP):
+    def __init__(self, map_tiles=MAP, tiletypes=tiles.load_json()):
         self.data = map_tiles
         self.ents = {}
+        self.tiletypes = tiletypes
 
 
 # map functions
@@ -60,10 +56,10 @@ def passable(ent_mgr, map_, coords):
     '''
     if coords not in map_ and coords not in map_.ents:
         return False
-    tiletype = get_tile_type(map_[coords])
-    passable = tiletype['passable']
+    tiletype = get_tile_type(map_, map_[coords])
+    blocks = tiletype['blocks']
     ents = map_.ents.get(coords, [])
-    return passable and _entlist_passable(ent_mgr, ents)
+    return (not blocks) and _entlist_passable(ent_mgr, ents)
 
 
 def map_coords(map_):
@@ -148,39 +144,21 @@ def random_unoccupied(ent_mgr, map_, seed):
     return rng.choice(list(all_matching_map(ent_mgr, map_, passable)))
 
 
-def new_tile_type(name, char, color, bgcolor=(0, 0, 0),
-                  passable=True, blocks_sight=False):
-    '''Define a new tile type.
-
-    Name is the ID by which the tiletype should be accessed, and which should
-    be passed when creating a new tile via the entity template for tiles. If
-    the given tile type already exists, this function throws an error rather
-    than mutate it.
-
-    _Note that this mutates the map dictionary._ Use with care.
-
-    '''
-    assert name not in TILES
-    TILES['name'] = {'char': char,
-                     'fg': color,
-                     'bg': bgcolor,
-                     'passable': passable,
-                     'blocks_sight': blocks_sight}
-
-
-def get_tile_type(name):
+def get_tile_type(map_, typename):
     '''Takes a tile type name and returns the corresponding tile definition.'''
-    return TILES[name]
+    return tiles.get_tile_def(map_.tiletypes, typename)
 
 
 def map_info(width, height,
              min_rooms=1, max_rooms=3,
              room_width_min=3, room_width_max=10,
-             room_height_min=5, room_height_max=8):
+             room_height_min=5, room_height_max=8,
+             default_floor='floor', default_wall='wall'):
     return _MapInfo(width, height,
                     min_rooms, max_rooms,
                     room_width_min, room_width_max,
-                    room_height_min, room_height_max)
+                    room_height_min, room_height_max,
+                    default_floor, default_wall)
 
 
 # DEFAULT_MAP_SEED = 4359
@@ -188,14 +166,14 @@ DEFAULT_MAP_SEED = 88
 DEFAULT_MAP_INFO = map_info(80, 80)
 
 
-def make_room(map_, x, y, width, height):
+def make_room(map_, floortype, walltype, x, y, width, height):
     for x_cur in range(width):
         for y_cur in range(height):
             if x_cur == 0 or x_cur == (width - 1) \
                or y_cur == 0 or y_cur == (height - 1):
-                map_[x + x_cur, y + y_cur] = 'wall'
+                map_[x + x_cur, y + y_cur] = walltype
             else:
-                map_[x + x_cur, y + y_cur] = 'floor'
+                map_[x + x_cur, y + y_cur] = floortype
 
 
 def rects_intersect(a, b):
@@ -233,14 +211,14 @@ def random_in_rect(rng, rect):
             rng.randint(rect.y, rect.y + rect.height))
 
 
-def tunnel_h(map_, x1, x2, y):
+def tunnel_h(map_, floortype, x1, x2, y):
     for x in range(min(x1, x2), max(x1, x2) + 1):
-        map_[x, y] = 'floor'
+        map_[x, y] = floortype
 
 
-def tunnel_v(map_, y1, y2, x):
+def tunnel_v(map_, floortype, y1, y2, x):
     for y in range(min(y1, y2), max(y1, y2) + 1):
-        map_[x, y] = 'floor'
+        map_[x, y] = floortype
 
 
 def connect_rooms(map_, rng, map_info, rooms, progress_callback):
@@ -257,8 +235,8 @@ def connect_rooms(map_, rng, map_info, rooms, progress_callback):
             point_b = random_in_rect(rng, other_room)
             start = furthest_from_center(map_height, point_a, point_b)
             end = point_b if start == point_a else point_a
-            tunnel_h(map_, start[0], end[0], start[1])
-            tunnel_v(map_, start[1], end[1], end[0])
+            tunnel_h(map_, map_info.default_floor, start[0], end[0], start[1])
+            tunnel_v(map_, map_info.default_floor, start[1], end[1], end[0])
             connections.append((room, other_room))
             unconnected.remove(room)
             unconnected.remove(other_room)
@@ -290,7 +268,8 @@ def map_gen(seed, map_info, progress_callback):
                     cant_place = True
             if cant_place:
                 continue
-            make_room(map_, room_pos.x, room_pos.y,
+            make_room(map_, map_info.default_floor, map_info.default_wall,
+                      room_pos.x, room_pos.y,
                       room_width, room_height)
             rooms.append(room_rect)
             num_rooms += 1

@@ -2,10 +2,10 @@ import eldestrl.map as gmap
 
 
 # rendering
-def render_tile(con, tile, x, y):
+def render_tile(con, map_, tile, x, y):
     '''Takes a tile type name and renders it on con at the given
     coordinates.'''
-    tile_def = gmap.get_tile_type(tile)
+    tile_def = gmap.get_tile_type(map_, tile)
     fg = tile_def.get('color', (255, 255, 255))
     bg = tile_def.get('bg', (0, 0, 0))
     char = tile_def['char']
@@ -19,7 +19,7 @@ def render_view(con, map_, player_coords, view):
         for j in range(0, view.height):
             try:
                 tile = map_[(view.x+i, view.y+j)]
-                render_tile(con, tile, i, j)
+                render_tile(con, map_, tile, i, j)
             except KeyError:
                 pass
     con.draw_char(player_coords[0] - view.x, player_coords[1] - view.y, '@')
@@ -41,7 +41,7 @@ def render_map(con, map_, refpoint):
                        coord[1] - refpoint[1])
         if draw_coords in con:
             try:
-                tile_info = gmap.get_tile_type(tile_type)
+                tile_info = gmap.get_tile_type(map_, tile_type)
                 tile_char = tile_info['char']
                 tile_fg = tile_info.get('fg', (255, 255, 255))
                 tile_bg = tile_info.get('bg', None)
