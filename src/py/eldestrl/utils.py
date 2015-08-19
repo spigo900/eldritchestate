@@ -128,12 +128,8 @@ def color_to_parchment_tone(color):
 
 def sanity_check(s):
     """Sanity-check a string to be evaluated."""
-    assert not s.startswith('_')
-    assert '()' not in s
-    assert ';' not in s
-    assert ':' not in s
-    assert '\n' not in s
-    return s
+    return (not s.startswith('_')) and '()' not in s \
+        and ';' not in s and ':' in s and '\n' in s
 
 
 def valid_identifier(s):

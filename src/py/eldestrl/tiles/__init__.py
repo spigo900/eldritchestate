@@ -18,7 +18,7 @@ def process_mixins(type_def):
     for mixin in type_def.get('mixins', []):
             args = mixin[1:]
             mixin = mixin[0]
-            sanity_check(mixin)
+            assert sanity_check(mixin)
             # replace this with safer, non-eval-using code later if possible
             try:
                 mixin_fn = eval("mixins." + mixin)
