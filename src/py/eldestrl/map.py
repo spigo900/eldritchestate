@@ -201,8 +201,8 @@ def furthest_from_center(map_height, a, b):
 
 
 def random_in_rect(rng, rect):
-    return (rng.randint(rect.x, rect.x + rect.width),
-            rng.randint(rect.y, rect.y + rect.height))
+    return (rng.randint(rect.x, rect.x + rect.width - 1),
+            rng.randint(rect.y, rect.y + rect.height - 1))
 
 
 def tunnel_h(map_, floortype, x1, x2, y):
