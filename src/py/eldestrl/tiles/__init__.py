@@ -66,8 +66,6 @@ def process_behaviors(type_def):
 
 
 def get_behavior(type_def, behavior_name):
-    print("type def: {}".format(type_def))
-    print("behavior name: {}".format(behavior_name))
     return type_def.get('behaviors', {}).get(behavior_name, None)
 
 
@@ -101,8 +99,6 @@ def load_json():
         for proc_ttype in processed:
             proc_ttype.update(process_behaviors(proc_ttype))
             type_name = proc_ttype['type']
-            print("tile type name: {}\ntile type: {}"
-                  .format(type_name, proc_ttype))
             del proc_ttype['type']
             tmp.setdefault(type_name, {}).update(proc_ttype)
     return tmp
