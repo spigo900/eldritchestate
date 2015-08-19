@@ -52,7 +52,7 @@ def load_json():
         for proc_ttype in processed:
             type_name = proc_ttype['type']
             del proc_ttype['type']
-            tmp.get(type_name, {}).update(proc_ttype)
+            tmp.setdefault(type_name, {}).update(proc_ttype)
     _tile_types.update(tmp)
     return tmp
 
