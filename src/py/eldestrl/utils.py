@@ -130,3 +130,9 @@ def sane(s):
     """Sanity-check a string to be evaluated."""
     return (not s.startswith('_')) and '()' not in s \
         and ';' not in s and ':' not in s and '\n' not in s
+
+
+def valid_identifier(s):
+    from keyword import iskeyword
+    import re
+    return re.match("[_A-Za-z][_a-zA-Z0-9]*$", s) and not iskeyword(s)
