@@ -2,7 +2,7 @@ import random
 from collections import UserDict, namedtuple
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.components as components
-import eldestrl.tile as tiles
+import eldestrl.tiles as tiles
 from eldestrl.utils import first_helper
 
 
