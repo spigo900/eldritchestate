@@ -249,9 +249,9 @@ def map_gen(seed, map_info, progress_callback):
         room_height = rng.randint(map_info.room_height_min + 2,
                                   map_info.room_height_max + 2)
         for _ in range(20):
-            room_pos = Point(rng.randint(1, map_info.width - room_width),
-                             rng.randint(1, map_info.height - room_height))
-            room_rect = Rect(room_pos.x + 1, room_pos.y + 1,
+            room_x = rng.randint(1, map_info.width - room_width)
+            room_y = rng.randint(1, map_info.height - room_height)
+            room_rect = Rect(room_x + 1, room_y + 1,
                              room_width - 2, room_height - 2)
             cant_place = False
             for rect in rooms:
@@ -260,7 +260,7 @@ def map_gen(seed, map_info, progress_callback):
             if cant_place:
                 continue
             make_room(map_, map_info.default_floor, map_info.default_wall,
-                      room_pos.x, room_pos.y,
+                      room_x, room_y,
                       room_width, room_height)
             rooms.append(room_rect)
             num_rooms += 1
