@@ -1,5 +1,7 @@
 from ecs.models import System
 from ecs.exceptions import NonexistentComponentTypeForEntity
+import eldestrl.map as emap
+import eldestrl.tiles as tiles
 
 
 class UpdateWorldSys(System):
@@ -87,7 +89,6 @@ class AISys(System):
 
 class ActorSys(System):
     def update(self, dt):
-        from eldestrl.map import passable
         from eldestrl.components import Actor, World, Position, BlocksMove
         from operator import add
         ent_mgr = self.entity_manager
@@ -105,8 +106,13 @@ class ActorSys(System):
                         world_map = \
                             ent_mgr.component_for_entity(entity, World).world
                         blocked = False
-                        if not passable(ent_mgr, world_map, new_pos):
+                        ttype = emap.get_tile_type(world_map,
+                                                   world_map[new_pos])
+                        if not emap.passable(ent_mgr, world_map, new_pos):
                             blocked = True
+                            tiles.maybe_do_action(
+                                ent_mgr, entity, world_map, new_pos,
+                                tiles.get_behavior(ttype, 'open'))
                         else:
                             for other_ent in world_map.ents.get(new_pos, []):
                                 try:
@@ -117,6 +123,9 @@ class ActorSys(System):
                                     pass
                         if not blocked:
                             entity_position.coords = new_pos
+                            tiles.maybe_do_action(
+                                ent_mgr, entity, world_map, new_pos,
+                                tiles.get_behavior(ttype, 'enter'))
                 except IndexError:
                     continue
                 except NonexistentComponentTypeForEntity:

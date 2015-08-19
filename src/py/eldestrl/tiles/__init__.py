@@ -1,6 +1,5 @@
-from . import mixins  # noqa
+from . import mixins, behaviors  # noqa
 from eldestrl.utils import sane, valid_identifier
-from functools import partial
 import logging
 import json
 
@@ -49,25 +48,40 @@ def process_args(args):
 
 def process_behaviors(type_def):
     processed_def = type_def.copy()
-    behaviors = processed_def.setdefault('behaviors', {})
-    for k, behavior in behaviors.items():
+    behaviors_ = processed_def.setdefault('behaviors', {})
+    for k, behavior in behaviors_.items():
         first, *rest = behavior
-        if first.startswith('!'):
-            behaviors[k] = (first[1:],) + tuple(rest)
-            break
-        sanity_check(first)
+        assert sane(first)
         try:
-            behavior_fn = eval("behaviors." + first)
+            eval("behaviors." + first)
         except NameError:
             log = logging.getLogger(__name__)
-            log.error("In definition for type {0}:\n"
-                      "No such behavior {0}!")
+            log.error("In definition for type {}:\n"
+                      "No such behavior {}!"
+                      .format(type_def['type'], first))
         else:
-            if rest:
-                args, kwargs = process_args(rest)
-                behavior_fn = partial(behavior, *args, **kwargs)
-                behaviors[k] = behavior_fn
+            args, kwargs = process_args(rest)
+            behaviors_[k] = (first, args, kwargs)
     return processed_def
+
+
+def get_behavior(type_def, behavior_name):
+    print("type def: {}".format(type_def))
+    print("behavior name: {}".format(behavior_name))
+    return type_def.get('behaviors', {}).get(behavior_name, None)
+
+
+def do_action(ent_mgr, ent, map_, pos, action):
+    args, kwargs = action[1:]
+    action = action[0]
+    assert sane(action)
+    action_fn = eval("behaviors." + action)
+    action_fn(ent_mgr, ent, map_, pos, *args, **kwargs)
+
+
+def maybe_do_action(ent_mgr, ent, map_, pos, action):
+    if action:
+        do_action(ent_mgr, ent, map_, pos, action)
 
 
 def load_json():
@@ -87,6 +101,8 @@ def load_json():
         for proc_ttype in processed:
             proc_ttype.update(process_behaviors(proc_ttype))
             type_name = proc_ttype['type']
+            print("tile type name: {}\ntile type: {}"
+                  .format(type_name, proc_ttype))
             del proc_ttype['type']
             tmp.setdefault(type_name, {}).update(proc_ttype)
     return tmp
