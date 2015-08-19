@@ -241,9 +241,6 @@ def connect_rooms(map_, rng, map_info, rooms, progress_callback):
 
 def map_gen(seed, map_info, progress_callback):
     rng = random.Random(seed)
-    # map_ = {(x, y): 'wall'
-    #         for x in range(1, map_info.width + 1)
-    #         for y in range(1, map_info.height + 1)}
     map_ = {}
     rooms = []
     num_rooms = 0
