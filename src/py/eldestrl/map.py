@@ -177,8 +177,8 @@ def make_room(map_, floortype, walltype, x, y, width, height):
 
 def in_rect(rect, x, y):
     return x >= rect.x and y >= rect.y \
-        and x <= rect.x + rect.width \
-        and y <= rect.y + rect.height
+        and x <= rect.x + rect.width - 1 \
+        and y <= rect.y + rect.height - 1
 
 
 def rects_intersect(a, b):
@@ -215,8 +215,9 @@ def random_in_rect(rng, rect):
 
 
 def in_wall(rect, x, y):
-    return x == rect.x - 1 or x == rect.x + rect.width + 1 \
-        or y == rect.y - 1 or y == rect.y + rect.height + 1
+    return rect.x - 1 <= x <= rect.x + rect.width \
+        and rect.y - 1 <= y <= rect.y + rect.height \
+        and not in_rect(rect, x, y)
 
 
 def random_connectpoints(rng, map_height, rooms, room_a, room_b):
