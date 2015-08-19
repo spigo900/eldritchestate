@@ -235,14 +235,21 @@ def random_connectpoints(rng, map_height, rooms, room_a, room_b):
             return (point_a, point_b)
 
 
+def _do_in_inclusive_range(n1, n2, fn):
+    for n in range(min(n1, n2), max(n1, n2) + 1):
+        fn(n)
+
+
 def tunnel_h(map_, floortype, x1, x2, y):
-    for x in range(min(x1, x2), max(x1, x2) + 1):
+    def change_tile(x):
         map_[x, y] = floortype
+    _do_in_inclusive_range(x1, x2, change_tile)
 
 
 def tunnel_v(map_, floortype, y1, y2, x):
-    for y in range(min(y1, y2), max(y1, y2) + 1):
+    def change_tile(y):
         map_[x, y] = floortype
+    _do_in_inclusive_range(y1, y2, change_tile)
 
 
 def connect_rooms(map_, rng, map_info, rooms, progress_callback):
