@@ -17,7 +17,9 @@ def door(tiledefs):
         new_type['blocks_sight'] = False
         open_type = tiledef
         closed_type = new_type
-    open_type.setdefault('behaviors', {})['close'] = ('change_tile_type', closed_type['type'])
-    closed_type.setdefault('behaviors', {})['open'] = ('change_tile_type', open_type['type'])
+    open_type.setdefault('behaviors', {})['close'] = \
+        ('!change_tile_type', closed_type['type'])
+    closed_type.setdefault('behaviors', {})['open'] = \
+        ('!change_tile_type', open_type['type'])
     tiledefs.append(new_type)
     return tiledefs
