@@ -256,6 +256,14 @@ def tunnel_v(map_, floortype, y1, y2, x):
     _do_in_inclusive_range(y1, y2, change_tile)
 
 
+def unordered_range(n1, n2, s=1):
+    """Take two numbers and an optional step and return a range from the lower to
+    the higher.
+
+    """
+    return range(min(n1, n2), max(n1, n2), s)
+
+
 def connect_rooms(map_, rng, map_info, rooms, progress_callback):
     connections = []
     unconnected = rooms
@@ -270,6 +278,13 @@ def connect_rooms(map_, rng, map_info, rooms, progress_callback):
                                               room, other_room)
             tunnel_h(map_, map_info.default_floor, start[0], end[0], start[1])
             tunnel_v(map_, map_info.default_floor, start[1], end[1], end[0])
+            for pos in ((x, y)
+                        for x in unordered_range(start[0], end[0])
+                        for y in unordered_range(start[1], end[1])
+                        if (x == end[0] or y == start[1]) and
+                        (in_wall(room, x, y) or
+                         in_wall(other_room, x, y))):
+                map_[pos] = map_info.default_door
             connections.append((room, other_room))
             unconnected.remove(room)
             unconnected.remove(other_room)
