@@ -45,8 +45,18 @@ def render_map(con, map_, refpoint):
                 tile_char = tile_info['char']
                 tile_fg = tile_info.get('color', (255, 255, 255))
                 tile_bg = tile_info.get('bg_color', None)
+                tile_bg_final = tuple(int(n * k)
+                                      for n, k in
+                                      zip(tile_bg,
+                                          (map_.light_map[coord],) * 3)) \
+                    if tile_bg else tile_bg
                 con.draw_char(draw_coords[0], draw_coords[1],
-                              tile_char, tile_fg, tile_bg)
+                              tile_char,
+                              tuple(int(n * k)
+                                    for n, k in
+                                    zip(tile_fg,
+                                        (map_.light_map[coord],) * 3)),
+                              tile_bg_final)
             except AttributeError:
                 print('ERROR! Tile type %s does not exist'
                       'or has no display character defined!'
