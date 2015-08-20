@@ -177,6 +177,9 @@ def bresenham_line(x1, y1, x2, y2):
     if delta_x == 0:
         return list(zip(repeat(x1),
                         range(y1, y2, sign(delta_y))))
+    elif delta_y == 0:
+        return list(zip(repeat(y1),
+                        range(x1, x2, sign(delta_x))))
     error = 0
     delta_error = abs(delta_y / delta_x)
     y = y1
