@@ -140,3 +140,28 @@ def valid_identifier(s):
 def get_event_key(event):
     """Returns the key for an UnTDL key event."""
     return event.keychar if event.key == 'CHAR' else event.key
+
+
+def sign(n):
+    return -1 if n < 0 else 1 if n > 0 else 0
+
+
+def bresenham_line(x1, y1, x2, y2):
+    """Take two points and return a line as a series of points between them.
+
+    For the most part, shamelessly stolen from Wikipedia's pseudocode and
+    modified only slightly.
+    """
+    delta_x = x2 - x1
+    delta_y = y2 - y1
+    error = 0
+    delta_error = abs(delta_x / delta_y)
+    y = y1
+    points = []
+    for x in range(x1, x2 + 1):
+        points.append((x, y))
+        error += delta_error
+        while error > 0.5:
+            points.append((x, y))
+            y = y + sign(y2 - y1)
+            error -= 1.0
