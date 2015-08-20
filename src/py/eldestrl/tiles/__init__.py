@@ -1,5 +1,5 @@
 from . import mixins, behaviors  # noqa
-from eldestrl.utils import sane, valid_identifier
+from eldestrl.utils import valid_identifier
 import logging
 import json
 
@@ -17,7 +17,6 @@ def process_mixins(type_def):
     for mixin in type_def.get('mixins', []):
             args = mixin[1:]
             mixin = mixin[0]
-            assert sane(mixin)
             try:
                 mixin_fn = getattr(mixins, mixin)
                 processed_def = mixin_fn(processed_def, *args)
@@ -50,7 +49,6 @@ def process_behaviors(type_def):
     behaviors_ = processed_def.setdefault('behaviors', {})
     for k, behavior in behaviors_.items():
         first, *rest = behavior
-        assert sane(first)
         try:
             getattr(behaviors, first)
         except AttributeError:
@@ -71,7 +69,6 @@ def get_behavior(type_def, behavior_name):
 def do_action(ent_mgr, ent, map_, pos, action):
     args, kwargs = action[1:]
     action = action[0]
-    assert sane(action)
     action_fn = getattr(behaviors, action)
     action_fn(ent_mgr, ent, map_, pos, *args, **kwargs)
 

@@ -126,12 +126,6 @@ def color_to_parchment_tone(color):
     return gray_to_parchment(to_grayscale(color))
 
 
-def sane(s):
-    """Sanity-check a string to be evaluated."""
-    return (not s.startswith('_')) and '()' not in s \
-        and ';' not in s and ':' not in s and '\n' not in s
-
-
 def valid_identifier(s):
     """Returns true if the given string is a valid Python identifier."""
     from keyword import iskeyword
