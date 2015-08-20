@@ -14,10 +14,6 @@ def _flat_cost(pos, new_pos):
         return cost
 
 
-def _has_world(ent_mgr, e):
-    return has_component(ent_mgr, e, comp.World)
-
-
 def _client_choose_target(ent_mgr, ent):
     this_world = ent_mgr.component_for_entity(ent, comp.World).world
 
