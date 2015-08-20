@@ -18,11 +18,10 @@ def process_mixins(type_def):
             args = mixin[1:]
             mixin = mixin[0]
             assert sane(mixin)
-            # replace this with safer, non-eval-using code later if possible
             try:
-                mixin_fn = eval("mixins." + mixin)
+                mixin_fn = getattr(mixins, mixin)
                 processed_def = mixin_fn(processed_def, *args)
-            except NameError:
+            except AttributeError:
                 log = logging.getLogger(__name__)
                 log.error("In definition for type {}:\n"
                           "No such mixin {}!"
@@ -53,8 +52,8 @@ def process_behaviors(type_def):
         first, *rest = behavior
         assert sane(first)
         try:
-            eval("behaviors." + first)
-        except NameError:
+            getattr(behaviors, first)
+        except AttributeError:
             log = logging.getLogger(__name__)
             log.error("In definition for type {}:\n"
                       "No such behavior {}!"
@@ -73,7 +72,7 @@ def do_action(ent_mgr, ent, map_, pos, action):
     args, kwargs = action[1:]
     action = action[0]
     assert sane(action)
-    action_fn = eval("behaviors." + action)
+    action_fn = getattr(behaviors, action)
     action_fn(ent_mgr, ent, map_, pos, *args, **kwargs)
 
 
