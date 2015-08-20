@@ -60,6 +60,8 @@ class LightingSys(System):
                 for (x2, y2) in points_checked:
                     line = [(x, y) for (x, y) in utils.bresenham_line(x1, y1, x2, y2)
                             if (x, y) in self.map_]
+                    if not line:
+                        continue
                     lights = light.light_line(
                         src['radius'], line, light.lighting_quadratic_spec,
                         lambda x, y: emap.light_attenuation(self.map_, x, y))
