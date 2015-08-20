@@ -5,11 +5,6 @@ import eldestrl.map as eldmap
 from eldestrl.utils import has_component, to_local_coords
 
 
-def _manhattan_cost(pos, new_pos):
-    coord_diff = tuple(a - b for (a, b) in zip(new_pos, pos))
-    return sum(abs(x) for x in coord_diff)
-
-
 def _flat_cost(pos, new_pos):
     x_diff, y_diff = tuple(a - b for (a, b) in zip(new_pos, pos))
     cost = sum(abs(x) for x in (x_diff, y_diff))
