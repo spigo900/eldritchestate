@@ -47,6 +47,7 @@ setup(
     classifiers=[
         'Developent Status :: 3 - Alpha'
     ],
+    keywords='game roguelike',
     entry_points={'console_scripts': [
         'eldestrl = eldestrl.__main__:main'
     ]}
