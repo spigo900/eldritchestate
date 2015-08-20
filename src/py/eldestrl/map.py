@@ -3,7 +3,7 @@ from collections import UserDict, namedtuple
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.components as components
 import eldestrl.tiles as tiles
-from eldestrl.utils import first_helper
+from eldestrl.utils import first_helper, in_rect, rects_intersect
 
 
 _MapInfo = namedtuple('MapInfo', 'width, height,'
@@ -181,19 +181,6 @@ def make_room(map_, floortype, walltype, x, y, width, height):
                 map_[x + x_cur, y + y_cur] = walltype
             else:
                 map_[x + x_cur, y + y_cur] = floortype
-
-
-def in_rect(rect, x, y):
-    return x >= rect.x and y >= rect.y \
-        and x <= rect.x + rect.width - 1 \
-        and y <= rect.y + rect.height - 1
-
-
-def rects_intersect(a, b):
-    return ((a.x + a.width) < b.x or
-            (b.x + b.width) < a.x) and \
-           ((a.y + a.height) < b.y or
-            (b.y + b.height) < a.y)
 
 
 def get_horizontal_center(map_height):

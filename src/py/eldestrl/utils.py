@@ -15,6 +15,19 @@ def in_range(val, min_, max_):
     return min_ <= val <= max_
 
 
+def in_rect(rect, x, y):
+    return x >= rect.x and y >= rect.y \
+        and x <= rect.x + rect.width - 1 \
+        and y <= rect.y + rect.height - 1
+
+
+def rects_intersect(a, b):
+    return ((a.x + a.width) < b.x or
+            (b.x + b.width) < a.x) and \
+           ((a.y + a.height) < b.y or
+            (b.y + b.height) < a.y)
+
+
 def to_local_coords(ref_coords, localized):
     '''Takes two coordinate tuples and returns a new coordinate tuple which
     represents the difference between ref_coords and localized (used to get
