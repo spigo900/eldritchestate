@@ -34,3 +34,9 @@ def new_client(dt, map_, coords):
     dt.add_component(npc, components.Actor())
     dt.add_component(npc, components.AI('client'))
     return npc
+
+
+def new_torch(ent_mgr, map_, coords):
+    torch = ent_mgr.create_entity()
+    ent_mgr.add_component(torch, components.Position(coords))
+    ent_mgr.add_component(torch, components.LightSource({"radius": 10}))
