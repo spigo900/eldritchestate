@@ -22,6 +22,7 @@ class Map(UserDict):
     def __init__(self, map_tiles, tiletypes=tiles.load_json()):
         self.data = map_tiles
         self.ents = {}
+        self.light_map = {}
         self.tiletypes = tiletypes
 
 
@@ -55,6 +56,11 @@ def passable(ent_mgr, map_, coords):
     blocks = tiletype['blocks']
     ents = map_.ents.get(coords, [])
     return (not blocks) and _entlist_passable(ent_mgr, ents)
+
+
+def light_attenuation(map_, x, y):
+    ttype = get_tile_type(map_, map_[x, y])
+    return ttype.get("light_attenuation", 0.0)
 
 
 def map_coords(map_):

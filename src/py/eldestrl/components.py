@@ -57,3 +57,8 @@ class BlocksSight(Component):
 class Display(Component):
     def __init__(self, con):
         self.con = con
+
+
+class LightSource(Component):
+    def __init__(self, props):
+        self.props = props

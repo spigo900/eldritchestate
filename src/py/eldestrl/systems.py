@@ -5,7 +5,9 @@ from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.map as emap
 import eldestrl.tiles as tiles
 import eldestrl.input as eldinput
+import eldestrl.lighting as light
 import eldestrl.components as comp
+import eldestrl.utils as utils
 
 
 class UpdateWorldSys(System):
@@ -23,6 +25,47 @@ class UpdateWorldSys(System):
                 print('Entity %s has world but no position! Skipping...'
                       % repr(entity))
         world.ents = new_ents
+
+
+class LightingSys(System):
+    def __init__(self, map_):
+        self.map_ = map_
+        super(LightingSys, self).__init__()
+
+    def update(self, dt):
+        from eldestrl.components import Position, LightSource
+        ent_mgr = self.entity_manager
+
+        sources = {(x, y): [emap.get_tile_type(self.map_, self.map_[x, y])]
+                   for (x, y) in self.map_
+                   if "light_properties" in
+                   emap.get_tile_type(self.map_, self.map_[x, y])}
+
+        for (entity, source) in ent_mgr.pairs_for_type(LightSource):
+            try:
+                coords = ent_mgr.component_for_entity(entity, Position).coords
+                sources.setdefault(coords, []).append(source.props)
+            except NonexistentComponentTypeForEntity:
+                print('Entity %s has world but no position! Skipping...'
+                      % repr(entity))
+
+        light_map = {(x, y): 0.0 for (x, y) in self.map_}
+        for (x1, y1), src in sources.items():
+            coordset = (x1 - src['radius'], y1 - src['radius'],
+                        x1 + src['radius'], y1 + src['radius'])
+            points_checked = utils.hollow_box(*coordset)
+            minimap = {}
+
+            for (x2, y2) in points_checked:
+                line = utils.bresenham_line(x1, y1, x2, y2)
+                lights = light.light_line(
+                    src['radius'], line, light.lighting_quadratic_spec,
+                    lambda x, y: emap.light_attenuation(self.map_, x, y))
+                minimap.update(zip(line, lights))
+
+            for pos, intensity in minimap.items():
+                light_map[pos] = max(light_map[pos], minimap[pos])
+        self.map_.light_map = light_map
 
 
 class FollowEntitySys(System):
