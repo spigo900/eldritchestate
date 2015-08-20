@@ -63,7 +63,7 @@ class LightingSys(System):
                     if not line:
                         continue
                     lights = light.light_line(
-                        src['radius'], line, light.lighting_quadratic_spec,
+                        1.0, line, light.lighting_quadratic_spec,
                         lambda x, y: emap.light_attenuation(self.map_, x, y))
                     minimap.update(zip(line, lights))
 
