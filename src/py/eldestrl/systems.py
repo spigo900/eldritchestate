@@ -10,8 +10,8 @@ import eldestrl.components as comp
 
 class UpdateWorldSys(System):
     def update(self, dt):
-        ent_mgr = self.entity_manager
         from eldestrl.components import World, Position
+        ent_mgr = self.entity_manager
         new_ents = {}
         for (entity, world) in ent_mgr.pairs_for_type(World):
             try:
@@ -27,8 +27,8 @@ class UpdateWorldSys(System):
 
 class FollowEntitySys(System):
     def update(self, dt):
-        ent_mgr = self.entity_manager
         from eldestrl.components import Position, FollowsEntity
+        ent_mgr = self.entity_manager
         for (entity, follower) in ent_mgr.pairs_for_type(FollowsEntity):
             pos = ent_mgr.component_for_entity(entity, Position)
             followed_pos = ent_mgr.component_for_entity(follower.followed,
