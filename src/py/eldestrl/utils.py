@@ -191,6 +191,24 @@ def bresenham_line(x1, y1, x2, y2):
     return points
 
 
+def partition(list_):
+    lastitem = list_[0]
+    partitioned = []
+    sublist = []
+    for item in list_:
+        if item == lastitem:
+            sublist.append(item)
+        else:
+            partitioned.append(sublist)
+            sublist = []
+        lastitem = item
+    return partitioned
+
+
+def remove_dups(list_):
+    return [sublist[0] for sublist in partition(list_)]
+
+
 def hollow_box(x1, y1, x2, y2):
     """Take two points and return a series of the points along their rectangle's
     edge."""
