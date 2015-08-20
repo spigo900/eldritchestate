@@ -16,7 +16,8 @@ MOVE_CONTROLS_MAP = {'h': ('do_action_tile', (-1, 0)),
                      'Y': ('run_dir', (-1, -1)),
                      'U': ('run_dir', (1, -1)),
                      'B': ('run_dir', (-1, 1)),
-                     'N': ('run_dir', (1, 1))}
+                     'N': ('run_dir', (1, 1)),
+                     'ESCAPE': ('quit',)}
 
 
 def get_action_key(key_event):
