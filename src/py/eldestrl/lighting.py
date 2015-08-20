@@ -90,6 +90,9 @@ def light_line(i, line, light_fn, attenuation_fn):
             light_vals.append(0.0)
             continue
         att += attenuation_fn(x, y)
-        light_base = light_fn(i, x_origin, y_origin, x, y)
+        if not (x_origin == x and y_origin == y):
+            light_base = light_fn(i, x_origin, y_origin, x, y)
+        else:
+            light_base = i * 1.0
         light_vals.append(light_base - att)
     return light_vals
