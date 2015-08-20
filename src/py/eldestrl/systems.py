@@ -227,9 +227,9 @@ class RenderDisplaySys(System):
                         con.draw_char(
                             draw_x, draw_y,
                             renderinfo.char,
-                            utils.multiply_colors(
-                                renderinfo.color,
-                                (world_map.light_map[pos.coords],) * 3))
+                            tuple(int(n * k)
+                                  for n, k in zip(renderinfo.color,
+                                  (world_map.light_map[pos.coords],) * 3)))
                     except NonexistentComponentTypeForEntity as err:
                         print('Entity %s has no %s; skipping...'
                               % (repr(entity), str(err)))
