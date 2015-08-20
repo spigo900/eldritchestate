@@ -229,7 +229,7 @@ class RenderDisplaySys(System):
                             renderinfo.char,
                             utils.multiply_colors(
                                 renderinfo.color,
-                                (world_map.light_map[pos],) * 3))
+                                (world_map.light_map[pos.coords],) * 3))
                     except NonexistentComponentTypeForEntity as err:
                         print('Entity %s has no %s; skipping...'
                               % (repr(entity), str(err)))
