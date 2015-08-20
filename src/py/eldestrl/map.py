@@ -3,7 +3,7 @@ from collections import UserDict, namedtuple
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.components as components
 import eldestrl.tiles as tiles
-from eldestrl.utils import first_helper, in_rect, rects_intersect, Point, Rect
+from eldestrl.utils import first_helper, in_rect, rects_intersect, Rect
 
 
 _MapInfo = namedtuple('MapInfo', 'width, height,'

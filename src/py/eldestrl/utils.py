@@ -1,4 +1,5 @@
 #!/bin/env python3
+from collections import namedtuple
 
 
 # utilities
