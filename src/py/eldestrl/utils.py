@@ -56,6 +56,10 @@ def ortho_adjacent(coords_a, coords_b):
     # return adjacent(coords_a, coords_b) and orthogonal(coords_a, coords_b)
 
 
+def manhattan_dist(x1, y1, x2, y2):
+    return abs((x2 - x1) + (y2 - y1))
+
+
 def subtract_iterables(iter_a, iter_b):
     '''Takes two iterables a and b and return a new iterable whose value is a -
     b for each member of a and each member of b.'''

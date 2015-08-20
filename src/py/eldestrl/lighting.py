@@ -1,4 +1,5 @@
 from math import sqrt
+from eldestrl.utils import manhattan_distance
 
 
 def distance_squared(x1, y1, x2, y2):
@@ -30,6 +31,10 @@ def lighting_linear(i, x1, y1, x2, y2):
     x2, y2 is the tile.
     """
     return i * 1/distance(x1, y1, x2, y2)
+
+
+def lighting_manhattan_linear(i, x1, y1, x2, y2):
+    return i * 1/manhattan_distance(x1, y1, x2, y2)
 
 
 def _quadratic_helper(x1, y1, x2, y2):
