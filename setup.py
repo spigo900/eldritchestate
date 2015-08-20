@@ -48,6 +48,6 @@ setup(
         'Developent Status :: 3 - Alpha'
     ],
     entry_points={'console_scripts': [
-        'eldestrl = eldestrl:main'
+        'eldestrl = eldestrl.__main__:main'
     ]}
 )
