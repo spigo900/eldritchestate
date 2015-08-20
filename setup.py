@@ -4,20 +4,20 @@ from setuptools import setup, find_packages
 from setuptools.command.install import install as _install
 from setuptools.command.develop import develop as _develop
 import sys
-from shutil import sh
+from subprocess import call
 
 SOURCE_DIR = 'src/py'
 
 
 class install(_install):
     def run(self):
-        sh('untdl.patch')
+        call('patch_untdl.sh')
         _install.run(self)
 
 
 class develop(_develop):
     def run(self):
-        sh('untdl.patch')
+        call('patch_untdl.sh')
         _develop.run(self)
 
 
