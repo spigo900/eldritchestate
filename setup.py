@@ -7,17 +7,18 @@ import sys
 from subprocess import call
 
 SOURCE_DIR = 'src/py'
+PATCH_CMD = ('sh', 'patch_untdl.sh')
 
 
 class install(_install):
     def run(self):
-        call('patch_untdl.sh')
+        call(PATCH_CMD)
         _install.run(self)
 
 
 class develop(_develop):
     def run(self):
-        call('patch_untdl.sh')
+        call(PATCH_CMD)
         _develop.run(self)
 
 
