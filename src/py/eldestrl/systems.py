@@ -49,7 +49,7 @@ class LightingSys(System):
                 print('Entity %s has world but no position! Skipping...'
                       % repr(entity))
 
-        light_map = {(x, y): 0.0 for (x, y) in self.map_}
+        light_map = {(x, y): 0.2 for (x, y) in self.map_}
         for (x1, y1), srcs in sources.items():
             for src in srcs:
                 coordset = (x1 - src['radius'], y1 - src['radius'],
