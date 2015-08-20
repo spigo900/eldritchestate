@@ -62,3 +62,34 @@ def lighting_quadratic_spec(i, x1, y1, x2, y2):
     inv = _quadratic_helper(x1, y1, x2, y2)
     multiplier = 1/(inv * 2)
     return i * inv * multiplier
+
+
+def light_line(i, line, light_fn, attenuation_fn):
+    """Calculate the lighting for a series of points.
+
+    i should be the intensity of the light source.
+
+    line should be an iterable of points of the form (x, y), with the first
+    being the origin of the light.
+
+    light_fn should be a function which takes the intensity, the source point
+    (as two numbers) and the point under consideration (as two numbers) and
+    returns the lighting for the tile.
+
+    attenuation_fn should be a function which takes the tile coordinates as two
+    numbers and returns the light attenuation value for the tile.
+
+    Return a list where each member is the lighting value for the corresponding
+    point.
+    """
+    x_origin, y_origin = line[0]
+    light_vals = []
+    att = 0.0
+    for (x, y) in line:
+        if att >= 1.0:
+            light_vals.append(0.0)
+            continue
+        att += attenuation_fn(x, y)
+        light_base = light_fn(i, x_origin, y_origin, x, y)
+        light_vals.append(light_base - att)
+    return light_vals
