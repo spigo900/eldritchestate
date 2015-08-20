@@ -186,10 +186,13 @@ def bresenham_line(x1, y1, x2, y2):
 def hollow_box(x1, y1, x2, y2):
     """Take two points and return a series of the points along their rectangle's
     edge."""
-    width = x2 - x1
-    height = y2 - y1
-    inside = Rect(x1 + 1, y1 + 1, width, height)
+    min_x = min(x1, x2)
+    max_x = max(x1, x2)
+    min_y = min(y1, y2)
+    max_y = max(y1, y2)
+    inside = Rect(min_x + 1, min_y + 1,
+                  max_x - min_x, max_y - min_y)
     return [(x, y)
-            for x in range(x1, x2 + 1)
-            for y in range(y1, y2 + 1)
+            for x in range(min_x, max_x + 1)
+            for y in range(min_y, max_y + 1)
             if not in_rect(inside, x, y)]
