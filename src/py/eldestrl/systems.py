@@ -90,11 +90,15 @@ class EventSys(System):
 
 class AISys(System):
     def update(self, dt):
-        import eldestrl.ai as ai
+        import eldestrl.ai.types as aitypes
         from eldestrl.components import AI
         ent_mgr = self.entity_manager
         for (ent, ai_comp) in ent_mgr.pairs_for_type(AI):
-            ai_function = ai.AI_TYPES[ai_comp.type]
+            if ai_comp.type.startswith("_"):
+                raise Exception("Illegal AI type for entity {}! "
+                                "Tried to use private function {} as AI type!"
+                                .format(ent, ai_comp.type))
+            ai_function = getattr(aitypes, ai_comp.type)
             ai_function(ent_mgr, ent)
 
 

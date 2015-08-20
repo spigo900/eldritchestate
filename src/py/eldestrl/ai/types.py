@@ -1,8 +1,8 @@
 import random
 import untdl.map
-import eldestrl.components as comp
 import eldestrl.map as eldmap
-from eldestrl.utils import has_component, to_local_coords
+import eldestrl.components as comp
+from eldestrl.utils import to_local_coords, has_component
 
 
 def _flat_cost(pos, new_pos):
@@ -18,7 +18,7 @@ def _has_world(ent_mgr, e):
     return has_component(ent_mgr, e, comp.World)
 
 
-def client_choose_target(ent_mgr, ent):
+def _client_choose_target(ent_mgr, ent):
     this_world = ent_mgr.component_for_entity(ent, comp.World).world
 
     # find player-controlled characters on the same map as us, the client
@@ -40,7 +40,7 @@ def client_choose_target(ent_mgr, ent):
         return ents[chosen]
 
 
-def client_ai(ent_mgr, ent):
+def client(ent_mgr, ent):
     '''AI function for client NPCs.'''
     this_world = ent_mgr.component_for_entity(ent, comp.World).world
     this_pos = ent_mgr.component_for_entity(ent, comp.Position).coords
@@ -49,7 +49,7 @@ def client_ai(ent_mgr, ent):
     ai_comp = ent_mgr.component_for_entity(ent, comp.AI)
     target = ai_comp.target
     if not target:
-        ai_comp.target = client_choose_target(ent_mgr, ent)
+        ai_comp.target = _client_choose_target(ent_mgr, ent)
         target = ai_comp.target
 
     def client_cost(new_x, new_y):
@@ -68,6 +68,3 @@ def client_ai(ent_mgr, ent):
     if path:
         next_tile = to_local_coords(this_pos, path[0])
         actions.append(('do_action_tile', next_tile))
-
-
-AI_TYPES = {'client': client_ai}
