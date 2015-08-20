@@ -174,7 +174,7 @@ def bresenham_line(x1, y1, x2, y2):
     delta_x = max(x2, x1) - min(x1, x2)
     delta_y = max(y2, y1) - min(y1, y2)
     error = 0
-    delta_error = abs(delta_x / delta_y)
+    delta_error = abs(delta_y / delta_x)
     y = y1
     points = []
     for x in range(min(x1, x2), max(x2, x1) + 1):
