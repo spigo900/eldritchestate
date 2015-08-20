@@ -169,13 +169,13 @@ def bresenham_line(x1, y1, x2, y2):
     For the most part, shamelessly stolen from Wikipedia's pseudocode and
     modified only slightly.
     """
-    delta_x = x2 - x1
-    delta_y = y2 - y1
+    delta_x = max(x2, x1) - min(x1, x2)
+    delta_y = max(y2, y1) - min(y1, y2)
     error = 0
     delta_error = abs(delta_x / delta_y)
     y = y1
     points = []
-    for x in range(x1, x2 + 1):
+    for x in range(min(x1, x2), max(x2, x1) + 1):
         points.append((x, y))
         error += delta_error
         while error > 0.5:

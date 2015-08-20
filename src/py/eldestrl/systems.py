@@ -50,21 +50,23 @@ class LightingSys(System):
                       % repr(entity))
 
         light_map = {(x, y): 0.0 for (x, y) in self.map_}
-        for (x1, y1), src in sources.items():
-            coordset = (x1 - src['radius'], y1 - src['radius'],
-                        x1 + src['radius'], y1 + src['radius'])
-            points_checked = utils.hollow_box(*coordset)
-            minimap = {}
+        for (x1, y1), srcs in sources.items():
+            for src in srcs:
+                coordset = (x1 - src['radius'], y1 - src['radius'],
+                            x1 + src['radius'], y1 + src['radius'])
+                points_checked = utils.hollow_box(*coordset)
+                minimap = {}
 
-            for (x2, y2) in points_checked:
-                line = utils.bresenham_line(x1, y1, x2, y2)
-                lights = light.light_line(
-                    src['radius'], line, light.lighting_quadratic_spec,
-                    lambda x, y: emap.light_attenuation(self.map_, x, y))
-                minimap.update(zip(line, lights))
+                for (x2, y2) in points_checked:
+                    line = [(x, y) for (x, y) in utils.bresenham_line(x1, y1, x2, y2)
+                            if (x, y) in self.map_]
+                    lights = light.light_line(
+                        src['radius'], line, light.lighting_quadratic_spec,
+                        lambda x, y: emap.light_attenuation(self.map_, x, y))
+                    minimap.update(zip(line, lights))
 
-            for pos, intensity in minimap.items():
-                light_map[pos] = max(light_map[pos], minimap[pos])
+                for pos, intensity in minimap.items():
+                    light_map[pos] = max(light_map[pos], minimap[pos])
         self.map_.light_map = light_map
 
 
