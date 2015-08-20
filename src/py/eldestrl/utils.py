@@ -169,6 +169,8 @@ def bresenham_line(x1, y1, x2, y2):
     For the most part, shamelessly stolen from Wikipedia's pseudocode and
     modified only slightly.
     """
+    if (x1, y1) == (x2, y2):
+        return [(x1, y1)]
     delta_x = max(x2, x1) - min(x1, x2)
     delta_y = max(y2, y1) - min(y1, y2)
     error = 0
