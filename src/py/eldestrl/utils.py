@@ -195,7 +195,7 @@ def hollow_box(x1, y1, x2, y2):
     min_y = min(y1, y2)
     max_y = max(y1, y2)
     inside = Rect(min_x + 1, min_y + 1,
-                  max_x - min_x, max_y - min_y)
+                  max_x - min_x - 1, max_y - min_y - 1)
     return [(x, y)
             for x in range(min_x, max_x + 1)
             for y in range(min_y, max_y + 1)
