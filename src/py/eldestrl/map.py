@@ -3,7 +3,7 @@ from collections import UserDict, namedtuple
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.components as components
 import eldestrl.tiles as tiles
-from eldestrl.utils import first_helper, in_rect, rects_intersect
+from eldestrl.utils import first_helper, in_rect, rects_intersect, Point, Rect
 
 
 _MapInfo = namedtuple('MapInfo', 'width, height,'
@@ -12,8 +12,6 @@ _MapInfo = namedtuple('MapInfo', 'width, height,'
                       'room_height_min, room_height_max,'
                       'default_floor, default_wall,'
                       'default_door')
-Point = namedtuple('Point', 'x y')
-Rect = namedtuple('Rect', 'x, y, width, height')
 
 
 class NoneInMapError(Exception):

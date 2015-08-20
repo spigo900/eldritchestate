@@ -20,6 +20,9 @@ def in_rect(rect, x, y):
         and x <= rect.x + rect.width - 1 \
         and y <= rect.y + rect.height - 1
 
+Point = namedtuple('Point', 'x y')
+Rect = namedtuple('Rect', 'x, y, width, height')
+
 
 def rects_intersect(a, b):
     return ((a.x + a.width) < b.x or
