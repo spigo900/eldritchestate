@@ -77,9 +77,6 @@ class LightingSys(System):
 
 class FOVSys(System):
     def update(self, dt):
-        def transparent(x, y):
-            return not emap.blocks_sight(self.map_, x, y)
-
         ent_mgr = self.entity_manager
         for (entity, sight) in ent_mgr.pairs_for_type(comp.Sight):
             try:
@@ -87,6 +84,10 @@ class FOVSys(System):
                                    .world
                 x, y = ent_mgr.component_for_entity(entity, comp.Position) \
                               .coords
+
+                def transparent(x, y):
+                    return not emap.blocks_sight(world_map, x, y)
+
                 fov = mapfn.quick_fov(x, y, transparent, radius=sight.radius)
                 sight.in_sight = \
                     set(tile for tile in fov if
