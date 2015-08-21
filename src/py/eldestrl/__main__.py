@@ -47,9 +47,11 @@ def game_loop(con):
     while not event_sys.game_ended:
         sys_mgr.update(0)  # 0 is a placeholder value
 
+FONT = 'fonts/consolas12x12_gs_tc.png'
+
 
 def main(argv=[]):
-    untdl.set_font('fonts/consolas12x12_gs_tc.png', greyscale=True, alt_layout=True)
+    untdl.set_font(FONT, greyscale=True, alt_layout=True)
     main_con = untdl.init(CONSOLE_WIDTH, CONSOLE_HEIGHT, TITLE)
     app = SimpleMenu(main_con, TITLE, MAIN_MENU_OPTIONS)
     app.run()
