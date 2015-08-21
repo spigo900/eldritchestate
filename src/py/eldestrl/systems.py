@@ -1,5 +1,6 @@
 import logging
 import untdl.event as ev
+import untdl.map as mapfn
 from ecs.models import System
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.map as emap
@@ -72,6 +73,48 @@ class LightingSys(System):
                 for pos, intensity in minimap.items():
                     light_map[pos] = max(light_map[pos], minimap[pos])
         self.map_.light_map = light_map
+
+
+class FOVSys(System):
+    def __init__(self, map_):
+        self.map_ = map_
+        super(FOVSys, self).__init__()
+
+    def __update__(self, dt):
+        def transparent(x, y):
+            return not emap.blocks_sight(self.map_, x, y)
+
+        ent_mgr = self.entity_manager
+        for (entity, sight) in ent_mgr.pairs_for_type(comp.Sight):
+            try:
+                world_map = ent_mgr.component_for_entity(entity, comp.World) \
+                                   .world
+                x, y = ent_mgr.component_for_entity(entity, comp.Position) \
+                              .coords
+                fov = mapfn.quick_fov(x, y, transparent, radius=sight.radius)
+                sight.in_sight = \
+                    set(tile for tile in fov if
+                        world_map.light_map.get(tile, 0.0) >= sight.min_light)
+            except NonexistentComponentTypeForEntity:
+                print('Entity %s ! Skipping...'
+                      % repr(entity))
+
+
+class FOWSys(System):
+    def __init__(self, map_):
+        self.map_ = map_
+        super(FOWSys, self).__init__()
+
+    def __update__(self, dt):
+        ent_mgr = self.entity_manager
+        for (entity, _) in ent_mgr.pairs_for_type(comp.PlayerControlled):
+            try:
+                world_map = ent_mgr.component_for_entity(entity, comp.World) \
+                                   .world
+                sight = ent_mgr.component_for_entity(entity, comp.Sight)
+                world_map.seen |= sight.in_sight
+            except NonexistentComponentTypeForEntity:
+                pass
 
 
 class FollowEntitySys(System):

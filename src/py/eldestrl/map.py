@@ -23,6 +23,7 @@ class Map(UserDict):
         self.data = map_tiles
         self.ents = {}
         self.light_map = {}
+        self.seen = set()
         self.tiletypes = tiletypes
 
 
@@ -56,6 +57,14 @@ def passable(ent_mgr, map_, coords):
     blocks = tiletype['blocks']
     ents = map_.ents.get(coords, [])
     return (not blocks) and _entlist_passable(ent_mgr, ents)
+
+
+def blocks_sight(map_, x, y):
+    # Slightly hacky; I should define a default tiletype eventually.
+    # Or something like that.
+    ttype = map_.get((x, y), "floor")
+    type_def = get_tile_type(map_, ttype)
+    return type_def['blocks_sight']
 
 
 def light_attenuation(map_, x, y):

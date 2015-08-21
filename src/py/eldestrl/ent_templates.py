@@ -9,6 +9,7 @@ def new_player(dt, map_, coords):
     dt.add_component(player, components.Actor())
     dt.add_component(player, components.PlayerControlled())
     dt.add_component(player, components.BlocksMove())
+    dt.add_component(player, components.Sight(7.5))
     return player
 
 
@@ -32,6 +33,7 @@ def new_client(dt, map_, coords):
     dt.add_component(npc, components.World(map_))
     dt.add_component(npc, components.Char('@', (200, 120, 30)))
     dt.add_component(npc, components.Actor())
+    dt.add_component(npc, components.Sight(7.5))
     dt.add_component(npc, components.AI('client'))
     return npc
 
