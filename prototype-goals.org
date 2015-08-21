@@ -16,6 +16,12 @@
 
    ... It's done now. Finished earlier today. I haven't got it completely
    working yet, but it works well enough for now, so I'm calling it.
+
+   ... 1:12. Same day. I got it completely working by fixing the Bresenham line
+   algorithm I sort-of-wrote, sort-of-stole-from-Wikipedia and was using. Walls
+   are lit properly now. 
+
+   Yay.
 ** TODO Code the Fog of Fh'tagn system.
 ** TODO Write the Line of Sight system.
    Really, this means "integrate libtcod/UnTDL's line of sight system." Same
