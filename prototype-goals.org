@@ -1,4 +1,4 @@
-* Complete a prototype of the eldritch real estate game. [2/7]
+* Complete a prototype of the eldritch real estate game. [4/7]
   Remember: don't write anything extra, and no more content than is absolutely
   necessary. We're trying to actually finish this thing.
 ** DONE Code the map representation.
@@ -22,12 +22,19 @@
    are lit properly now. 
 
    Yay.
-** TODO Code the Fog of Fh'tagn system.
-** TODO Write the Line of Sight system.
+** DONE Write the Line of Sight system.
+   CLOSED: [2015-08-21 Fri 14:35]
    Really, this means "integrate libtcod/UnTDL's line of sight system." Same
    difference, until and unless I learn how to implement one myself -- and I
    might, but I'll probably still use the library version even so. It's written
    in C by someone other than me, so it's likely to be faster.
+** DONE Code the Fog of Fh'tagn system.
+   CLOSED: [2015-08-21 Fri 14:35]
+   It's not perfect, but it works, I think. I haven't been able to get the fog
+   to work quite as I wanted it to yet, though. I'll have to take a look at
+   Brogue's code and see if I can figure out how it manages to make lava, water,
+   the title screen, etc. waver/shimmer like it does. I suppose it's not via
+   Perlin noise, or at least not using it the way I'm currently using it.
 ** TODO Code up some very basic NPCs.
    These two could probably share some basic code with each other and/or the
    player's internal representation.  I should try and make sure they do somehow.
