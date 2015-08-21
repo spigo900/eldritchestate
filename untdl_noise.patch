@@ -1,0 +1,19 @@
+*** __tcod.py	2015-08-21 15:28:26.185537817 -0400
+--- __tcod.py	2015-08-21 15:21:07.417640645 -0400
+***************
+*** 646,652 ****
+  
+  #TCODLIB_API TCOD_noise_t TCOD_noise_new(int dimensions, float hurst, float lacunarity, TCOD_random_t random);
+  _lib.TCOD_noise_new.restype = TCOD_noise_t
+! _lib.TCOD_noise_new.argtypes = (c_int, c_float, c_float)
+  
+  #TCODLIB_API void TCOD_noise_set_type (TCOD_noise_t noise, TCOD_noise_type_t type);
+  _lib.TCOD_noise_set_type.restype = None
+--- 646,652 ----
+  
+  #TCODLIB_API TCOD_noise_t TCOD_noise_new(int dimensions, float hurst, float lacunarity, TCOD_random_t random);
+  _lib.TCOD_noise_new.restype = TCOD_noise_t
+! _lib.TCOD_noise_new.argtypes = (c_int, c_float, c_float, TCOD_random_t)
+  
+  #TCODLIB_API void TCOD_noise_set_type (TCOD_noise_t noise, TCOD_noise_type_t type);
+  _lib.TCOD_noise_set_type.restype = None
