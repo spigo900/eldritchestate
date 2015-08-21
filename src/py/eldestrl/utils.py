@@ -17,9 +17,8 @@ def in_range(val, min_, max_):
 
 
 def in_rect(rect, x, y):
-    return x >= rect.x and y >= rect.y \
-        and x <= rect.x + rect.width - 1 \
-        and y <= rect.y + rect.height - 1
+    return rect.x <= x <= rect.x + rect.width - 1 \
+        and rect.y <= y <= rect.y + rect.height - 1
 
 Point = namedtuple('Point', 'x y')
 Rect = namedtuple('Rect', 'x, y, width, height')
