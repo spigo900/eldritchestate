@@ -49,7 +49,7 @@ def render_map(con, map_, refpoint, fov, seen):
                                   lit_color(tile_fg, tile_lighting),
                                   tile_bg_final)
                 elif coord in seen:
-                    tile_noise = noise.get_point(*draw_coords)
+                    tile_noise = noise.get_point(*coord)
                     tile_bg_final = fog_color(tile_bg, tile_lighting) \
                         if tile_bg else tile_bg
                     con.draw_char(draw_coords[0], draw_coords[1],
