@@ -244,40 +244,54 @@ class RenderDisplaySys(System):
     def update(self, dt):
         from eldestrl.utils import to_local_coords
         from eldestrl.render import render_map
-        from eldestrl.components import Char, Position, World, Display
+        from eldestrl.components import Char, Position, World, Display, Sight
         import untdl
         from untdl import TDLError
         ent_mgr = self.entity_manager
-        for (display_ent, display) in ent_mgr.pairs_for_type(Display):
-            (display_x, display_y) = \
-                ent_mgr.component_for_entity(display_ent, Position).coords
-            refpoint = (display_x - display.con.width // 2,
-                        display_y - display.con.height // 2)
+        for (player_ent, _) in ent_mgr.pairs_for_type(comp.PlayerControlled):
             try:
-                world_map = ent_mgr.component_for_entity(display_ent,
-                                                         World).world
-                con = display.con
+                sight = ent_mgr.component_for_entity(player_ent, Sight)
+                fov = sight.in_sight
             except NonexistentComponentTypeForEntity:
-                print('Display entity %s has no associated world!'
-                      % repr(display_ent))
-            else:
-                con.clear()
-                render_map(con, world_map, refpoint)
-                for (entity, renderinfo) in ent_mgr.pairs_for_type(Char):
-                    try:
-                        pos = ent_mgr.component_for_entity(entity, Position)
-                        draw_x, draw_y = to_local_coords(refpoint, pos.coords)
-                        if not (draw_x, draw_y) in con:
-                            continue
-                        con.draw_char(
-                            draw_x, draw_y,
-                            renderinfo.char,
-                            tuple(int(n * k)
-                                  for n, k in zip(renderinfo.color,
-                                  (world_map.light_map[pos.coords],) * 3)))
-                    except NonexistentComponentTypeForEntity as err:
-                        print('Entity %s has no %s; skipping...'
-                              % (repr(entity), str(err)))
-                    except TDLError as err:
-                        print('Got TDLError %s, skipping...' % str(err))
+                pos = ent_mgr.component_for_entity(player_ent, Position)
+                fov = set(pos.coords)
+            for (display_ent, display) in ent_mgr.pairs_for_type(Display):
+                (display_x, display_y) = \
+                    ent_mgr.component_for_entity(display_ent, Position).coords
+                refpoint = (display_x - display.con.width // 2,
+                            display_y - display.con.height // 2)
+                try:
+                    world_map = ent_mgr.component_for_entity(display_ent,
+                                                             World).world
+                    con = display.con
+                except NonexistentComponentTypeForEntity:
+                    print('Display entity %s has no associated world!'
+                          % repr(display_ent))
+                else:
+                    con.clear()
+                    render_map(con, world_map, refpoint, fov)
+                    for (entity, renderinfo) in ent_mgr.pairs_for_type(Char):
+                        try:
+                            pos = \
+                                ent_mgr.component_for_entity(entity, Position)
+                            draw_x, draw_y = \
+                                to_local_coords(refpoint, pos.coords)
+                            if not (draw_x, draw_y) in con or \
+                               pos.coords not in fov:
+                                continue
+                            con.draw_char(
+                                draw_x, draw_y,
+                                renderinfo.char,
+                                tuple(
+                                    int(n * k)
+                                    for n, k
+                                    in zip(
+                                        renderinfo.color,
+                                        (world_map.light_map[pos.coords],) *
+                                        3)))
+                        except NonexistentComponentTypeForEntity as err:
+                            print('Entity %s has no %s; skipping...'
+                                  % (repr(entity), str(err)))
+                        except TDLError as err:
+                            print('Got TDLError %s, skipping...' % str(err))
         untdl.flush()

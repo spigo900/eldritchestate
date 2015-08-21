@@ -34,12 +34,12 @@ def render_msgs(con, coords, msgs, n=5):
         con.draw_str(x, y + i, msgs[:-i])
 
 
-def render_map(con, map_, refpoint):
+def render_map(con, map_, refpoint, fov):
     from untdl import TDLError
     for (coord, tile_type) in map_.items():
         draw_coords = (coord[0] - refpoint[0],
                        coord[1] - refpoint[1])
-        if draw_coords in con:
+        if draw_coords in con and coord in fov:
             try:
                 tile_info = gmap.get_tile_type(map_, tile_type)
                 tile_char = tile_info['char']
