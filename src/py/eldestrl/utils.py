@@ -25,10 +25,12 @@ Rect = namedtuple('Rect', 'x, y, width, height')
 
 
 def rects_intersect(a, b):
-    return ((a.x + a.width) < b.x or
-            (b.x + b.width) < a.x) and \
-           ((a.y + a.height) < b.y or
-            (b.y + b.height) < a.y)
+    a2 = Point(a.x + a.width - 1, a.y + a.height - 1)
+    b2 = Point(a.x + a.width - 1, a.y + a.height - 1)
+    return ((a.x <= b.x <= a2.x or
+             b.x <= a.x <= b2.x) and
+            (a.y <= b.y <= a2.y or
+             b.y <= a.y <= b2.y))
 
 
 def to_local_coords(ref_coords, localized):
