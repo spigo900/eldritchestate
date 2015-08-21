@@ -1,4 +1,3 @@
-import datetime as dtime
 import untdl.noise
 import eldestrl.map as gmap
 from eldestrl.utils import to_grayscale
@@ -27,24 +26,11 @@ def render_msgs(con, coords, msgs, n=5):
     for i in range(1, n+1):
         con.draw_str(x, y + i, msgs[:-i])
 
-render_noise = untdl.noise.Noise(algorithm='SIMPLEX', mode='TURBULENCE',
-                                 hurst=0.8)
-last_rendered = dtime.datetime.now()
-NEW_NOISE_MS = 450
-NEW_NOISE_TIME = int(NEW_NOISE_MS * 1000)
-
 
 def render_map(con, map_, refpoint, fov, seen):
     from untdl import TDLError
-    global render_noise
-    global last_rendered
-    render_time = dtime.datetime.now()
-    time_diff = render_time - last_rendered
-    if time_diff.microseconds > NEW_NOISE_TIME:
-        render_noise = untdl.noise.Noise(algorithm='SIMPLEX',
-                                         mode='TURBULENCE',
-                                         hurst=0.8)
-        last_rendered = render_time
+    noise = untdl.noise.Noise(algorithm='SIMPLEX', mode='TURBULENCE',
+                              seed=22, hurst=0.8)
     for (coord, tile_type) in map_.items():
         draw_coords = (coord[0] - refpoint[0],
                        coord[1] - refpoint[1])
@@ -63,7 +49,7 @@ def render_map(con, map_, refpoint, fov, seen):
                                   lit_color(tile_fg, tile_lighting),
                                   tile_bg_final)
                 elif coord in seen:
-                    tile_noise = render_noise.get_point(*coord)
+                    tile_noise = noise.get_point(*coord)
                     tile_bg_final = fog_color(tile_bg, tile_lighting) \
                         if tile_bg else tile_bg
                     con.draw_char(draw_coords[0], draw_coords[1],
