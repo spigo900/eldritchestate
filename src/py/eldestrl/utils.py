@@ -208,7 +208,7 @@ def partition(list_):
     return partitioned
 
 
-def remove_dups(list_):
+def remove_duplicates(list_):
     return [sublist[0] for sublist in partition(list_)]
 
 
