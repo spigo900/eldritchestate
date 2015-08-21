@@ -28,9 +28,7 @@ def fog_color(color, noise):
 
 # rendering
 def render_msgs(con, coords, msgs, n=5):
-    '''Takes a console, a coordinate pair, a sliceable collection of messages
-    and optionally a number of messages, and render the messages to the
-    console.'''
+    '''Render a list of messages to a console.'''
     x, y = coords
     for i in range(1, n+1):
         con.draw_str(x, y + i, msgs[:-i])
