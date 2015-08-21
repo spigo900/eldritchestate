@@ -37,6 +37,8 @@ def game_loop(con):
     sys_mgr = SystemManager(ent_mgr)
     sys_mgr.add_system(systems.UpdateWorldSys())
     sys_mgr.add_system(systems.LightingSys(game_map))
+    sys_mgr.add_system(systems.FOVSys())
+    sys_mgr.add_system(systems.FOWSys())
 
     event_sys = systems.EventSys()
     sys_mgr.add_system(event_sys)
