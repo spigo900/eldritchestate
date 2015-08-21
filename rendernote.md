@@ -8,3 +8,5 @@ Window is fixed to a certain part of the screen. I suppose that's something.
 
 Also, the color (100, 147, 100) is a nice tundra-grass-ish color. I might want
 to use that for something.
+
+(187, 0, 17) could be a nice red.
