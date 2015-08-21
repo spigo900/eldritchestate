@@ -1,4 +1,4 @@
-* Complete a prototype of the eldritch real estate game. [1/7]
+* Complete a prototype of the eldritch real estate game. [2/7]
   Remember: don't write anything extra, and no more content than is absolutely
   necessary. We're trying to actually finish this thing.
 ** DONE Code the map representation.
@@ -10,8 +10,12 @@
    It only needs to work for maps right now, but I may later want to extend it to
    clients, items, monsters, plots, or whatever. But it really only needs to work
    for maps at the moment, so that's what I'll code it for.
-** TODO Write the lighting system.
+** DONE Write the lighting system.
+   CLOSED: [2015-08-20 Thu 23:28]
    I'm not really sure how to start with this.
+
+   ... It's done now. Finished earlier today. I haven't got it completely
+   working yet, but it works well enough for now, so I'm calling it.
 ** TODO Code the Fog of Fh'tagn system.
 ** TODO Write the Line of Sight system.
    Really, this means "integrate libtcod/UnTDL's line of sight system." Same
