@@ -62,7 +62,7 @@ def passable(ent_mgr, map_, coords):
 def blocks_sight(map_, x, y):
     # Slightly hacky; I should define a default tiletype eventually.
     # Or something like that.
-    ttype = map_.get((x, y), "floor")
+    ttype = map_.get((x, y), "wall")
     type_def = get_tile_type(map_, ttype)
     return type_def['blocks_sight']
 
