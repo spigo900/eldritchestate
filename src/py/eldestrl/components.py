@@ -65,7 +65,7 @@ class LightSource(Component):
 
 
 class Sight(Component):
-    def __init__(self, radius, min_light=0.5):
+    def __init__(self, radius, min_light=0.2):
         self.radius = radius
         self.min_light = min_light
         self.in_sight = set()
