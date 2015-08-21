@@ -127,21 +127,21 @@ def has_component(ent_mgr, ent, component):
 
 def multiply_colors(a, b):
     """Take two colors a and b and return their product."""
-    return tuple(map((lambda x, y: (x * y) // 255), a, b))
+    from math import ceil
+    return tuple(map((lambda x, y: ceil((x * y) / 255)), a, b))
 
 
 def to_grayscale(color):
     return (sum(color) // 3,) * 3
 
 
-PARCHMENT_RATIO = (51, 45, 31)
+PARCHMENT_RATIO = (51, 45, 33)
 
 
 def gray_to_parchment(color):
     denominator = max(PARCHMENT_RATIO)
     return tuple(int(x * n // denominator)
-                 for x in color
-                 for n in PARCHMENT_RATIO)
+                 for x, n in zip(color, PARCHMENT_RATIO))
 
 
 def color_to_parchment_tone(color):
@@ -177,10 +177,10 @@ def bresenham_line(x1, y1, x2, y2):
     delta_y = y2 - y1
     if delta_x == 0:
         return list(zip(repeat(x1),
-                        range(y1, y2, sign(delta_y))))
+                        range(y1, y2 + sign(delta_y), sign(delta_y))))
     elif delta_y == 0:
-        return list(zip(repeat(y1),
-                        range(x1, x2, sign(delta_x))))
+        return list(zip(range(x1, x2 + sign(delta_x), sign(delta_x)),
+                        repeat(y1)))
     error = 0
     delta_error = abs(delta_y / delta_x)
     y = y1
@@ -206,6 +206,8 @@ def partition(list_):
             partitioned.append(sublist)
             sublist = [item]
         lastitem = item
+    if list_[-1] != list_[-2]:
+        partitioned.append(sublist)
     return partitioned
 
 
