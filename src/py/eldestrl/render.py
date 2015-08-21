@@ -1,13 +1,6 @@
+import untdl.noise
 import eldestrl.map as gmap
 from eldestrl.utils import to_grayscale
-
-
-class TestNoise():
-    def __init__(self, *args):
-        pass
-
-    def get_point(*args):
-        return 0.8
 
 
 def lit_color(color, lighting):
@@ -36,7 +29,7 @@ def render_msgs(con, coords, msgs, n=5):
 
 def render_map(con, map_, refpoint, fov, seen):
     from untdl import TDLError
-    noise = TestNoise()
+    noise = untdl.noise.Noise(algorithm='SIMPLEX', mode='TURBULENCE')
     for (coord, tile_type) in map_.items():
         draw_coords = (coord[0] - refpoint[0],
                        coord[1] - refpoint[1])
