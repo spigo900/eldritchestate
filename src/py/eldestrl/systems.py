@@ -65,7 +65,7 @@ class LightingSys(System):
                         continue
                     line = utils.remove_duplicates(line)
                     lights = light.light_line(
-                        1.0, line, light.lighting_quadratic_spec,
+                        1.0, line, light.lighting_linear,
                         lambda x, y: emap.light_attenuation(self.map_, x, y))
                     minimap.update(zip(line, lights))
 
