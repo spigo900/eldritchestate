@@ -76,10 +76,6 @@ class LightingSys(System):
 
 
 class FOVSys(System):
-    def __init__(self, map_):
-        self.map_ = map_
-        super(FOVSys, self).__init__()
-
     def __update__(self, dt):
         def transparent(x, y):
             return not emap.blocks_sight(self.map_, x, y)
@@ -101,10 +97,6 @@ class FOVSys(System):
 
 
 class FOWSys(System):
-    def __init__(self, map_):
-        self.map_ = map_
-        super(FOWSys, self).__init__()
-
     def __update__(self, dt):
         ent_mgr = self.entity_manager
         for (entity, _) in ent_mgr.pairs_for_type(comp.PlayerControlled):
