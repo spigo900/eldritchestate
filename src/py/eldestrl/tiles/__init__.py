@@ -80,9 +80,13 @@ def maybe_do_action(ent_mgr, ent, map_, pos, action):
 
 def load_json():
     with open(JSON_PATH) as f:
-        content = json.load(f)
+        data = json.load(f)
+    return process_json(data)
+
+
+def process_json(data):
     tmp = {}
-    for ttype in content:
+    for ttype in data:
         assert 'char' in ttype
         assert len(ttype['char']) == 1
         ttype.setdefault('color', (255, 255, 255))
