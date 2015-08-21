@@ -29,7 +29,8 @@ def render_msgs(con, coords, msgs, n=5):
 
 def render_map(con, map_, refpoint, fov, seen):
     from untdl import TDLError
-    noise = untdl.noise.Noise(algorithm='SIMPLEX', mode='TURBULENCE')
+    noise = untdl.noise.Noise(algorithm='SIMPLEX', mode='TURBULENCE',
+                              seed=22)
     for (coord, tile_type) in map_.items():
         draw_coords = (coord[0] - refpoint[0],
                        coord[1] - refpoint[1])
