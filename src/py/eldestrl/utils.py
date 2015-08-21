@@ -172,8 +172,8 @@ def bresenham_line(x1, y1, x2, y2):
     from itertools import repeat
     if (x1, y1) == (x2, y2):
         return [(x1, y1)]
-    delta_x = max(x2, x1) - min(x1, x2)
-    delta_y = max(y2, y1) - min(y1, y2)
+    delta_x = x2 - x1
+    delta_y = y2 - y1
     if delta_x == 0:
         return list(zip(repeat(x1),
                         range(y1, y2, sign(delta_y))))
@@ -184,7 +184,7 @@ def bresenham_line(x1, y1, x2, y2):
     delta_error = abs(delta_y / delta_x)
     y = y1
     points = []
-    for x in range(min(x1, x2), max(x2, x1) + 1):
+    for x in range(x1, x2 + 1, sign(delta_x)):
         points.append((x, y))
         error += delta_error
         while error >= 0.5:
