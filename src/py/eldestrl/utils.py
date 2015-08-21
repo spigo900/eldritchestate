@@ -203,7 +203,7 @@ def partition(list_):
             sublist.append(item)
         else:
             partitioned.append(sublist)
-            sublist = []
+            sublist = [item]
         lastitem = item
     return partitioned
 
