@@ -262,7 +262,7 @@ class RenderDisplaySys(System):
                           % repr(display_ent))
                 else:
                     con.clear()
-                    render_map(con, world_map, refpoint, fov)
+                    render_map(con, world_map, refpoint, fov, world_map.seen)
                     for (entity, renderinfo) in ent_mgr.pairs_for_type(Char):
                         try:
                             pos = \
