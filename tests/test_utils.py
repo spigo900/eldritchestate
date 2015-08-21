@@ -14,6 +14,27 @@ def test_in_range():
     assert not in_range(50, 3, 10)
 
 
+def test_in_rect():
+    rect = Rect(2, 3, 4, 5)
+    assert in_rect(rect, 2, 3)
+    assert in_rect(rect, 5, 3)
+    assert in_rect(rect, 2, 7)
+    assert in_rect(rect, 5, 7)
+    assert not in_rect(rect, 1, 3)
+    assert not in_rect(rect, 2, 2)
+    assert not in_rect(rect, 6, 7)
+    assert not in_rect(rect, 5, 8)
+
+
+def test_rects_intersect():
+    rect_a = Rect(1, 1, 5, 5)
+    rect_b = Rect(2, 3, 4, 5)
+    rect_c = Rect(4, 6, 7, 7)
+    assert rects_intersect(rect_a, rect_b)
+    assert rects_intersect(rect_b, rect_c)
+    assert not rects_intersect(rect_a, rect_c)
+
+
 def test_adjecent():
     a = (0, 0)
     b = (0, 1)
