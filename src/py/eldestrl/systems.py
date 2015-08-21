@@ -58,10 +58,12 @@ class LightingSys(System):
                 minimap = {}
 
                 for (x2, y2) in points_checked:
-                    line = [(x, y) for (x, y) in utils.bresenham_line(x1, y1, x2, y2)
+                    line = [(x, y) for (x, y)
+                            in utils.bresenham_line(x1, y1, x2, y2)
                             if (x, y) in self.map_]
                     if not line:
                         continue
+                    line = utils.remove_duplicates(line)
                     lights = light.light_line(
                         1.0, line, light.lighting_quadratic_spec,
                         lambda x, y: emap.light_attenuation(self.map_, x, y))
