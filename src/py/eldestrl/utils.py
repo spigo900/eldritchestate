@@ -185,7 +185,7 @@ def bresenham_line(x1, y1, x2, y2):
     delta_error = abs(delta_y / delta_x)
     y = y1
     points = []
-    for x in range(x1, x2 + 1, sign(delta_x)):
+    for x in range(x1, x2 + 2*sign(delta_x), sign(delta_x)):
         points.append((x, y))
         error += delta_error
         while error >= 0.5:
