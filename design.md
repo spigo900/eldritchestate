@@ -49,4 +49,17 @@ first version, but that's an upper bound, not a requirement. I only need one.
 * Any variation in tax collectors, since they don't exist yet.
 * A combat system for fighting the eldritch abominations. It's simply not needed
   at this stage of the game.
-* 
+
+
+
+
+
+Idea: Seeing suspicious stuff raises momentary suspicion as well as the
+"suspicion floor" -- a client's suspicion dissipates over time, but it will
+never get below this floor value. It rises slowly, but if they see enough
+suspicious shit, it's going to be very difficult or impossible to get them to
+calm down. So don't let them.
+
+What does suspicion do? I'm not sure yet, exactly. Might make them panic and try
+to leave the property, or might cause some other behavior. Will have to figure
+that out.
