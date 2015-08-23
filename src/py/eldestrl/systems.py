@@ -150,7 +150,7 @@ class EventSys(System):
         ent_mgr = self.entity_manager
         events = ev.get()
         for event in events:
-            if isinstance(event, ev.KeyUp) or event.type == "QUIT":
+            if event.type == "KEYUP" or event.type == "QUIT":
                 return
             for (entity, _) in ent_mgr.pairs_for_type(PlayerControlled):
                 action, *params = eldinput.get_action(event)
