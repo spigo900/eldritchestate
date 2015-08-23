@@ -32,3 +32,10 @@ def get_action(event):
     Should handle both keyboard events and, eventually, mouse events.
     '''
     return get_action_key(event)
+
+
+def get_dir(event):
+    # we're expecting a tuple where the second item is a coordinate pair
+    # representing a direction, so return the second item in that tuple
+    action = get_action(event)
+    return action[1]
