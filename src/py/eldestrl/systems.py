@@ -1,4 +1,5 @@
 import logging
+import untdl
 import untdl.event as ev
 import untdl.map as mapfn
 from ecs.models import System
@@ -9,6 +10,8 @@ import eldestrl.input as eldinput
 import eldestrl.lighting as light
 import eldestrl.components as comp
 import eldestrl.utils as utils
+import eldestrl.ui.events as uievents
+import eldestrl.ui.states as uistates
 
 
 class UpdateWorldSys(System):
@@ -124,53 +127,23 @@ class FollowEntitySys(System):
 class EventSys(System):
     def __init__(self):
         self.game_ended = False
-        self.input_handlers = \
-            {"do_action_tile": self.do_action_tile,
-             "run_dir": self.run_dir,
-             "quit": self.quit}
+        self.ui_console = untdl.Console()
+        self.ui_states = [uistates.Play(self.ui_console, self.entity_manager)]
         super(EventSys, self).__init__()
 
-    def _do_move_tile_common(self, player_ent, move_diff, action_type):
-        assert (-1, -1) <= move_diff <= (1, 1)
-        ent_mgr = self.entity_manager
-        actor = ent_mgr.component_for_entity(player_ent, comp.Actor)
-        actor.queue.append((action_type, move_diff))
-
-    def do_action_tile(self, player_ent, move_diff):
-        self._do_move_tile_common(player_ent, move_diff, 'do_action_tile')
-
-    def run_dir(self, player_ent, move_diff):
-        self._do_move_tile_common(player_ent, move_diff, 'run_dir')
-
-    def quit(self, *_):
-        self.game_ended = True
-
     def update(self, dt):
-        from eldestrl.components import PlayerControlled
-        ent_mgr = self.entity_manager
         events = ev.get()
         for event in events:
             if event.type == "KEYUP" or event.type == "QUIT":
                 return
-            for (entity, _) in ent_mgr.pairs_for_type(PlayerControlled):
-                action, *params = eldinput.get_action(event)
-                try:
-                    handler_fn = self.input_handlers[action]
-                    handler_fn(entity, *params)
-                except KeyError:
-                    log = logging.getLogger(__name__)
-                    log.info("Pressed unbound key {}.".format(event))
-                except AttributeError as err:
-                    print('AttributeError! Event was:' '\n'
-                          '%s' '\n\n'
-                          'Error was:'
-                          '%s' '\n'
-                          % (repr(event), repr(err)))
-                except NonexistentComponentTypeForEntity as err:
-                    print('Player-controlled entity %(entity)s'
-                          'has no component %(component)s!'
-                          % {'entity': str(err.entity),
-                             'component': str(err.compoent_type)})
+            elif event.type == "NEWSTATE":
+                self.ui_states.append(event.state)
+            elif event.type == "DONECURSTATE" or event.type == "ESCAPESTATE":
+                self.ui_states.pop()
+            if not self.ui_states:
+                self.game_ended = True
+            cur_state = self.ui_states[-1]
+            cur_state.handle_event(event)
 
 
 class AISys(System):

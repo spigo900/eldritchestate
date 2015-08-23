@@ -2,7 +2,7 @@ import logging
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import untdl.event as ev
 import eldestrl.ui.events as eldevs
-import eldestrl.component as comp
+import eldestrl.components as comp
 import eldestrl.input as eldinput
 
 
