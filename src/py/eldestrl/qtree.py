@@ -9,7 +9,7 @@ MAX_DEPTH = 4
 
 
 def new_leaf(val):
-    return [val]
+    return [val, [], [], [], []]
 
 
 def qmap(tree, f):
@@ -30,7 +30,9 @@ def qmapi(tree, f):
     #     vals.append(f(tree[0]))
     while stack:
         cur = stack.pop()
-        if cur[0] is not None:
+        val = cur[0]
+        children = cur[1:]
+        if val is not None:
             vals.append(f(cur[0]))
         # loop will not execute at all for leaf nodes, since they're just [val]
         # and nodes with None for all branches are also leaf nodes, and so
@@ -38,31 +40,49 @@ def qmapi(tree, f):
         #
         # I should probably stick with just using singleton lists as leaves
         # since that's simpler and in this case more efficient
-        for item in cur[1:]:
-            if item is not None:
-                stack.append(item)
+        for child in children:
+            if child is not []:
+                stack.append(child)
     return vals
 
 
 def qmapi3(tree, f):
-    """Iterative version of qmap."""
-    treec = copy.deepcopy(tree)
+    """Iterative version of qmap.
+
+    Not super-efficient (it works by copying and modifying the tree), but it
+    works."""
+    tree_copy = copy.deepcopy(tree)
     stack = []
-    node = treec
-    while stack and node:
+
+    def trav(node):
+        val = node[0]
+        children = node[1:]
+        for child in children:
+            if child is not []:
+                stack.append(child)
+        # return f(val) if val is not None else None
+        if val is not None:
+            node[0] = f(val)
+        # return f(val) if val is not None else None
+    # while stack and cur_node is not []:
+    stack.append(tree_copy)
+    while stack:
         cur = stack.pop()
-        if cur[0] is not None:
-            vals.append(f(cur[0]))
+        # if cur[0] is not []:
+        #     vals.append(f(cur[0]))
         # loop will not execute at all for leaf nodes, since they're just [val]
         # and nodes with None for all branches are also leaf nodes, and so
         # they'll be looped through to no effect
         #
         # I should probably stick with just using singleton lists as leaves
         # since that's simpler and in this case more efficient
-        for item in cur[1:]:
-            if item is not None:
-                stack.append(item)
-    return vals
+        # for item in cur[1:]:
+        #     if item is not []:
+        #         stack.append(item)
+        # cur_node.append(trav(cur))
+        trav(cur)
+        print("cur:", cur)
+    return tree_copy
 
 SENTINEL = None
 
