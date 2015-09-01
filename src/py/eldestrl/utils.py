@@ -24,6 +24,12 @@ Point = namedtuple('Point', 'x y')
 Rect = namedtuple('Rect', 'x, y, width, height')
 
 
+def is_subrect(a, b):
+    return a.x <= b.x and a.y <= b.y and \
+        a.x + a.width <= b.x + b.width and \
+        a.y + a.height <= b.y + b.height
+
+
 def rects_intersect(a, b):
     a2 = Point(a.x + a.width - 1, a.y + a.height - 1)
     b2 = Point(a.x + a.width - 1, a.y + a.height - 1)
