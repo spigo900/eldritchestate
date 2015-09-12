@@ -13,6 +13,10 @@ def tree_children(tree):
     return (child for child in tree[1:] if child)
 
 
+def tree_all_children(tree):
+    return (child for child in tree[1:])
+
+
 def reduce(f, acc, tree):
     if not tree:
         return acc
@@ -50,7 +54,7 @@ def qmapi(f, tree):
         val = f(tree_value(cur))
         if parent and dir_:
             parent[dir_] = new_leaf(val)
-        children = list(tree_children(cur))
+        children = list(tree_all_children(cur))
         for (i, cur_child) in enumerate(children):
             direction = TreeDirs(i + 1)
             if cur_child:
