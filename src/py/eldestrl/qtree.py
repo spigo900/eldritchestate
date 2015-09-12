@@ -1,3 +1,4 @@
+from enum import Enum
 import random
 import copy
 from eldestrl.utils import Rect
@@ -12,77 +13,49 @@ def new_leaf(val):
     return [val, [], [], [], []]
 
 
+def reduce(f, acc, tree):
+    if not tree:
+        return acc
+    stack = [tree]
+    while stack:
+        cur = stack.pop()
+        acc = f(acc, tree_value(cur))
+        children = list(tree_children(cur))
+        stack.extend(children)
+    return acc
+
+
 def qmap(tree, f):
     """Return the result of applying f to all nodes in the tree."""
     first = [f(tree[0])] if tree[0] is not None else []
     return first + map(qmap, tree[1:])
 
 
-def qmapi(tree, f):
-    """Iterative version of qmap."""
-    # should return a tree of values, but currently returns a list; how do I
-    # write that algorithm?
-    vals = []
-    # stack = tree[1:]
-    # stack = tree[::-1]
-    stack = tree
-    # if tree[0] is not None:
-    #     vals.append(f(tree[0]))
+class TreeDirs(Enum):
+    QI = 1
+    QII = 2
+    QIII = 3
+    QIV = 4
+
+
+def qmapi(f, tree):
+    if not tree:
+        return tree
+    root_val = tree_value(tree)
+    # new_tree = new_leaf(f(root_val))
+    new_tree = new_leaf(root_val)
+    stack = [(new_tree, None, None)]
     while stack:
-        cur = stack.pop()
-        val = cur[0]
-        children = cur[1:]
-        if val is not None:
-            vals.append(f(cur[0]))
-        # loop will not execute at all for leaf nodes, since they're just [val]
-        # and nodes with None for all branches are also leaf nodes, and so
-        # they'll be looped through to no effect
-        #
-        # I should probably stick with just using singleton lists as leaves
-        # since that's simpler and in this case more efficient
-        for child in children:
-            if child is not []:
-                stack.append(child)
-    return vals
-
-
-def qmapi3(tree, f):
-    """Iterative version of qmap.
-
-    Not super-efficient (it works by copying and modifying the tree), but it
-    works."""
-    tree_copy = copy.deepcopy(tree)
-    stack = []
-
-    def trav(node):
-        val = node[0]
-        children = node[1:]
-        for child in children:
-            if child is not []:
-                stack.append(child)
-        # return f(val) if val is not None else None
-        if val is not None:
-            node[0] = f(val)
-        # return f(val) if val is not None else None
-    # while stack and cur_node is not []:
-    stack.append(tree_copy)
-    while stack:
-        cur = stack.pop()
-        # if cur[0] is not []:
-        #     vals.append(f(cur[0]))
-        # loop will not execute at all for leaf nodes, since they're just [val]
-        # and nodes with None for all branches are also leaf nodes, and so
-        # they'll be looped through to no effect
-        #
-        # I should probably stick with just using singleton lists as leaves
-        # since that's simpler and in this case more efficient
-        # for item in cur[1:]:
-        #     if item is not []:
-        #         stack.append(item)
-        # cur_node.append(trav(cur))
-        trav(cur)
-        print("cur:", cur)
-    return tree_copy
+        (cur, parent, dir_) = stack.pop()
+        val = f(tree_value(cur))
+        if parent and dir_:
+            parent[dir_] = new_leaf(val)
+        children = list(tree_children(cur))
+        for direction in TreeDirs:
+            cur_child = children[direction]
+            if cur_child:
+                stack.append((cur, cur_child, direction))
+    return new_tree
 
 SENTINEL = None
 
