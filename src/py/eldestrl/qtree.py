@@ -82,10 +82,6 @@ def qreduce(tree, f, acc=SENTINEL):
     return acc
 
 
-def qmapi2(tree, f):
-    return qreduce(tree, f, lambda acc, x: acc + f(x), [])
-
-
 def is_branch(node):
     try:
         node[1]
