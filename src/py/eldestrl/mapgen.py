@@ -4,11 +4,6 @@ from eldestrl.map import Map
 import eldestrl.qtree as qtree
 from eldestrl.utils import Rect, in_rect, rects_intersect
 
-# DEFAULT_SEED = 4359
-# DEFAULT_SEED = 22
-DEFAULT_SEED = 88
-MAX_DEPTH = 4
-
 ################
 # OLD MAP CODE #
 ################
@@ -196,6 +191,11 @@ def new_map(seed=DEFAULT_MAP_SEED, map_info=DEFAULT_MAP_INFO):
 ################
 # NEW MAP CODE #
 ################
+
+# DEFAULT_SEED = 4359
+# DEFAULT_SEED = 22
+DEFAULT_SEED = 88
+MAX_DEPTH = 4
 
 
 def subdivide_rect(rect, x, y):
