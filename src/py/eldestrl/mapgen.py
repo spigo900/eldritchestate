@@ -86,8 +86,8 @@ def random_connectpoints(rng, map_height, rooms, room_a, room_b):
         end = point_b if point_a == start else point_a
         corner = end[0], start[1]
         intersects_anything = \
-            any(in_wall(room_a, x, y) or in_wall(room_b, x, y) or
-                in_rect(room, x, y)
+            any(in_wall(room_a, x, y) or in_wall(room_b, x, y)  # or
+                # in_rect(room, x, y)
                 for x in range(start[0], corner[0] + 1)
                 for y in range(corner[1], end[1] + 1)
                 for room in rooms
@@ -131,9 +131,12 @@ def connect_rooms(map_, rng, map_info, rooms, progress_callback):
             other_room = rng.choice(rooms)
             if (room, other_room) in connections \
                or room == other_room:
+                print("rooms {} and {} already connected... ?"
+                      .format(room, other_room))
                 continue
             start, end = random_connectpoints(rng, map_height, rooms,
                                               room, other_room)
+            print("got random conectpoints")
             tunnel_h(map_, map_info.default_floor, start[0], end[0], start[1])
             tunnel_v(map_, map_info.default_floor, start[1], end[1], end[0])
             for pos in ((x, y)
@@ -147,6 +150,7 @@ def connect_rooms(map_, rng, map_info, rooms, progress_callback):
             unconnected.remove(room)
             unconnected.remove(other_room)
             progress_callback(map_)
+    print("done connecting rooms! enjoy!")
 
 
 def map_gen(seed, map_info, progress_callback):
@@ -177,7 +181,9 @@ def map_gen(seed, map_info, progress_callback):
             rooms.append(room_rect)
             num_rooms += 1
             break
+        print("number of rooms: {}".format(num_rooms))
         progress_callback(map_)
+    print("done base mapgen; connecting rooms")
     connect_rooms(map_, rng, map_info, rooms, progress_callback)
     return map_
 
