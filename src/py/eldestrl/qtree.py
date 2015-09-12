@@ -1,6 +1,5 @@
 from enum import Enum
 import random
-import copy
 from eldestrl.utils import Rect
 
 # DEFAULT_SEED = 4359
