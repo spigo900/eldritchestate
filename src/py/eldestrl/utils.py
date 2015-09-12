@@ -25,9 +25,9 @@ Rect = namedtuple('Rect', 'x, y, width, height')
 
 
 def is_subrect(a, b):
-    return a.x <= b.x and a.y <= b.y and \
-        a.x + a.width <= b.x + b.width and \
-        a.y + a.height <= b.y + b.height
+    """Return whether rect a is contained in the rect b."""
+    return b.x <= a.x and a.x + a.width <= b.x + b.width and \
+        b.y <= a.y and a.y + a.height <= b.y + b.height
 
 
 def rects_intersect(a, b):
