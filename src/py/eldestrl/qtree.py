@@ -47,9 +47,7 @@ def qmapi(f, tree):
              in zip(tree_children(tree), TreeDirs)]
     while stack:
         (cur, parent, dir_) = stack.pop()
-        print("cur: {}".format(cur))
         val = f(tree_value(cur))
-        print("val: {}".format(val))
         if parent and dir_:
             parent[dir_] = new_leaf(val)
         children = list(tree_children(cur))
@@ -58,7 +56,6 @@ def qmapi(f, tree):
             direction = TreeDirs(i + 1)
             cur_child = children[i]
             if cur_child:
-                print("current child: {}".format(cur_child))
                 stack.append((cur_child, parent[dir_], direction))
     return new_tree
 
