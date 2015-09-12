@@ -4,15 +4,15 @@ from collections import namedtuple
 
 # utilities
 def clamp(val, min_, max_):
-    '''Ensure a value is within a given range. Return the upper or lower bound
+    """Ensure a value is within a given range. Return the upper or lower bound
     if val is out of bounds, depending on whether it\'s greater than max_ or
-    less than min._'''
+    less than min._"""
     return min(max(val, min_), max_)
 
 
 def in_range(val, min_, max_):
-    '''Takes a value, a minimum and a maximum and returns whether the value is
-    within the range.'''
+    """Takes a value, a minimum and a maximum and returns whether the value is
+    within the range."""
     return min_ <= val <= max_
 
 
@@ -31,6 +31,7 @@ def is_subrect(a, b):
 
 
 def rects_intersect(a, b):
+    """Return whether rect a and rect b intersect."""
     a2 = Point(a.x + a.width - 1, a.y + a.height - 1)
     b2 = Point(a.x + a.width - 1, a.y + a.height - 1)
     return ((a.x <= b.x <= a2.x or
@@ -40,20 +41,20 @@ def rects_intersect(a, b):
 
 
 def to_local_coords(ref_coords, localized):
-    '''Takes two coordinate tuples and returns a new coordinate tuple which
+    """Takes two coordinate tuples and returns a new coordinate tuple which
     represents the difference between ref_coords and localized (used to get
     coords relative to view, for example).
-    '''
+    """
     from operator import sub
     return tuple(map(sub, localized, ref_coords))
 
 
 def adjacent(coords_a, coords_b):
-    '''Takes a pair of coordinates and returns whether or not they're adjacent.
+    """Takes a pair of coordinates and returns whether or not they're adjacent.
     Does not take into account whether the tiles are passable or even exist
     within the map -- or in any map, for that matter. Remember to check that
     they do exist and, optionally, are passable as necessary.
-    '''
+    """
 
     ax, ay = coords_a
     bx, by = coords_b
@@ -61,18 +62,18 @@ def adjacent(coords_a, coords_b):
 
 
 def orthogonal(coords_a, coords_b):
-    '''Returns true if the given coordinates are either in the same row or the same
+    """Returns true if the given coordinates are either in the same row or the same
     column.
-    '''
+    """
     ax, ay = coords_a
     bx, by = coords_b
     return ax == bx or ay == by
 
 
 def ortho_adjacent(coords_a, coords_b):
-    '''Works like adjacent, but returns true only if the tiles are orthogonally
+    """Works like adjacent, but returns true only if the tiles are orthogonally
     adjacent.
-    '''
+    """
     ax, ay = coords_a
     bx, by = coords_b
     return (-1 <= ax - bx <= 1 and ay == by) or \
@@ -85,18 +86,18 @@ def manhattan_dist(x1, y1, x2, y2):
 
 
 def subtract_iterables(iter_a, iter_b):
-    '''Takes two iterables a and b and return a new iterable whose value is a -
-    b for each member of a and each member of b.'''
+    """Takes two iterables a and b and return a new iterable whose value is a -
+    b for each member of a and each member of b."""
     from operator import sub
     return map(sub, iter_a, iter_b)
 
 
 def center_offset(size_a, size_b):
-    '''Takes the size of two objects a and b along one dimension (i.event. both
+    """Takes the size of two objects a and b along one dimension (i.event. both
     parameters must be of the same dimension; a's width and b's width, for
     example) and returns the offset needed to place b perfectly centered within
     a along that dimension.
-    '''
+    """
     return size_a // 2 - size_b // 2
 
 
@@ -108,14 +109,14 @@ def draw_str_centered(con, str_, y, *args, **kwargs):
 
 
 def constantly(value):
-    '''Return a function which accepts any number of arguments whose return is
+    """Return a function which accepts any number of arguments whose return is
     always `value` (i.event. a constant function.).
-
-    '''
+    """
     return lambda *_s, **_kws: value
 
 
 def first_helper(iter_, err):
+    """Get the first item in iterable iter_, raising err if none."""
     try:
         return next(iter_)
     except StopIteration:
@@ -138,6 +139,7 @@ def multiply_colors(a, b):
 
 
 def to_grayscale(color):
+    """Convert a color to grayscale by averaging."""
     return (sum(color) // 3,) * 3
 
 
@@ -145,12 +147,14 @@ PARCHMENT_RATIO = (51, 45, 33)
 
 
 def gray_to_parchment(color):
+    """Convert a grayscale color to parchment color."""
     denominator = max(PARCHMENT_RATIO)
     return tuple(int(x * n // denominator)
                  for x, n in zip(color, PARCHMENT_RATIO))
 
 
 def color_to_parchment_tone(color):
+    """Convert a color to parchment-tone."""
     return gray_to_parchment(to_grayscale(color))
 
 
@@ -167,6 +171,7 @@ def get_event_key(event):
 
 
 def sign(n):
+    """Return the sign of n."""
     return -1 if n < 0 else 1 if n > 0 else 0
 
 
@@ -202,6 +207,7 @@ def bresenham_line(x1, y1, x2, y2):
 
 
 def partition(list_):
+    """Partition a list into gropus of equivalent items."""
     lastitem = list_[0]
     partitioned = []
     sublist = []
@@ -218,6 +224,7 @@ def partition(list_):
 
 
 def remove_duplicates(list_):
+    """Remove duplicates in a list."""
     return [sublist[0] for sublist in partition(list_)]
 
 
