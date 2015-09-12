@@ -4,6 +4,7 @@ import gc
 import sys
 from ecs.managers import EntityManager, SystemManager
 import eldestrl.map as eldmap
+import eldestrl.mapgen as eldmapgen
 import eldestrl.ent_templates as ents
 import eldestrl.systems as systems
 from eldestrl.menu import SimpleMenu
@@ -21,7 +22,7 @@ MAIN_MENU_OPTIONS = [('New Game', lambda con: game_loop(con)),
 def game_loop(con):
     '''The main game loop.'''
     untdl.event.set_key_repeat(500, 100)
-    game_map = eldmap.new_map()
+    game_map = eldmapgen.new_map()
     ent_mgr = EntityManager()
 
     player_coords = eldmap.random_unoccupied(ent_mgr, game_map,
