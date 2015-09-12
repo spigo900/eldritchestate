@@ -37,7 +37,9 @@ def map_info(width, height,
 
 # DEFAULT_MAP_SEED = 4359
 DEFAULT_MAP_SEED = 88
-DEFAULT_MAP_INFO = map_info(80, 80)
+DEFAULT_MAP_INFO = map_info(80, 80,
+                            min_rooms=10, max_rooms=50,
+                            room_width_min=2, room_height_min=2)
 
 
 def make_room(map_, floortype, walltype, x, y, width, height):
