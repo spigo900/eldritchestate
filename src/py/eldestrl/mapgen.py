@@ -22,7 +22,7 @@ def subdivide_rect(rect, x, y):
     se = Rect(split_x, split_y,
               round(rect.width * (1 - x)),
               round(rect.height * (1 - y)))
-    return [None, ne, nw, sw, se]
+    return [rect, ne, nw, sw, se]
 
 
 def subdivide_tree(tree, x, y):
