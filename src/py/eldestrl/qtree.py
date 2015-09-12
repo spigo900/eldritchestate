@@ -21,23 +21,6 @@ def tree_children(tree):
     return (child for child in tree[1:] if child)
 
 
-def tree_append(tree, val):
-    for idx, child in enumerate(tree[1:5]):
-        if not child and val not in tree[1:5]:
-            tree[idx + 1] = val
-            # appended = True
-    # if not appended:
-    if val not in tree[1:5]:
-        raise IndexError("No empty spaces in quad tree!")
-    # assert val in tree
-
-
-def tree_cons(tree, val):
-    treec = tree.copy()
-    tree_append(treec, val)
-    return treec
-
-
 def reduce(f, acc, tree):
     if not tree:
         return acc
