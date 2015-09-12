@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import IntEnum
 
 
 def new_leaf(val):
@@ -31,7 +31,7 @@ def qmap(tree, f):
     return first + map(qmap, tree[1:])
 
 
-class TreeDirs(Enum):
+class TreeDirs(IntEnum):
     QI = 1
     QII = 2
     QIII = 3
@@ -42,19 +42,24 @@ def qmapi(f, tree):
     if not tree:
         return tree
     root_val = tree_value(tree)
-    # new_tree = new_leaf(f(root_val))
-    new_tree = new_leaf(root_val)
-    stack = [(new_tree, None, None)]
+    new_tree = new_leaf(f(root_val))
+    stack = [(child, new_tree, dir_) for (child, dir_)
+             in zip(tree_children(tree), TreeDirs)]
     while stack:
         (cur, parent, dir_) = stack.pop()
+        print("cur: {}".format(cur))
         val = f(tree_value(cur))
+        print("val: {}".format(val))
         if parent and dir_:
             parent[dir_] = new_leaf(val)
         children = list(tree_children(cur))
-        for direction in TreeDirs:
-            cur_child = children[direction]
+        num_children = len(children)
+        for i in range(num_children):
+            direction = TreeDirs(i + 1)
+            cur_child = children[i]
             if cur_child:
-                stack.append((cur, cur_child, direction))
+                print("current child: {}".format(cur_child))
+                stack.append((cur_child, parent[dir_], direction))
     return new_tree
 
 SENTINEL = None
