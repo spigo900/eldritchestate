@@ -293,7 +293,6 @@ def _get_leaves_directional(tree, dirs):
             continue
         children = list(qtree.tree_children(cur))
         for i in (x - 1 for x in dirs):
-            print(i)
             stack.append(children[i])
     return edge_leaves
 
