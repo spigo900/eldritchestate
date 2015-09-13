@@ -121,6 +121,13 @@ def connect_rooms(map_, rng, map_info, rooms, progress_callback):
     connections = []
     unconnected = rooms
     map_height = map_info.height
+    # ... I see why this is broken.
+    #
+    # See, you remove the rooms from the list of unconnected rooms when you
+    # connect two of them. So they don't get connected to the other rooms in
+    # the map. So the whole map can never be connected.
+    #
+    # To be fixed later.
     while unconnected:
         for room in unconnected:
             other_room = rng.choice(rooms)
