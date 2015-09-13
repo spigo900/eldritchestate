@@ -10,7 +10,8 @@ def tree_value(tree):
 
 
 def tree_children(tree):
-    return (child for child in tree[1:] if child)
+    return (child for child in tree[1:] if child) \
+        if isinstance(tree, list) and len(tree) == 5 else []
 
 
 def tree_all_children(tree):
