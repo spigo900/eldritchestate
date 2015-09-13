@@ -272,7 +272,7 @@ def subdivide_tree_rand(rng, tree):
 
 def gen_quadtree(rng, width, height, depth=MAX_DEPTH):
     tree = qtree.new_leaf(Rect(0, 0, width, height))
-    for i in range(depth):
+    for _ in range(depth):
         subdivide_tree_rand(rng, tree)
     return tree
 
