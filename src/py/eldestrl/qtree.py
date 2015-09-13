@@ -35,8 +35,7 @@ def reduce(f, acc, tree):
     while stack:
         cur = stack.pop()
         acc = f(acc, tree_value(cur))
-        children = list(tree_children(cur))
-        stack.extend(children)
+        stack.extend(tree_children(cur))
     return acc
 
 
