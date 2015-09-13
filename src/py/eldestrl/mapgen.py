@@ -283,8 +283,25 @@ def gen_map(width, height, seed=DEFAULT_SEED):
     return space_tree
 
 
+def _get_leaves_directional(tree, dirs):
+    edge_leaves = []
+    stack = [tree]
+    while stack:
+        cur = stack.pop()
+        if qtree.is_leaf(cur):
+            edge_leaves.append(qtree.tree_value(cur))
+            continue
+        children = list(qtree.tree_children(cur))
+        for i in (x - 1 for x in dirs):
+            print(i)
+            stack.append(children[i])
+    return edge_leaves
+
+EDGES_TO_DIRS = {'n': (qtree.TreeDirs.QI, qtree.TreeDirs.QII),
+                 'e': (qtree.TreeDirs.QI, qtree.TreeDirs.QIV),
+                 's': (qtree.TreeDirs.QIII, qtree.TreeDirs.QIV),
+                 'w': (qtree.TreeDirs.QII, qtree.TreeDirs.QIII)}
+
+
 def edge(tree, edge):
-    if qtree.is_leaf(tree):
-        return tree
-    if edge == 'n':
-        return edge(tree.nw, edge)
+    return _get_leaves_directional(tree, EDGES_TO_DIRS[edge])
