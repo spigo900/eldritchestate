@@ -73,6 +73,10 @@ def qmapi(f, tree):
     return new_tree
 
 
+def flatten(tree):
+    return reduce(lambda acc, x: acc + [x], [], tree)
+
+
 def is_branch(node):
     try:
         node[1]
