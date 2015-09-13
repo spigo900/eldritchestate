@@ -215,37 +215,97 @@ def subdivide_rect(rect, x, y):
     return [rect, ne, nw, sw, se]
 
 
-def subdivide_tree(tree, x, y):
-    if qtree.is_leaf(tree):
-        return subdivide_rect(tree[0], x, y)
-    else:
-        return qtree.qmapi(tree, lambda r: subdivide_rect(r, x, y))
-        # stack = [tree]
-        # while stack:
-        #     cur = stack.pop()
-        #     subdivide
+def subdivide_rect_int(rect, split_x, split_y):
+    """Split a rect into a quad tree along the lines intersecting x, y.
+    """
+    rects = [Rect(rect.x + split_x, rect.y,
+                  rect.width - split_x, split_y),
+             Rect(rect.x, rect.y, split_x, split_y),
+             Rect(rect.x, rect.y + split_y,
+                  split_x, rect.height - split_y),
+             Rect(rect.x + split_x, rect.y + split_y,
+                  rect.width - split_x, rect.height - split_y)]
+    return [rect] + rects
 
 
-def get_random(rng, lower, upper):
-    ret = rng.random()
-    while lower <= ret <= upper:
-        ret = rng.random()
-    return ret
+def fits_ratio(rect):
+    LOWER_BOUND = 0.7
+    UPPER_BOUND = 3.6
+    print("ratio: {}".format(rect.width/rect.height))
+    return \
+        LOWER_BOUND <= rect.width / rect.height <= UPPER_BOUND or \
+        LOWER_BOUND <= rect.width / rect.height <= UPPER_BOUND
 
 
-def gen_quadtree(rng, width, height, depth):
-    root_rect = Rect(1, 1, width, height)
-    tmp = qtree.new_leaf(root_rect)
-    for i in range(depth - 1):
-        split_x, split_y = (get_random(rng, 0.25, 0.75),
-                            get_random(rng, 0.25, 0.75))
-        tmp = subdivide_tree(tmp, split_x, split_y)
-    return tmp
+def subdivide_leaf_rand(rng, leaf):
+    """Take a leaf containing a rectangle and pseudorandomly subdivide the rect
+    into leaves."""
+    rect = leaf[0]
+    for _ in range(5):
+        # split_x = rng.randint(1, rect.width - 2)
+        # split_y = rng.randint(1, rect.height - 2)
+        split_x = rng.randint(1, rect.width - 2)
+        split_y = rng.randint(1, rect.height - 2)
+        # ne_rect = Rect(rect.x + split_x, rect.y,
+        #                rect.width - split_x, split_y)
+        # nw_rect = Rect(rect.x, rect.y, split_x, split_y)
+        # sw_rect = Rect(rect.x, rect.y + split_y,
+        #                split_x, rect.height - split_y)
+        # se_rect = Rect(rect.x + split_x, rect.y + split_y,
+        #                rect.width - split_x, rect.height - split_y)
+        # rects_tree = [rect,
+        #               qtree.new_leaf(ne_rect), qtree.new_leaf(nw_rect),
+        #               qtree.new_leaf(sw_rect), qtree.new_leaf(se_rect)]
+        # reduction: TODO
+        # qtree.reduce(lambda x: x, rects_tree, PLACEHOLDER, rects_tree)
+
+        rects = [Rect(rect.x + split_x, rect.y,
+                      rect.width - split_x, split_y),
+                 Rect(rect.x, rect.y, split_x, split_y),
+                 Rect(rect.x, rect.y + split_y,
+                      split_x, rect.height - split_y),
+                 Rect(rect.x + split_x, rect.y + split_y,
+                      rect.width - split_x, rect.height - split_y)]
+        # rects = subdivide_rect_int(rect, split_x, split_y)
+        # if all(fits_ratio(rect) for rect in rects[1:]):
+        if all(fits_ratio(rect) for rect in rects):
+            print("fits ratio")
+            rects_tree = [rect] + list(map(qtree.new_leaf, rects))
+            return rects_tree
+            # return rects
+    return leaf
 
 
-def gen(width, height, seed=DEFAULT_SEED):
+def subdivide_tree_rand(rng, tree):
+    """Take a tree and subdivide its leaves randomly.
+
+    This is a destructive operation (i.e. it mutates its argument).
+    """
+    print(tree)
+    stack = [tree]
+    while stack:
+        cur = stack.pop()
+        print("cur is {}".format(cur))
+        children = list(qtree.tree_children(cur))
+        print("children are {}".format(children))
+        stack.extend(children)
+        if qtree.is_leaf(cur):
+            cur[:] = subdivide_leaf_rand(rng, cur)
+
+
+def gen_quadtree(rng, width, height, depth=MAX_DEPTH):
+    tree = qtree.new_leaf(Rect(0, 0, width, height))
+    for i in range(depth):
+        print('at depth {}'.format(i))
+        print('tree: {}'.format(tree))
+        subdivide_tree_rand(rng, tree)
+    return tree
+
+
+def gen_map(width, height, seed=DEFAULT_SEED):
     rng = random.Random(seed)
-    base_tree = gen_quadtree(rng, width, height, )
+    space_tree = gen_quadtree(rng, width, height, MAX_DEPTH)
+    return space_tree
 
 
 def edge(tree, edge):
