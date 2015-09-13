@@ -18,6 +18,16 @@ def tree_all_children(tree):
     return (child for child in tree[1:])
 
 
+def qall(tree):
+    """Returns true if all values in the tree are truthy."""
+    return reduce(lambda x, acc: x and acc, True, tree)
+
+
+def qall_match(tree, pred):
+    """Returns true if all values in the tree match the given predicate."""
+    return reduce(lambda x, acc: x and acc, True, qmapi(pred, tree))
+
+
 def reduce(f, acc, tree):
     if not tree:
         return acc
