@@ -72,25 +72,6 @@ def qmapi(f, tree):
                 stack.append((cur_child, parent[dir_], direction))
     return new_tree
 
-SENTINEL = None
-
-
-def qreduce(tree, f, acc=SENTINEL):
-    # see above
-    if acc is SENTINEL:
-        acc = [None]
-    stack = tree[1:]
-    if tree[0] is not None:
-        acc = f(acc, tree[0])
-    while stack:
-        cur = stack.pop()
-        if cur[0] is not None:
-            acc = f(acc, cur[0])
-        for item in cur[1:]:
-            if item is not None:
-                stack.append(item)
-    return acc
-
 
 def is_branch(node):
     try:
