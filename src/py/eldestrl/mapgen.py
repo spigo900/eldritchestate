@@ -225,7 +225,7 @@ def subdivide_rect_int(rect, split_x, split_y):
                   split_x, rect.height - split_y),
              Rect(rect.x + split_x, rect.y + split_y,
                   rect.width - split_x, rect.height - split_y)]
-    return [rect] + rects
+    return [rect] + list(map(qtree.new_leaf, rects))
 
 
 def fits_ratio(rect):
@@ -259,20 +259,21 @@ def subdivide_leaf_rand(rng, leaf):
         # reduction: TODO
         # qtree.reduce(lambda x: x, rects_tree, PLACEHOLDER, rects_tree)
 
-        rects = [Rect(rect.x + split_x, rect.y,
-                      rect.width - split_x, split_y),
-                 Rect(rect.x, rect.y, split_x, split_y),
-                 Rect(rect.x, rect.y + split_y,
-                      split_x, rect.height - split_y),
-                 Rect(rect.x + split_x, rect.y + split_y,
-                      rect.width - split_x, rect.height - split_y)]
-        # rects = subdivide_rect_int(rect, split_x, split_y)
-        # if all(fits_ratio(rect) for rect in rects[1:]):
-        if all(fits_ratio(rect) for rect in rects):
+        # rects = [Rect(rect.x + split_x, rect.y,
+        #               rect.width - split_x, split_y),
+        #          Rect(rect.x, rect.y, split_x, split_y),
+        #          Rect(rect.x, rect.y + split_y,
+        #               split_x, rect.height - split_y),
+        #          Rect(rect.x + split_x, rect.y + split_y,
+        #               rect.width - split_x, rect.height - split_y)]
+        rects = subdivide_rect_int(rect, split_x, split_y)
+        print("rects: {}".format(rects))
+        if qtree.qall_match(rects, fits_ratio):
+        # if all(fits_ratio(rect) for rect in rects):
             print("fits ratio")
-            rects_tree = [rect] + list(map(qtree.new_leaf, rects))
-            return rects_tree
-            # return rects
+            # rects_tree = [rect] + list(map(qtree.new_leaf, rects))
+            # return rects_tree
+            return rects
     return leaf
 
 
