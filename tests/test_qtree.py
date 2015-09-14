@@ -1,6 +1,8 @@
 import pytest
+import operator as op
+import functools as fn
 import eldestrl.qtree as qtree
-from eldestrl.qtree import qmapi
+from eldestrl.qtree import qmapi, reduce
 
 
 @pytest.fixture
@@ -19,3 +21,13 @@ def test_qmapi(tree_fixt):
     assert identity == tree_fixt
     assert pos[0] == tree_fixt[0] + 5
     assert neg[0] == tree_fixt[0] - 5
+
+
+def test_flatten_equiv(tree_fixt):
+    def add5(x):
+        return x + 5
+    assert set(qtree.flatten(qtree.qmapi(add5, tree_fixt))) == \
+        set(map(add5, qtree.flatten(tree_fixt)))
+    assert fn.reduce(op.add, qtree.flatten(tree_fixt)) == \
+        reduce(op.add, 0, tree_fixt)
+    assert qtree.flatten(tree_fixt)[0] == tree_fixt[0]
