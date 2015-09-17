@@ -2,7 +2,8 @@ from collections import namedtuple
 import random
 from eldestrl.map import Map
 import eldestrl.qtree as qtree
-from eldestrl.utils import Rect, in_rect, rects_intersect
+from eldestrl.utils import Rect, in_rect, rects_intersect, \
+    rect_area, count_in_rect
 
 ################
 # OLD MAP CODE #
@@ -268,6 +269,23 @@ def subdivide_tree_rand(rng, tree):
         stack.extend(children)
         if qtree.is_leaf(cur):
             cur[:] = subdivide_leaf_rand(rng, cur)
+
+OUTSIDE_THRESH = 0.7
+
+
+def outside(rect, cell_map):
+    return rect_area(rect)/count_in_rect(rect, cell_map) >= OUTSIDE_THRESH
+
+
+def tree_outside(tree, cell_map):
+    # Implementation is somewhat suboptimal; ideally, I would want to apply
+    # count_in_rect only to the leaves and then compute the branch's value as
+    # the sum of its childrens' values. That way, each tile only has to be
+    # checked once. For now, though, this will do.
+    def outside_(r):
+        return outside(r, cell_map)
+    counted = qtree.qmapi(count_in_rect, tree)
+    return qtree.qmapi(outside_, counted)
 
 
 def gen_quadtree(rng, width, height, depth=MAX_DEPTH):

@@ -40,6 +40,19 @@ def rects_intersect(a, b):
              b.y <= a.y <= b2.y))
 
 
+def count_in_rect(rect, cell_map):
+    count = 0
+    for i in range(rect.width):
+        for j in range(rect.height):
+            if cell_map.get(Point(rect.x + i, rect.y + j), False):
+                count += 1
+    return count
+
+
+def rect_area(rect):
+    return rect.width * rect.height
+
+
 def to_local_coords(ref_coords, localized):
     """Takes two coordinate tuples and returns a new coordinate tuple which
     represents the difference between ref_coords and localized (used to get
