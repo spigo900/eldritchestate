@@ -42,7 +42,7 @@ def reduce(f, acc, tree):
 def qmap(tree, f):
     """Return the result of applying f to all nodes in the tree."""
     first = [f(tree[0])] if tree[0] is not None else []
-    return first + map(qmap, tree[1:])
+    return first + map(lambda x: qmap(x, f), tree[1:])
 
 
 class TreeDirs(IntEnum):
