@@ -26,10 +26,10 @@ def game_loop(con):
     ent_mgr = EntityManager()
 
     player_coords = eldmap.random_unoccupied(ent_mgr, game_map,
-                                             eldmap.DEFAULT_MAP_SEED)
+                                             eldmapgen.DEFAULT_MAP_SEED)
     player = ents.new_player(ent_mgr, game_map, player_coords)
     torch_coords = eldmap.random_unoccupied(ent_mgr, game_map,
-                                            eldmap.DEFAULT_MAP_SEED)
+                                            eldmapgen.DEFAULT_MAP_SEED)
     ents.new_torch(ent_mgr, game_map, torch_coords)
     # ents.new_client(ent_mgr, game_map, (8, 3))
     main_display = untdl.Window(con, 0, 0, 25, 15)
