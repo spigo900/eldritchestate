@@ -38,7 +38,7 @@ class Play(UIState):
     def run_dir(self, player_ent, move_diff):
         self._do_move_tile_common(player_ent, move_diff, 'run_dir')
 
-    def quit(self):
+    def quit(self, *_):
         ev.push(eldevs.EscapeState())
 
     def handle_event(self, event):

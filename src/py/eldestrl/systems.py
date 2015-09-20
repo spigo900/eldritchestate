@@ -67,7 +67,8 @@ class LightingSys(System):
                             if (x, y) in self.map_]
                     if not line:
                         continue
-                    line = utils.remove_duplicates(line)
+                    if len(line) > 2:
+                        line = utils.remove_duplicates(line)
                     lights = light.light_line(
                         1.0, line, light.lighting_linear,
                         lambda x, y: emap.light_attenuation(self.map_, x, y))
@@ -125,25 +126,36 @@ class FollowEntitySys(System):
 
 
 class EventSys(System):
-    def __init__(self):
+    def __init__(self, con_width, con_height):
         self.game_ended = False
-        self.ui_console = untdl.Console()
-        self.ui_states = [uistates.Play(self.ui_console, self.entity_manager)]
+        self.initialized = False
+        self.ui_console = untdl.Console(con_width, con_height)
+        self.ui_states = []
         super(EventSys, self).__init__()
 
+    def initialize(self):
+        self.ui_states.append(uistates.Play(self.ui_console,
+                                            self.entity_manager))
+        self.initialized = True
+
     def update(self, dt):
+        if not self.initialized:
+            self.initialize()
         events = ev.get()
         for event in events:
             if event.type == "KEYUP" or event.type == "QUIT":
-                return
+                return  # what was this for? should this even handle QUITs?
             elif event.type == "NEWSTATE":
                 self.ui_states.append(event.state)
+                continue
             elif event.type == "DONECURSTATE" or event.type == "ESCAPESTATE":
                 self.ui_states.pop()
-            if not self.ui_states:
-                self.game_ended = True
-            cur_state = self.ui_states[-1]
-            cur_state.handle_event(event)
+                continue
+            if self.ui_states:
+                cur_state = self.ui_states[-1]
+                cur_state.handle_event(event)
+        if not self.ui_states:
+            self.game_ended = True
 
 
 class AISys(System):

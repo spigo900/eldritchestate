@@ -41,7 +41,7 @@ def game_loop(con):
     sys_mgr.add_system(systems.FOVSys())
     sys_mgr.add_system(systems.FOWSys())
 
-    event_sys = systems.EventSys()
+    event_sys = systems.EventSys(CONSOLE_WIDTH, CONSOLE_HEIGHT)
     sys_mgr.add_system(event_sys)
     sys_mgr.add_system(systems.AISys())
     sys_mgr.add_system(systems.ActorSys())
