@@ -173,9 +173,7 @@ def map_gen(seed, map_info, progress_callback):
             rooms.append(room_rect)
             num_rooms += 1
             break
-        print("number of rooms: {}".format(num_rooms))
         progress_callback(map_)
-    print("done base mapgen; connecting rooms")
     connect_rooms(map_, rng, map_info, rooms, progress_callback)
     return map_
 
