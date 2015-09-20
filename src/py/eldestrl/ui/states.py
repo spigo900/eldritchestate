@@ -42,6 +42,9 @@ class Play(UIState):
         ev.push(eldevs.EscapeState())
 
     def handle_event(self, event):
+        if event.type == "MOUSEMOTION" or \
+           event.type == "MOUSEDOWN" or event.type == "MOUSEUP":
+            return
         for (entity, _) in self.ent_mgr.pairs_for_type(comp.PlayerControlled):
             action, *params = eldinput.get_action(event)
             try:
