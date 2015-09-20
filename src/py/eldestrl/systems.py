@@ -143,8 +143,8 @@ class EventSys(System):
             self.initialize()
         events = ev.get()
         for event in events:
-            if event.type == "KEYUP" or event.type == "QUIT":
-                return  # what was this for? should this even handle QUITs?
+            if event.type == "KEYUP":
+                continue
             elif event.type == "NEWSTATE":
                 self.ui_states.append(event.state)
                 continue
