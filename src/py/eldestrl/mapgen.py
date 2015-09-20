@@ -75,7 +75,7 @@ def in_wall(rect, x, y):
 
 
 def random_connectpoints(rng, map_height, rooms, room_a, room_b):
-    while True:
+    for _ in range(10):
         point_a = random_in_rect(rng, room_a)
         point_b = random_in_rect(rng, room_b)
         start = furthest_from_center(map_height, point_a, point_b)
@@ -119,41 +119,30 @@ def unordered_range(n1, n2, s=1):
 
 
 def connect_rooms(map_, rng, map_info, rooms, progress_callback):
-    connections = []
-    unconnected = rooms
+    start_points = [rng.choice(rooms)]
+    unconnected = set(rooms)
+    unconnected.remove(start_points[0])
     map_height = map_info.height
-    # ... I see why this is broken.
-    #
-    # See, you remove the rooms from the list of unconnected rooms when you
-    # connect two of them. So they don't get connected to the other rooms in
-    # the map. So the whole map can never be connected.
-    #
-    # To be fixed later.
     while unconnected:
-        for room in unconnected:
-            other_room = rng.choice(rooms)
-            if (room, other_room) in connections \
-               or room == other_room:
-                print("rooms {} and {} already connected... ?"
-                      .format(room, other_room))
-                continue
-            start, end = random_connectpoints(rng, map_height, rooms,
-                                              room, other_room)
-            print("got random conectpoints")
-            tunnel_h(map_, map_info.default_floor, start[0], end[0], start[1])
-            tunnel_v(map_, map_info.default_floor, start[1], end[1], end[0])
-            for pos in ((x, y)
-                        for x in unordered_range(start[0], end[0])
-                        for y in unordered_range(start[1], end[1])
-                        if (x == end[0] or y == start[1]) and
-                        (in_wall(room, x, y) or
-                         in_wall(other_room, x, y))):
-                map_[pos] = map_info.default_door
-            connections.append((room, other_room))
-            unconnected.remove(room)
-            unconnected.remove(other_room)
-            progress_callback(map_)
-    print("done connecting rooms! enjoy!")
+        start_room = rng.choice(tuple(start_points))
+        end_room = rng.choice(tuple(unconnected))
+        result = random_connectpoints(rng, map_height, rooms,
+                                      start_room, end_room)
+        if not result:
+            continue
+        start, end = result
+        tunnel_h(map_, map_info.default_floor, start[0], end[0], start[1])
+        tunnel_v(map_, map_info.default_floor, start[1], end[1], end[0])
+        for pos in ((x, y)
+                    for x in unordered_range(start[0], end[0])
+                    for y in unordered_range(start[1], end[1])
+                    if (x == end[0] or y == start[1]) and
+                    (in_wall(start_room, x, y) or
+                     in_wall(end_room, x, y))):
+            map_[pos] = map_info.default_door
+        start_points.append(end_room)
+        unconnected.remove(end_room)
+        progress_callback(map_)
 
 
 def map_gen(seed, map_info, progress_callback):
