@@ -271,8 +271,7 @@ def tree_outside(tree, cell_map):
     # checked once. For now, though, this will do.
     def outside_(r):
         return outside(r, cell_map)
-    counted = qtree.qmapi(count_in_rect, tree)
-    return qtree.qmapi(outside_, counted)
+    return qtree.qmapi(outside_, tree)
 
 
 def gen_quadtree(rng, width, height, depth=MAX_DEPTH):
