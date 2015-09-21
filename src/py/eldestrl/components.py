@@ -69,3 +69,14 @@ class Sight(Component):
         self.radius = radius
         self.min_light = min_light
         self.in_sight = set()
+
+
+class DeathRadius(Component):
+    def __init__(self, radius, counters):
+        self.radius = radius
+        self.counters = counters
+
+
+class UnlightRadius(Component):
+    def __init__(self, radius):
+        self.radius = radius

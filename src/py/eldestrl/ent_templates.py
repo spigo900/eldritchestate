@@ -38,6 +38,19 @@ def new_client(dt, map_, coords):
     return npc
 
 
+def new_monster(dt, map_, coords):
+    npc = dt.create_entity()
+    dt.add_component(npc, components.Position(coords))
+    dt.add_component(npc, components.World(map_))
+    dt.add_component(npc, components.Char('&', (38, 38, 38)))
+    dt.add_component(npc, components.Actor())
+    dt.add_component(npc, components.Sight(4))
+    dt.add_component(npc, components.DeathRadius(1))
+    dt.add_component(npc, components.UnlightRadius(6))
+    dt.add_component(npc, components.AI('monster'))
+    return npc
+
+
 def new_torch(ent_mgr, map_, coords):
     torch = ent_mgr.create_entity()
     ent_mgr.add_component(torch, components.Position(coords))
