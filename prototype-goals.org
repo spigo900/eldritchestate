@@ -28,13 +28,40 @@
    difference, until and unless I learn how to implement one myself -- and I
    might, but I'll probably still use the library version even so. It's written
    in C by someone other than me, so it's likely to be faster.
-** DONE Code the Fog of Fh'tagn system.
-   CLOSED: [2015-08-21 Fri 14:35]
+** TODO Code the Fog of Fh'tagn system.
+   ORIGINALLY CLOSED [2015-08-21 Fri 14:35]
    It's not perfect, but it works, I think. I haven't been able to get the fog
    to work quite as I wanted it to yet, though. I'll have to take a look at
    Brogue's code and see if I can figure out how it manages to make lava, water,
    the title screen, etc. waver/shimmer like it does. I suppose it's not via
    Perlin noise, or at least not using it the way I'm currently using it.
+*** TODO Write a gradient cellular automaton.
+    This is how I plan to get the fog roiling properly. I couldn't figure out
+    Brogue's code, but I did (eventually) figure out what would be useful: a
+    non-binary (gradient) cellular automaton. Take the Perlin noise map as a
+    seed --- possibly with its points filtered or scaled first --- and then run
+    the automata each frame to get the new fog-map. 
+
+    Problem: I'm not quite sure how to do this in a performant manner. May have
+    to refer back to some of my earlier cell automata experiments. I'm thinking
+    I'll just have to mutate in place, but swap universes each tick. Have a
+    src_fogmap and a dest_fogmap, pass them into the automata function, and swap
+    them.
+
+    There's another complication I may have to deal with, which is...
+*** TODO Separate render loop from turn loop
+    Not sure if this is something I did already or not; if it is, yay. If not,
+    it's gotta happen if fog is going to; the fog can't work properly without
+    it. Gonna have to make sure the fog map persists between things, and I
+    should probably keep it as a separate map from the actual map, since they're
+    not really related. The map map contains actual gameplay-relevant
+    information; this fog map just says how bright to make the fog squares /if/
+    they occur somewhere. That's it. 
+
+    I may have to involve the LoS map to make it look nice around the edge of
+    sight. I'm not sure. I'll probably also want to figure out a different cell
+    automata to get my candles and such to flicker nicely; stable lighting just
+    doesn't suit a game of this nature.
 ** TODO Code up some very basic NPCs.
    These two could probably share some basic code with each other and/or the
    player's internal representation.  I should try and make sure they do somehow.
