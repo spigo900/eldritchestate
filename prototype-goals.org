@@ -19,7 +19,7 @@
 
    ... 1:12. Same day. I got it completely working by fixing the Bresenham line
    algorithm I sort-of-wrote, sort-of-stole-from-Wikipedia and was using. Walls
-   are lit properly now. 
+   are lit properly now.
 
    Yay.
 ** DONE Write the Line of Sight system.
@@ -40,13 +40,27 @@
     Brogue's code, but I did (eventually) figure out what would be useful: a
     non-binary (gradient) cellular automaton. Take the Perlin noise map as a
     seed --- possibly with its points filtered or scaled first --- and then run
-    the automata each frame to get the new fog-map. 
+    the automata each frame to get the new fog-map.
 
     Problem: I'm not quite sure how to do this in a performant manner. May have
     to refer back to some of my earlier cell automata experiments. I'm thinking
     I'll just have to mutate in place, but swap universes each tick. Have a
     src_fogmap and a dest_fogmap, pass them into the automata function, and swap
     them.
+
+    UPDATE WITH SOMETHING SORT OF LIKE A POSSIBLE FOG GENERATION PROCEDURE...
+     - At the beginning (of the game? on load? probably on load or on entering a
+       map i.e. after mapgen or map load), generate 3 to 5 fog generators at
+       random cells.
+     - Every tick, generate some fixed (?) amount of fog in the generators' cells
+       and randomly generate at some fixed chance (based on distance or something
+       else?) a different fixed amount of fog in each surrounding cell. (surrounding
+       meaning the 8-cell Moore neighborhood.)
+     - Every tick, fog cells with less than some amount of fog (half the cell
+       maximum?) lose some amount of fog.
+     - Every tick, fog cells with at least that amount of fog have a random chance
+       to transfer some (also random?) amount of fog to another cell in its Moore
+       neighborhood.
 
     There's another complication I may have to deal with, which is...
 *** TODO Separate render loop from turn loop
@@ -56,7 +70,7 @@
     should probably keep it as a separate map from the actual map, since they're
     not really related. The map map contains actual gameplay-relevant
     information; this fog map just says how bright to make the fog squares /if/
-    they occur somewhere. That's it. 
+    they occur somewhere. That's it.
 
     I may have to involve the LoS map to make it look nice around the edge of
     sight. I'm not sure. I'll probably also want to figure out a different cell
