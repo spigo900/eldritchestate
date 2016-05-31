@@ -33,7 +33,7 @@ def is_subrect(a, b):
 def rects_intersect(a, b):
     """Return whether rect a and rect b intersect."""
     a2 = Point(a.x + a.width - 1, a.y + a.height - 1)
-    b2 = Point(a.x + a.width - 1, a.y + a.height - 1)
+    b2 = Point(b.x + b.width - 1, b.y + b.height - 1)
     return ((a.x <= b.x <= a2.x or
              b.x <= a.x <= b2.x) and
             (a.y <= b.y <= a2.y or
