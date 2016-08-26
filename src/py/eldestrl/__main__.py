@@ -1,5 +1,5 @@
-import untdl
-import untdl.event as event
+import tdl
+import tdl.event as event
 import gc
 import sys
 from ecs.managers import EntityManager, SystemManager
@@ -21,7 +21,7 @@ MAIN_MENU_OPTIONS = [('New Game', lambda con: game_loop(con)),
 # game logic
 def game_loop(con):
     '''The main game loop.'''
-    untdl.event.set_key_repeat(500, 100)
+    tdl.event.set_key_repeat(500, 100)
     game_map = eldmapgen.new_map()
     ent_mgr = EntityManager()
 
@@ -32,7 +32,7 @@ def game_loop(con):
                                             eldmapgen.DEFAULT_MAP_SEED)
     ents.new_torch(ent_mgr, game_map, torch_coords)
     # ents.new_client(ent_mgr, game_map, (8, 3))
-    main_display = untdl.Window(con, 0, 0, 25, 15)
+    main_display = tdl.Window(con, 0, 0, 25, 15)
     ents.new_tracking_camera(ent_mgr, game_map, main_display, player)
 
     sys_mgr = SystemManager(ent_mgr)
@@ -54,8 +54,8 @@ FONT = 'fonts/consolas12x12_gs_tc.png'
 
 
 def main(argv=[]):
-    untdl.set_font(FONT, greyscale=True, alt_layout=True)
-    main_con = untdl.init(CONSOLE_WIDTH, CONSOLE_HEIGHT, TITLE)
+    tdl.set_font(FONT, greyscale=True, alt_layout=True)
+    main_con = tdl.init(CONSOLE_WIDTH, CONSOLE_HEIGHT, TITLE)
     app = SimpleMenu(main_con, TITLE, MAIN_MENU_OPTIONS)
     app.run()
     del main_con

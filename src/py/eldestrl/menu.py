@@ -1,6 +1,6 @@
-import untdl
-import untdl.event as event
-from untdl.event import App
+import tdl
+import tdl.event as event
+from tdl.event import App
 from eldestrl.utils import center_offset, draw_str_centered
 
 
@@ -118,4 +118,4 @@ class SimpleMenu(App):
         draw_str_centered(self.console, self.header, 3)
         for i, (option, _) in enumerate(self.opts):
             self.write_option(i, height // 2 - num_opts + i)
-        untdl.flush()
+        tdl.flush()

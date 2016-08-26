@@ -179,7 +179,7 @@ def valid_identifier(s):
 
 
 def get_event_key(event):
-    """Returns the key for an UnTDL key event."""
+    """Returns the key for a TDL key event."""
     return event.keychar if event.key == 'CHAR' else event.key
 
 

@@ -33,17 +33,24 @@ class PyTest(TestCommand):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
+cmdclass_ = {'test': PyTest,
+            'install': install,
+            'develop': develop} \
+            if os.name != "nt" \
+               else {'test': PyTest}
+               # else {'test': PyTest,
+               #       'install': _install,
+               #       'develop': _develop}
+
 setup(
     name='eldritch_estate',
     version='0.1.0.dev0',
     package_dir={'': SOURCE_DIR},
     packages=find_packages(SOURCE_DIR),
-    install_requires=['untdl',
+    install_requires=['tdl',
                       'ecs'],
     tests_require=['pytest', 'flake8', 'pytest-flake8'],
-    cmdclass={'test': PyTest,
-              'install': install,
-              'develop': develop},
+    cmdclass=cmdclass_,
     classifiers=[
         'Developent Status :: 3 - Alpha'
     ],

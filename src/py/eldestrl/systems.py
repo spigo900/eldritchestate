@@ -1,7 +1,7 @@
 import logging
-import untdl
-import untdl.event as ev
-import untdl.map as mapfn
+import tdl
+import tdl.event as ev
+import tdl.map as mapfn
 from ecs.models import System
 from ecs.exceptions import NonexistentComponentTypeForEntity
 import eldestrl.map as emap
@@ -129,7 +129,7 @@ class EventSys(System):
     def __init__(self, con_width, con_height):
         self.game_ended = False
         self.initialized = False
-        self.ui_console = untdl.Console(con_width, con_height)
+        self.ui_console = tdl.Console(con_width, con_height)
         self.ui_states = []
         super(EventSys, self).__init__()
 
@@ -223,8 +223,8 @@ class RenderDisplaySys(System):
         from eldestrl.utils import to_local_coords
         from eldestrl.render import render_map
         from eldestrl.components import Char, Position, World, Display, Sight
-        import untdl
-        from untdl import TDLError
+        import tdl
+        from tdl import TDLError
         ent_mgr = self.entity_manager
         for (player_ent, _) in ent_mgr.pairs_for_type(comp.PlayerControlled):
             try:
@@ -272,4 +272,4 @@ class RenderDisplaySys(System):
                                   % (repr(entity), str(err)))
                         except TDLError as err:
                             print('Got TDLError %s, skipping...' % str(err))
-        untdl.flush()
+        tdl.flush()

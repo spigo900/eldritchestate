@@ -1,5 +1,5 @@
 import random
-import untdl.map
+import tdl.map
 import eldestrl.map as eldmap
 import eldestrl.components as comp
 from eldestrl.utils import to_local_coords, has_component
@@ -57,7 +57,7 @@ def client(ent_mgr, ent):
         actions.append(('do_action_tile', (random.randint(-1, 1),
                                            random.randint(-1, 1))))
         return
-    pathfinder = untdl.map.AStar(eldmap.map_width(this_world),
+    pathfinder = tdl.map.AStar(eldmap.map_width(this_world),
                                  eldmap.map_height(this_world),
                                  client_cost, digital_cost=1)
     path = pathfinder.get_path(this_pos[0], this_pos[1], target_x, target_y)
@@ -111,7 +111,7 @@ def monster(ent_mgr, ent):
         return 1 if eldmap.passable(ent_mgr, this_world, (new_x, new_y)) else 0
     target_pos = ent_mgr.component_for_entity(target, comp.Position).coords
     target_x, target_y = target_pos
-    pathfinder = untdl.map.AStar(eldmap.map_width(this_world),
+    pathfinder = tdl.map.AStar(eldmap.map_width(this_world),
                                  eldmap.map_height(this_world),
                                  move_cost, digital_cost=1)
     path = pathfinder.get_path(this_pos[0], this_pos[1], target_x, target_y)

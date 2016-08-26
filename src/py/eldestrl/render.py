@@ -1,4 +1,4 @@
-import untdl.noise
+import tdl.noise
 import eldestrl.map as gmap
 from eldestrl.utils import to_grayscale
 
@@ -28,8 +28,8 @@ def render_msgs(con, coords, msgs, n=5):
 
 
 def render_map(con, map_, refpoint, fov, seen):
-    from untdl import TDLError
-    noise = untdl.noise.Noise(algorithm='SIMPLEX', mode='TURBULENCE',
+    from tdl import TDLError
+    noise = tdl.noise.Noise(algorithm='SIMPLEX', mode='TURBULENCE',
                               seed=22, hurst=0.8)
     for (coord, tile_type) in map_.items():
         draw_coords = (coord[0] - refpoint[0],

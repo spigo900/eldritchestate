@@ -1,23 +1,23 @@
-import untdl
+import tdl
 import eldestrl.map as emap
 import eldestrl.render as r
 from time import sleep
 from imp import reload
 
 
-con = untdl.init(160, 90, 'test!')
+con = tdl.init(160, 90, 'test!')
 my_map = None
 
 
 def rel():
-    reload(untdl)
+    reload(tdl)
     reload(emap)
     reload(r)
 
 
 def render(map_):
     r.render_map(con, map_, (1, 1))
-    untdl.flush()
+    tdl.flush()
 
 
 def fixed_render():
@@ -26,7 +26,7 @@ def fixed_render():
 
 def mapgen_callback(map_):
     r.render_map(con, map_, (1, 1))
-    untdl.flush()
+    tdl.flush()
     sleep(3)
 
 
@@ -41,5 +41,5 @@ def remap():
 
 sleep(0.1)
 remap()
-untdl.flush()
+tdl.flush()
 sleep(15)
