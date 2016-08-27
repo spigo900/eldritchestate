@@ -54,7 +54,7 @@ FONT = 'fonts/consolas12x12_gs_tc.png'
 
 
 def main(argv=[]):
-    tdl.set_font(FONT, greyscale=True, alt_layout=True)
+    tdl.set_font(FONT, greyscale=True, altLayout=True)
     main_con = tdl.init(CONSOLE_WIDTH, CONSOLE_HEIGHT, TITLE)
     app = SimpleMenu(main_con, TITLE, MAIN_MENU_OPTIONS)
     app.run()

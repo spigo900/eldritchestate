@@ -105,8 +105,8 @@ class SimpleMenu(App):
         return None
 
     def write_option(self, idx, y, *args, **kwargs):
-        if idx == self.idx and not args and 'bgcolor' not in kwargs:
-            kwargs['bgcolor'] = (80, 80, 80)
+        if idx == self.idx and not args and 'bg' not in kwargs:
+            kwargs['bg'] = (80, 80, 80)
         draw_str_centered(self.console, self.opts[idx][0], y,
                           *args, **kwargs)
 
