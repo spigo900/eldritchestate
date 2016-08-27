@@ -4,22 +4,23 @@ from setuptools import setup, find_packages
 from setuptools.command.install import install as _install
 from setuptools.command.develop import develop as _develop
 import sys
+import os
 from subprocess import call
 
 SOURCE_DIR = 'src/py'
 PATCH_CMD = ('sh', 'patch_untdl.sh')
 
+if os.name != "nt":
+    class install(_install):
+        def run(self):
+            call(PATCH_CMD)
+            _install.run(self)
 
-class install(_install):
-    def run(self):
-        call(PATCH_CMD)
-        _install.run(self)
 
-
-class develop(_develop):
-    def run(self):
-        call(PATCH_CMD)
-        _develop.run(self)
+    class develop(_develop):
+        def run(self):
+            call(PATCH_CMD)
+            _develop.run(self)
 
 
 class PyTest(TestCommand):
