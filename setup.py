@@ -16,7 +16,6 @@ if os.name != "nt":
             call(PATCH_CMD)
             _install.run(self)
 
-
     class develop(_develop):
         def run(self):
             call(PATCH_CMD)
