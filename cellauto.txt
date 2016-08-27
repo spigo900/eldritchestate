@@ -1,0 +1,22 @@
+One alternative to using a real-valued cellular automaton would be to maintain a
+cellular automata n times bigger than the screen is in cells and calculate the
+shading to apply to a tile (x, y) by taking the number of active cells in the
+rectangle bounded by (n(x - 1) + 1, n(y - 1) + 1), (nx, ny) over the area of
+that rectangle (n^2).
+
+[So for x, y = 1, and n = 4, we have the rect (1,1) to (4,4), and for x = 3, y =
+2, we have the rect (9,5) to (12,8).]
+
+This would probably be easier to implement but I'm not sure it'd perform well
+for slightly larger n, and I'd want to use n = 3 or n = 4 at minimum so the fog
+would be nice and smooth. Also, I'm not sure which ruleset I'd use.
+
+
+
+Another thing I could do is use a cellular automata with n different states,
+where a cell in state n corresponds to the brightest shade of fog and a cell in
+state 1 corresponds to the darkest. The tricky thing is finding an automata to
+base it off of. It wouldn't have to be complicated. Could be something like Life
+but with more states. Then the brightness modifier for a game tile could be one
+of s/n (for some tile in state s), or (s/n - n/2), or (s/n + 0.5). One of the
+latter two might work better. Not sure.
