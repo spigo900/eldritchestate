@@ -1,25 +1,9 @@
 #!/usr/bin/env python3
 from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages
-from setuptools.command.install import install as _install
-from setuptools.command.develop import develop as _develop
 import sys
-import os
-from subprocess import call
 
 SOURCE_DIR = 'src/py'
-PATCH_CMD = ('sh', 'patch_untdl.sh')
-
-if os.name != "nt":
-    class install(_install):
-        def run(self):
-            call(PATCH_CMD)
-            _install.run(self)
-
-    class develop(_develop):
-        def run(self):
-            call(PATCH_CMD)
-            _develop.run(self)
 
 
 class PyTest(TestCommand):
@@ -33,11 +17,6 @@ class PyTest(TestCommand):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
-CMD_CLASS = {'test': PyTest,
-             'install': install,
-             'develop': develop} \
-             if os.name != "nt" else {'test': PyTest}
-
 setup(
     name='eldritch_estate',
     version='0.1.0.dev0',
@@ -46,7 +25,7 @@ setup(
     install_requires=['tdl',
                       'ecs'],
     tests_require=['pytest', 'flake8', 'pytest-flake8'],
-    cmdclass=CMD_CLASS,
+    cmdclass={'test': PyTest},
     classifiers=[
         'Developent Status :: 3 - Alpha'
     ],
