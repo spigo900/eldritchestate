@@ -1,0 +1,10 @@
+[
+    {
+        "type": "mansion",
+        "frequency": 50,
+        "min_rooms": 10,
+        "max_rooms": 60,
+        "door_type": "wooden_door",
+        "rooms": []
+    }
+]
