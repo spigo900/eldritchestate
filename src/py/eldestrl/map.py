@@ -31,6 +31,7 @@ def map_height(map_):
 
 
 def _entlist_passable(ent_mgr, ents):
+    '''Return true if any of ents is passable, else return false.'''
     for ent in ents:
         try:
             ent_mgr.component_for_entity(ent, components.BlocksMove)
@@ -41,8 +42,7 @@ def _entlist_passable(ent_mgr, ents):
 
 
 def passable(ent_mgr, map_, coords):
-    '''Returns true if the given coordinate is passable.
-    '''
+    '''Returns true if the given coordinate is passable.'''
     if coords not in map_ and coords not in map_.ents:
         return False
     tiletype = get_tile_type(map_, map_[coords])
@@ -63,6 +63,7 @@ def blocks_sight(map_, x, y):
 
 
 def light_attenuation(map_, x, y):
+    '''Returns the light attenuation value for the given cell.'''
     ttype = get_tile_type(map_, map_[x, y])
     return ttype.get("light_attenuation", 0.0)
 
@@ -160,5 +161,3 @@ def maybe_get_type(map_, typename):
     if map_.tiletypes and typename:
         return get_tile_type(map_, typename)
     return {}
-
-
