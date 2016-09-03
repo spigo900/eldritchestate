@@ -7,6 +7,7 @@ def door(tiledefs):
         new_type['char'] = '/'
         new_type['blocks'] = False
         new_type['blocks_sight'] = False
+        new_type['light_attenuation'] = 0.0
         open_type = new_type
         closed_type = tiledef
     else:
@@ -16,6 +17,7 @@ def door(tiledefs):
         new_type['char'] = '+'
         new_type['blocks'] = True
         new_type['blocks_sight'] = True
+        new_type['light_attenuation'] = 1.0
         open_type = tiledef
         closed_type = new_type
     open_type.setdefault('behaviors', {})['close'] = \
