@@ -1,4 +1,3 @@
-import tdl.noise
 import eldestrl.map as gmap
 from eldestrl.utils import to_grayscale
 
@@ -9,14 +8,12 @@ def lit_color(color, lighting):
     color should be any tuple of 3 ints.
     lighting should be whatever values are stored in light_map as values.
     """
-    light_mult = (lighting,) * 3
-    return tuple(int(n * k)
-                 for n, k in zip(color, light_mult))
+    return tuple(int(lighting * n) for n in color)
 
 
-def fog_color(color, noise):
+def fog_color(color, fog):
     gray = to_grayscale(color)
-    return lit_color(gray, noise * 0.25)
+    return lit_color(gray, fog * 0.25)
 
 
 # rendering
@@ -27,13 +24,13 @@ def render_msgs(con, coords, msgs, n=5):
         con.draw_str(x, y + i, msgs[:-i])
 
 
-def render_map(con, map_, refpoint, fov, seen):
+def render_map(con, map_, refpoint, fov, fogmap, seen):
     from tdl import TDLError
-    noise = tdl.noise.Noise(algorithm='SIMPLEX', mode='TURBULENCE',
-                              seed=22, hurst=0.8)
+    fogmap = dict(fogmap)
     for (coord, tile_type) in map_.items():
         draw_coords = (coord[0] - refpoint[0],
                        coord[1] - refpoint[1])
+        draw_x, draw_y = draw_coords
         if draw_coords in con:
             try:
                 tile_lighting = map_.light_map[coord]
@@ -44,17 +41,17 @@ def render_map(con, map_, refpoint, fov, seen):
                 tile_bg_final = lit_color(tile_bg, tile_lighting) \
                     if tile_bg else tile_bg
                 if coord in fov:
-                    con.draw_char(draw_coords[0], draw_coords[1],
+                    con.draw_char(draw_x, draw_y,
                                   tile_char,
                                   lit_color(tile_fg, tile_lighting),
                                   tile_bg_final)
                 elif coord in seen:
-                    tile_noise = noise.get_point(*coord)
+                    fog = fogmap[draw_x, draw_y]
                     tile_bg_final = fog_color(tile_bg, tile_lighting) \
                         if tile_bg else tile_bg
-                    con.draw_char(draw_coords[0], draw_coords[1],
+                    con.draw_char(draw_x, draw_y,
                                   tile_char,
-                                  fog_color(tile_fg, tile_noise),
+                                  fog_color(tile_fg, fog),
                                   tile_bg_final)
             except AttributeError:
                 print('ERROR! Tile type %s does not exist'

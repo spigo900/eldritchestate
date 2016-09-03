@@ -1,4 +1,5 @@
 import logging
+import random
 import tdl
 import tdl.event as ev
 import tdl.map as mapfn
@@ -32,18 +33,18 @@ class UpdateWorldSys(System):
 
 
 class LightingSys(System):
-    def __init__(self, map_):
-        self.map_ = map_
+    def __init__(self, output_map):
+        self.output_map = output_map
         super(LightingSys, self).__init__()
 
     def update(self, dt):
         from eldestrl.components import Position, LightSource
         ent_mgr = self.entity_manager
 
-        sources = {(x, y): [emap.get_tile_type(self.map_, self.map_[x, y])]
-                   for (x, y) in self.map_
+        sources = {(x, y): [emap.get_tile_type(self.output_map, self.output_map[x, y])]
+                   for (x, y) in self.output_map
                    if "light_properties" in
-                   emap.get_tile_type(self.map_, self.map_[x, y])}
+                   emap.get_tile_type(self.output_map, self.output_map[x, y])}
 
         for (entity, source) in ent_mgr.pairs_for_type(LightSource):
             try:
@@ -53,7 +54,7 @@ class LightingSys(System):
                 print('Entity %s has world but no position! Skipping...'
                       % repr(entity))
 
-        light_map = {(x, y): 0.2 for (x, y) in self.map_}
+        light_map = {(x, y): 0.2 for (x, y) in self.output_map}
         for (x1, y1), srcs in sources.items():
             for src in srcs:
                 coordset = (x1 - src['radius'], y1 - src['radius'],
@@ -64,19 +65,19 @@ class LightingSys(System):
                 for (x2, y2) in points_checked:
                     line = [(x, y) for (x, y)
                             in utils.bresenham_line(x1, y1, x2, y2)
-                            if (x, y) in self.map_]
+                            if (x, y) in self.output_map]
                     if not line:
                         continue
                     if len(line) > 2:
                         line = utils.remove_duplicates(line)
                     lights = light.light_line(
                         1.0, line, light.lighting_linear,
-                        lambda x, y: emap.light_attenuation(self.map_, x, y))
+                        lambda x, y: emap.light_attenuation(self.output_map, x, y))
                     minimap.update(zip(line, lights))
 
                 for pos, intensity in minimap.items():
                     light_map[pos] = max(light_map[pos], minimap[pos])
-        self.map_.light_map = light_map
+        self.output_map.light_map = light_map
 
 
 class FOVSys(System):
@@ -112,6 +113,59 @@ class FOWSys(System):
                 world_map.seen |= sight.in_sight
             except NonexistentComponentTypeForEntity:
                 pass
+
+
+class FogSys(System):
+    MAX_FOG = 15
+    RUN_TICKS = 100
+    def __init__(self, map_size):
+        (x_size, y_size) = map_size
+        map_init = {(x, y): random.randint(0, self.MAX_FOG)
+                    for x in range(x_size)
+                    for y in range(y_size)}
+
+        self._sources = set((x, y)
+            for x in range(x_size)
+            for y in range(y_size)
+                            if random.random() < 0.05)
+
+        self.map_a = map_init
+        self.map_b = self.map_a.copy()
+
+        self.ticks = 0
+
+        super(FogSys, self).__init__()
+
+    def update(self, dt):
+        ent_mgr = self.entity_manager
+        ortho_adjacents = utils.ortho_adjacent_tiles
+        if self.ticks < self.RUN_TICKS:
+            # print(dt)
+            self.ticks += dt
+            return
+        else:
+            self.ticks -= self.RUN_TICKS
+        for coord_pair in self._sources:
+            # if self.map_b[coord_pair] < 15:
+            #     print(self.map_b[coord_pair])
+            self.map_b[coord_pair] = min(self.MAX_FOG, self.map_a[coord_pair] + 1)
+        for coord_pair in self.map_b:
+            (x, y) = coord_pair
+            self.map_b[coord_pair] = (max(0, self.map_a[coord_pair] - 2))
+            filtered_adj = [pair for pair in ortho_adjacents(coord_pair)
+                            if pair in self.map_b]
+            rand_adj = random.choice(filtered_adj)
+            # transfer_amt = random.randint(1, 2)
+            transfer_amt = 1
+            if rand_adj:
+                # self.map_b[coord_pair] -= (transfer_amt - 1)
+                self.map_b[rand_adj] = min(self.MAX_FOG, self.map_b[rand_adj] + transfer_amt)
+        tmp = self.map_a
+        self.map_a = self.map_b
+        self.map_b = tmp
+
+    def get_fogmap(self):
+        return self.map_a.items()
 
 
 class FollowEntitySys(System):
@@ -219,6 +273,10 @@ class ActorSys(System):
 
 
 class RenderDisplaySys(System):
+    def __init__(self, fogmap):
+        self.fogmap = fogmap
+        super(RenderDisplaySys, self).__init__()
+
     def update(self, dt):
         from eldestrl.utils import to_local_coords
         from eldestrl.render import render_map
@@ -247,26 +305,23 @@ class RenderDisplaySys(System):
                           % repr(display_ent))
                 else:
                     con.clear()
-                    render_map(con, world_map, refpoint, fov, world_map.seen)
+                    render_map(con, world_map, refpoint, fov,
+                               self.fogmap(), world_map.seen)
                     for (entity, renderinfo) in ent_mgr.pairs_for_type(Char):
                         try:
                             pos = \
                                 ent_mgr.component_for_entity(entity, Position)
                             draw_x, draw_y = \
                                 to_local_coords(refpoint, pos.coords)
+                            lighting = world_map.light_map[pos.coords]
                             if not (draw_x, draw_y) in con or \
                                pos.coords not in fov:
                                 continue
                             con.draw_char(
                                 draw_x, draw_y,
                                 renderinfo.char,
-                                tuple(
-                                    int(n * k)
-                                    for n, k
-                                    in zip(
-                                        renderinfo.color,
-                                        (world_map.light_map[pos.coords],) *
-                                        3)))
+                                tuple(int(lighting * n)
+                                      for n in renderinfo.color))
                         except NonexistentComponentTypeForEntity as err:
                             print('Entity %s has no %s; skipping...'
                                   % (repr(entity), str(err)))

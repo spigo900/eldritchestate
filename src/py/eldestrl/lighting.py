@@ -96,3 +96,6 @@ def light_line(i, line, light_fn, attenuation_fn):
         light_vals.append(light_base - att)
         att += attenuation_fn(x, y)
     return light_vals
+
+def lit_color(color, lighting):
+    return tuple(int(c * lighting) for c in color)

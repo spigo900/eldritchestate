@@ -2,11 +2,13 @@ import tdl
 import tdl.event as event
 import gc
 import sys
+import time
 from ecs.managers import EntityManager, SystemManager
 import eldestrl.map as eldmap
 import eldestrl.mapgen as eldmapgen
 import eldestrl.ent_templates as ents
 import eldestrl.systems as systems
+import eldestrl.utils as utils
 from eldestrl.menu import SimpleMenu
 
 CONSOLE_WIDTH = 80
@@ -40,15 +42,22 @@ def game_loop(con):
     sys_mgr.add_system(systems.LightingSys(game_map))
     sys_mgr.add_system(systems.FOVSys())
     sys_mgr.add_system(systems.FOWSys())
+    fog_sys = systems.FogSys((main_display.width, main_display.height))
+    sys_mgr.add_system(fog_sys)
 
     event_sys = systems.EventSys(CONSOLE_WIDTH, CONSOLE_HEIGHT)
     sys_mgr.add_system(event_sys)
     sys_mgr.add_system(systems.AISys())
     sys_mgr.add_system(systems.ActorSys())
     sys_mgr.add_system(systems.FollowEntitySys())
-    sys_mgr.add_system(systems.RenderDisplaySys())
+    sys_mgr.add_system(systems.RenderDisplaySys(fog_sys.get_fogmap))
+    start_time = utils.cur_time_ms()
+    prev_time = start_time
+    cur_time = prev_time
     while not event_sys.game_ended:
-        sys_mgr.update(0)  # 0 is a placeholder value
+        cur_time = utils.cur_time_ms()
+        sys_mgr.update(cur_time - prev_time)  # 0 is a placeholder value
+        prev_time = cur_time
 
 FONT = 'fonts/consolas12x12_gs_tc.png'
 

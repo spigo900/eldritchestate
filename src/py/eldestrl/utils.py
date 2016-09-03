@@ -1,5 +1,6 @@
 #!/bin/env python3
 from collections import namedtuple
+import time
 
 
 # utilities
@@ -60,6 +61,15 @@ def to_local_coords(ref_coords, localized):
     """
     from operator import sub
     return tuple(map(sub, localized, ref_coords))
+
+
+def ortho_adjacent_tiles(pair):
+    """Get a list of all adjacent coordinates."""
+    (x, y) = pair
+    return [(x, y - 1),
+            (x - 1, y),
+            (x + 1, y),
+            (x, y + 1)]
 
 
 def adjacent(coords_a, coords_b):
@@ -254,3 +264,6 @@ def hollow_box(x1, y1, x2, y2):
             for x in range(min_x, max_x + 1)
             for y in range(min_y, max_y + 1)
             if not in_rect(inside, x, y)]
+
+def cur_time_ms():
+    return int(round(time.time() * 1000))
