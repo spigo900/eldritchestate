@@ -10,6 +10,7 @@ def new_player(dt, map_, coords):
     dt.add_component(player, components.PlayerControlled())
     dt.add_component(player, components.BlocksMove())
     dt.add_component(player, components.Sight(7.5))
+    dt.add_component(player, components.LightSource({"radius": 3}))
     return player
 
 
