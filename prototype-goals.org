@@ -6,10 +6,15 @@
    It's not ideal, but I think it's essentially as I need it for a prototype.
    I'll have to rethink it and rewrite it at some later point if I go on to
    realize the game proper, though.
-** TODO Write the pseudorandom content generation system
+** DONE Write the pseudorandom content generation system
+   CLOSED: [2016-09-03 Sat 11:02]
    It only needs to work for maps right now, but I may later want to extend it to
    clients, items, monsters, plots, or whatever. But it really only needs to work
    for maps at the moment, so that's what I'll code it for.
+
+   I've got something that sort of works right now, though it's less than ideal.
+   I'd like to replace it with a proper map generator eventually (something using
+   binary or quad trees, probably), but for now it's good enough.
 ** DONE Write the lighting system.
    CLOSED: [2015-08-20 Thu 23:28]
    I'm not really sure how to start with this.
