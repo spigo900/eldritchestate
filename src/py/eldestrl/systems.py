@@ -137,17 +137,13 @@ class FogSys(System):
         super(FogSys, self).__init__()
 
     def update(self, dt):
-        ent_mgr = self.entity_manager
         ortho_adjacents = utils.ortho_adjacent_tiles
         if self.ticks < self.RUN_TICKS:
-            # print(dt)
             self.ticks += dt
             return
         else:
             self.ticks -= self.RUN_TICKS
         for coord_pair in self._sources:
-            # if self.map_b[coord_pair] < 15:
-            #     print(self.map_b[coord_pair])
             self.map_b[coord_pair] = min(self.MAX_FOG, self.map_a[coord_pair] + 1)
         for coord_pair in self.map_b:
             (x, y) = coord_pair
@@ -155,11 +151,10 @@ class FogSys(System):
             filtered_adj = [pair for pair in ortho_adjacents(coord_pair)
                             if pair in self.map_b]
             rand_adj = random.choice(filtered_adj)
-            # transfer_amt = random.randint(1, 2)
             transfer_amt = 1
             if rand_adj:
-                # self.map_b[coord_pair] -= (transfer_amt - 1)
-                self.map_b[rand_adj] = min(self.MAX_FOG, self.map_b[rand_adj] + transfer_amt)
+                self.map_b[rand_adj] = min(
+                    self.MAX_FOG, self.map_b[rand_adj] + transfer_amt)
         tmp = self.map_a
         self.map_a = self.map_b
         self.map_b = tmp
@@ -279,7 +274,7 @@ class RenderDisplaySys(System):
 
     def update(self, dt):
         from eldestrl.utils import to_local_coords
-        from eldestrl.render import render_map
+        from eldestrl.render import render_map, lit_color
         from eldestrl.components import Char, Position, World, Display, Sight
         import tdl
         from tdl import TDLError
@@ -320,8 +315,7 @@ class RenderDisplaySys(System):
                             con.draw_char(
                                 draw_x, draw_y,
                                 renderinfo.char,
-                                tuple(int(lighting * n)
-                                      for n in renderinfo.color))
+                                lit_color(renderinfo.color, lighting))
                         except NonexistentComponentTypeForEntity as err:
                             print('Entity %s has no %s; skipping...'
                                   % (repr(entity), str(err)))
