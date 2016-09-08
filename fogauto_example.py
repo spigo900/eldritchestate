@@ -2,8 +2,12 @@
 import tdl
 import tdl.event
 from tdl.event import App
+from time import sleep
+from pprint import pprint
 import random
+import math
 import gc
+
 
 def main(argv=[]):
     tdl.set_font(FONT, greyscale=True, altLayout=True)
@@ -14,9 +18,11 @@ def main(argv=[]):
     gc.collect()
 
 TITLE = "Fog Automaton Testing"
-MAX_VAL = 15
+MAX_FOG = 15
 MAP_SIZE = 16
+FOG_RANGE = 12
 FONT = "fonts/consolas12x12_gs_tc.png"
+
 
 def adjacents(pair):
     """Get a list of all adjacent coordinates."""
@@ -26,62 +32,160 @@ def adjacents(pair):
             (x + 1, y),
             (x, y + 1)]
 
+
+def in_map(coord_pair):
+    (x, y) = coord_pair
+    return x >= 0 and y >= 0 \
+        and x < MAP_SIZE and y < MAP_SIZE
+
+    # # IMPORTED, A
+    # if x < MAP_SIZE and y < MAP_SIZE
+    # and x >= 0 and y >= 0
+
+    # IMPORTED, B
+    # if (x0 - x) >= 0 and (x0 - x) < MAP_SIZE
+    # and (y0 - y) >= 0 and (y0 - y) < MAP_SIZE
+
+
 def multiply_colors(a, b):
     """Take two colors a and b and return their product."""
     from math import ceil
     return tuple(map((lambda x, y: ceil((x * y) / 255)), a, b))
 
+
+def dist2(pos1, pos2):
+    x1, y1 = pos1
+    x2, y2 = pos2
+    return ((x1 - x2)**2 + (y1 - y2)**2)
+
+
+def dist(pos1, pos2):
+    return math.sqrt(dist2(pos1, pos2))
+
+
+def generate_fog_map(source_pos):
+    x0, y0 = source_pos
+    # return {
+    #     (x0 - x, y0 - y): (
+    #         1/(2*dist(source_pos, (x, y)))
+    #         if x0 != x and y0 != y else 1.0
+    #     )
+    #     for x in range(-FOG_RANGE, FOG_RANGE+1)
+    #     for y in range(-FOG_RANGE, FOG_RANGE+1)
+    #     if (x0 - x) >= 0 and (x0 - x) < MAP_SIZE
+    #     and (y0 - y) >= 0 and (y0 - y) < MAP_SIZE
+    # }
+
+    out = {
+        (x0 - x, y0 - y): (
+            1/(2*dist((x0, y0), (x, y)))
+            # if (x0 - x) != 0 and (y0 - y) != 0 else 1.0
+            if x0 != x or y0 != y else 1.0
+        )
+        for x in range(-FOG_RANGE, FOG_RANGE+1)
+        for y in range(-FOG_RANGE, FOG_RANGE+1)
+        if in_map((x0 - x, y0 - y))
+        # if (x0 - x) >= 0 and (x0 - x) < MAP_SIZE
+        # and (y0 - y) >= 0 and (y0 - y) < MAP_SIZE
+    }
+
+    print(x0, y0)
+    pprint([(x, y)
+            for (x, y) in out
+            # if (x0 - x) >= 0 and (x0 - x) < MAP_SIZE
+            # and (y0 - y) >= 0 and (y0 - y) < MAP_SIZE
+            # and (x0 - x) == 0 and (y0)
+            if (x0 - x) != 0 and (y0 - y) != 0
+            and out[x, y] == 1.0])
+
+    return out
+
+
 class FogApp(App):
     def __init__(self, console):
         # self.running = True
         self.con = console
-        map_init = {(x, y): random.randint(0, MAX_VAL)
-                    for x in range(MAP_SIZE)
-                    for y in range(MAP_SIZE)}
+        # map_init = {(x, y): random.randint(0, MAX_FOG)
+        #             for x in range(MAP_SIZE)
+        #             for y in range(MAP_SIZE)}
 
-        self._sources = set((x, y)
-            for x in range(MAP_SIZE)
-            for y in range(MAP_SIZE)
-                          if random.random() < 0.05)
+        self.width = console.width
+        self.height = console.height
 
-        self.map_a = map_init
-        self.map_b = self.map_a.copy()
+        # self._sources_a = set(
+        #     (x, y)
+        #     for x in range(MAP_SIZE)
+        #     for y in range(MAP_SIZE)
+        #     if random.random() < 0.05)
+        self._sources_a = set()
+        self._sources_a.add((8, 8))
+        self._sources_b = set()
+
+        # self.map_out = map_init
+        # self.map_b = self.map_a.copy()
 
     def ev_QUIT(self, e):
-        # self.running = False
         self.suspend()
 
     def key_ESCAPE(self, e):
         tdl.event.push(tdl.event.Quit)
 
     def update(self, _dt):
-        # while self.running:
-        for coord_pair in self._sources:
-            # if self.map_b[coord_pair] < 15:
-            #     print(self.map_b[coord_pair])
-            self.map_b[coord_pair] = min(MAX_VAL, self.map_a[coord_pair] + 1)
-        for coord_pair in self.map_b:
+        for coord_pair in self._sources_a:
+            # COMMENTED OUT UNTIL I GET THIS SHIT WORKING
+            # filtered_adj = [(x, y) for (x, y) in adjacents(coord_pair)
+            #                 if in_map((x, y))
+            #                 # if x < MAP_SIZE and y < MAP_SIZE
+            #                 # and x >= 0 and y >= 0
+            # ]
+            # pick = random.choice(filtered_adj)
+            # # confusing phrasing, but should be skipped when pick hasn't
+            # # already been 'picked' by/for another source.
+            # while pick in self._sources_b:
+            #     pick = random.choice(filtered_adj)
+            # self._sources_b.add(pick)
+            self._sources_b.add(coord_pair)
+
+        # now generate the fog maps
+        maps = []
+        final_map = {}
+        for source in self._sources_b:
+            maps.append(generate_fog_map(source))
+
+        # resolve conflicting map values and merge
+        for map_ in maps:
+            conflicts = final_map.keys() & map_.keys()
+            final_map.update(map_)
+            for key in conflicts:
+                final_map[key] = max(map_[key], final_map[key])
+        print("PRINTING!")
+        # # print([(pair, round(val, 2)) for (pair, val) in final_map.items()
+        # #        if val > 0.1])
+        # # print("Sources: {}".format(self._sources_a))
+        # print("Sources:")
+        # pprint(self._sources_a)
+        # # print("Maps: {}".format(maps))
+        # print()
+        # print("Maps:")
+        # pprint(maps)
+        print()
+        print()
+
+        # draw the fog map
+        for coord_pair in final_map:
             (x, y) = coord_pair
-            self.map_b[coord_pair] = (max(0, self.map_a[coord_pair] - 2))
-            filtered_adj = [pair for pair in adjacents(coord_pair)
-                            if pair in self.map_b]
-            rand_adj = random.choice(filtered_adj)
-            # transfer_amt = random.randint(1, 2)
-            transfer_amt = 1
-            if rand_adj:
-                # self.map_b[coord_pair] -= (transfer_amt - 1)
-                self.map_b[rand_adj] = min(MAX_VAL, self.map_b[rand_adj] + transfer_amt)
-        for coord_pair in self.map_b:
-            (x, y) = coord_pair
-            tile_val = self.map_b[coord_pair]
-            self.con.draw_char(x, y,
-                ' ', bg=3*(int(255.0*(tile_val/MAX_VAL)),))
+            fog_val = final_map[coord_pair]
+            # if fog_val >= 0.5:
+            #     print("A THING HAPPENED AT {}!".format(coord_pair))
+            self.con.draw_char(
+                # x, y, ' ', bg=3*(int(255.0*(fog_val/MAX_FOG)),))
+                x, y, ' ', bg=3*(int(255.0*fog_val),))
 
         tdl.flush()
-        tmp = self.map_a
-        self.map_a = self.map_b
-        self.map_b = tmp
-        # self.map_a = self.map_b.copy()
+        sleep(2)
+
+        self._sources_a = self._sources_b
+        self._sources_b = set()
 
 if __name__ == "__main__":
     main()
