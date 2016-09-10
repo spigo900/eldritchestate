@@ -1,5 +1,6 @@
 import logging
 import random
+from collections import defaultdict
 import tdl
 import tdl.event as ev
 import tdl.map as mapfn
@@ -117,50 +118,119 @@ class FOWSys(System):
 
 class FogSys(System):
     MAX_FOG = 15
-    RUN_TICKS = 100
+    RUN_TICKS = 800
+    FOG_RANGE = 12
     def __init__(self, map_size):
         (x_size, y_size) = map_size
-        map_init = {(x, y): random.randint(0, self.MAX_FOG)
+        map_init = {(x, y): 0               # random.randint(0, self.MAX_FOG)
                     for x in range(x_size)
                     for y in range(y_size)}
 
-        self._sources = set((x, y)
+        self.map_width = x_size
+        self.map_height = y_size
+
+        self.world_map = None
+
+        sources_a = [
+            (x, y)
             for x in range(x_size)
             for y in range(y_size)
-                            if random.random() < 0.05)
+            if random.random() < 0.07
+        ]
+        # if len(sources_a) > 7:
+            # sources_a = sources_a[0:6]
 
-        self.map_a = map_init
-        self.map_b = self.map_a.copy()
+        self._sources_a = set(sources_a)
+        self._sources_b = set()
+
+        self.map_out = map_init
 
         self.ticks = 0
 
         super(FogSys, self).__init__()
 
+    def _in_map(self, coords):
+        (x, y) = coords
+        return x >= 0 and y >= 0 \
+            and x < self.map_width and y < self.map_height
+
+    def _generate_fog_map(self, source_pos):
+        """
+        Take a fog source position and return a map giving the fog values at
+        each position.
+        """
+        x0, y0 = source_pos
+        return {
+            (x0 + x, y0 + y): (
+                1/(2*utils.dist((x0, y0), (x0 + x, y0 + y)))
+                if source_pos != (x0 + x, y0 + y) else 1.0
+            )
+            for x in range(-FogSys.FOG_RANGE, FogSys.FOG_RANGE+1)
+            for y in range(-FogSys.FOG_RANGE, FogSys.FOG_RANGE+1)
+            if self._in_map((x0 + x, y0 + y))
+        }
+
+    def ensure_map(self):
+        if not self.world_map:
+            self.update_map()
+
+    def update_map(self):
+        """Update the system's world map.
+
+        Uses the map of the first entity with a world component. Throws an
+        error if there are no entities with a world component or if the first
+        such entity doesn't contain a valid map. (This behavior could probably
+        be improved upon.)"""
+        # print("updating map")
+        ent_mgr = self.entity_manager
+        pairs = ent_mgr.pairs_for_type(comp.World)
+        map_ = next(pairs)
+        assert(map_)
+        self.world_map = map_
+
     def update(self, dt):
-        ortho_adjacents = utils.ortho_adjacent_tiles
+        self.ensure_map()
         if self.ticks < self.RUN_TICKS:
             self.ticks += dt
             return
         else:
             self.ticks -= self.RUN_TICKS
-        for coord_pair in self._sources:
-            self.map_b[coord_pair] = min(self.MAX_FOG, self.map_a[coord_pair] + 1)
-        for coord_pair in self.map_b:
-            (x, y) = coord_pair
-            self.map_b[coord_pair] = (max(0, self.map_a[coord_pair] - 2))
-            filtered_adj = [pair for pair in ortho_adjacents(coord_pair)
-                            if pair in self.map_b]
-            rand_adj = random.choice(filtered_adj)
-            transfer_amt = 1
-            if rand_adj:
-                self.map_b[rand_adj] = min(
-                    self.MAX_FOG, self.map_b[rand_adj] + transfer_amt)
-        tmp = self.map_a
-        self.map_a = self.map_b
-        self.map_b = tmp
+
+        # Move the sources around.
+        for coord_pair in self._sources_a:
+            filtered_adj = [(x, y) for (x, y) in utils.adjacent8(coord_pair)
+                            if self._in_map((x, y))]
+            pick = random.choice(filtered_adj)
+            # confusing phrasing, but should be skipped when pick hasn't
+            # already been 'picked' by/for another source.
+            while pick in self._sources_b:
+                pick = random.choice(filtered_adj)
+            self._sources_b.add(pick)
+
+        # Generate fog maps.
+        maps = []
+        final_map = {}
+        for source in self._sources_b:
+            maps.append(self._generate_fog_map(source))
+
+        # Resolve conflicting map values and merge maps.
+        for map_ in maps:
+            conflicts = final_map.keys() & map_.keys()
+            tmp_map = {}
+            for key in conflicts:
+                tmp_map[key] = max(map_[key], final_map[key])
+            final_map.update(map_)
+            final_map.update(tmp_map)
+
+        # Swap source maps and set output map.
+        self._sources_a = self._sources_b
+        self._sources_b = set()
+
+        self.map_out = final_map
 
     def get_fogmap(self):
-        return self.map_a.items()
+        fogmap = defaultdict(lambda: 0.0, self.map_out)
+        return fogmap
 
 
 class FollowEntitySys(System):

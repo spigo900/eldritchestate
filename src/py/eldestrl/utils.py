@@ -1,6 +1,7 @@
 #!/bin/env python3
 from collections import namedtuple
 import time
+import math
 
 
 # utilities
@@ -63,6 +64,15 @@ def to_local_coords(ref_coords, localized):
     return tuple(map(sub, localized, ref_coords))
 
 
+def adjacent8(pair):
+    """Get a list of all 8 adjacent coordinates."""
+    (x0, y0) = pair
+    return [(x0 + x, y0 + y)
+            for x in range(-1, 2)
+            for y in range(-1, 2)
+            if x != 0 or y != 0]
+
+
 def ortho_adjacent_tiles(pair):
     """Get a list of all adjacent coordinates."""
     (x, y) = pair
@@ -106,6 +116,18 @@ def ortho_adjacent(coords_a, coords_b):
 
 def manhattan_dist(x1, y1, x2, y2):
     return abs((x2 - x1) + (y2 - y1))
+
+
+def dist2(pos1, pos2):
+    """Return the Euclidean distance squared between pos1 and pos2."""
+    x1, y1 = pos1
+    x2, y2 = pos2
+    return ((x1 - x2)**2 + (y1 - y2)**2)
+
+
+def dist(pos1, pos2):
+    """Return the Euclidean distance between pos1 and pos2."""
+    return math.sqrt(dist2(pos1, pos2))
 
 
 def subtract_iterables(iter_a, iter_b):

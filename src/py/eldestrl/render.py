@@ -13,7 +13,8 @@ def lit_color(color, lighting):
 
 def fog_color(color, fog):
     gray = to_grayscale(color)
-    return lit_color(gray, fog * 0.25)
+    # return tuple(int(lighting * n) for n in color)
+    return lit_color(gray, min(1.0, fog*0.25 + 0.07))
 
 
 # rendering
@@ -26,7 +27,7 @@ def render_msgs(con, coords, msgs, n=5):
 
 def render_map(con, map_, refpoint, fov, fogmap, seen):
     from tdl import TDLError
-    fogmap = dict(fogmap)
+    # fogmap = dict(fogmap)
     for (coord, tile_type) in map_.items():
         draw_coords = (coord[0] - refpoint[0],
                        coord[1] - refpoint[1])
