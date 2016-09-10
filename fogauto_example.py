@@ -80,11 +80,15 @@ class FogApp(App):
         self.width = console.width
         self.height = console.height
 
-        self._sources_a = set(
+        sources_a = [
             (x, y)
             for x in range(MAP_SIZE)
             for y in range(MAP_SIZE)
-            if random.random() < 0.03)
+            if random.random() < 0.03
+        ]
+        if len(sources_a) > 7:
+            sources_a = sources_a[0:6]
+        self._sources_a = set(sources_a)
         self._sources_b = set()
 
     def ev_QUIT(self, e):
@@ -130,7 +134,7 @@ class FogApp(App):
 
         self._sources_a = self._sources_b
         self._sources_b = set()
-        sleep(0.1)
+        sleep(0.25)
 
 if __name__ == "__main__":
     main()
