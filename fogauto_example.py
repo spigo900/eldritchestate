@@ -25,11 +25,11 @@ FONT = "fonts/consolas12x12_gs_tc.png"
 
 def adjacents(pair):
     """Get a list of all adjacent coordinates."""
-    (x, y) = pair
-    return [(x, y - 1),
-            (x - 1, y),
-            (x + 1, y),
-            (x, y + 1)]
+    (x0, y0) = pair
+    return [(x0 + x, y0 + y)
+            for x in range(-1, 2)
+            for y in range(-1, 2)
+            if x != 0 or y != 0]
 
 
 def in_map(coord_pair):
