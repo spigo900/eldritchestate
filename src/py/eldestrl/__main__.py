@@ -3,6 +3,7 @@ import tdl.event as event
 import gc
 import sys
 import time
+import random
 from ecs.managers import EntityManager, SystemManager
 import eldestrl.map as eldmap
 import eldestrl.mapgen as eldmapgen
@@ -19,6 +20,8 @@ MAIN_MENU_OPTIONS = [('New Game', lambda con: game_loop(con)),
                      ('Options', lambda _: None),
                      ('Quit', lambda _: event.push(event.Quit()))]
 
+MAX_CLIENTS = 3
+
 
 # game logic
 def game_loop(con):
@@ -32,6 +35,15 @@ def game_loop(con):
     player = ents.new_player(ent_mgr, game_map, player_coords)
     torch_coords = eldmap.random_unoccupied(ent_mgr, game_map,
                                             eldmapgen.DEFAULT_MAP_SEED)
+    client_list = []
+    for _ in range(random.randint(1, MAX_CLIENTS)):
+        for client_coords in utils.adjacent8(player_coords):
+            if eldmap.passable(ent_mgr, game_map, client_coords):
+                client_list.append(
+                    (ents.new_client(ent_mgr, game_map, client_coords),
+                     client_coords))
+                break
+
     ents.new_torch(ent_mgr, game_map, torch_coords)
     # ents.new_client(ent_mgr, game_map, (8, 3))
     main_display = tdl.Window(con, 0, 0, 25, 15)
