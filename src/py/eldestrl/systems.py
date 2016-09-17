@@ -301,6 +301,11 @@ class ActorSys(System):
         for i in range(shortest):
             for (entity, actor) in ent_pairs:
                 try:
+                    # TODO: the moving function needs to update the map
+                    # appropriately so that if the player and a client both
+                    # decide to move to a spot, they can't both do it; one of
+                    # them will have to redecide. Actually, I'll probably have
+                    # to figure out how to resolve this problem...
                     action = actor.queue.popleft()
                     if action[0] == 'do_action_tile':
                         entity_position = \
