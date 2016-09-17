@@ -58,8 +58,8 @@ def client(ent_mgr, ent):
                                            random.randint(-1, 1))))
         return
     pathfinder = tdl.map.AStar(eldmap.map_width(this_world),
-                                 eldmap.map_height(this_world),
-                                 client_cost, digital_cost=1)
+                               eldmap.map_height(this_world),
+                               client_cost, diagnalCost=1)
     path = pathfinder.get_path(this_pos[0], this_pos[1], target_x, target_y)
     if path:
         next_tile = to_local_coords(this_pos, path[0])
@@ -71,7 +71,7 @@ def _monster_choose_target(ent_mgr, ent):
     sight = ent_mgr.component_for_entity(ent, comp.Sight)
     fov = sight.in_sight
 
-    # find player-controlled characters on the same map as us, the client
+    # find player-controlled characters on the same map as us, the monster
     def _valid(e):
         return has_component(ent_mgr, e[0], comp.World) and \
             has_component(ent_mgr, e[0], comp.PlayerControlled) and \
@@ -112,8 +112,8 @@ def monster(ent_mgr, ent):
     target_pos = ent_mgr.component_for_entity(target, comp.Position).coords
     target_x, target_y = target_pos
     pathfinder = tdl.map.AStar(eldmap.map_width(this_world),
-                                 eldmap.map_height(this_world),
-                                 move_cost, digital_cost=1)
+                               eldmap.map_height(this_world),
+                               move_cost, digital_cost=1)
     path = pathfinder.get_path(this_pos[0], this_pos[1], target_x, target_y)
     if path:
         next_tile = to_local_coords(this_pos, path[0])
