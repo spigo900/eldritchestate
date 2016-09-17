@@ -1,4 +1,4 @@
-* Complete a prototype of the eldritch real estate game. [4/7]
+* Complete a prototype of the eldritch real estate game. [5/7]
 Remember: don't write anything extra, and no more content than is absolutely
 necessary. We're trying to actually finish this thing.
 ** DONE Code the map representation.
@@ -33,14 +33,20 @@ Really, this means "integrate libtcod/UnTDL's line of sight system." Same
 difference, until and unless I learn how to implement one myself -- and I
 might, but I'll probably still use the library version even so. It's written
 in C by someone other than me, so it's likely to be faster.
-** TODO Code the Fog of Fh'tagn system.
+** DONE Code the Fog of Fh'tagn system.
+CLOSED: [2016-09-10 Sat 17:19]
 ORIGINALLY CLOSED [2015-08-21 Fri 14:35]
 It's not perfect, but it works, I think. I haven't been able to get the fog
 to work quite as I wanted it to yet, though. I'll have to take a look at
 Brogue's code and see if I can figure out how it manages to make lava, water,
 the title screen, etc. waver/shimmer like it does. I suppose it's not via
 Perlin noise, or at least not using it the way I'm currently using it.
-*** TODO Write a gradient cellular automaton.
+
+(later)
+I've got something that sort of works now. It's not ideal, but it's better than
+I had before. Cellular automata didn't work out. I may have to experiment more
+with those but this method is more than good enough for now.
+*** TODO Write a gradient cellular automaton. :eventually:
 This is how I plan to get the fog roiling properly. I couldn't figure out
 Brogue's code, but I did (eventually) figure out what would be useful: a
 non-binary (gradient) cellular automaton. Take the Perlin noise map as a
@@ -68,7 +74,8 @@ to transfer some (also random?) amount of fog to another cell in its Moore
 neighborhood.
 
 There's another complication I may have to deal with, which is...
-*** TODO Separate render loop from turn loop
+*** DONE Separate render loop from turn loop
+CLOSED: [2016-09-10 Sat 17:18]
 Not sure if this is something I did already or not; if it is, yay. If not,
 it's gotta happen if fog is going to; the fog can't work properly without
 it. Gonna have to make sure the fog map persists between things, and I
@@ -92,4 +99,8 @@ well.
 CLOSED: [2015-08-07 Fri 18:06]
 They work, and with a minimum of bugs fixed. Success!
 *** TODO Program the monsters' existence/behavior.
+**** TODO Make monsters give up on the chase eventually.
+*** TODO Make clients react to monsters.
+** TODO Actually place monsters and clients during mapgen.
+# ** TODO Code proper map generator.
 ** TODO Write the UI code.
