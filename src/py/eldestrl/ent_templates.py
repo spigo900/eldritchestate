@@ -47,7 +47,7 @@ def new_monster(em, map_, coords):
     em.add_component(npc, components.Actor())
     em.add_component(npc, components.Sight(4))
     em.add_component(npc, components.DeathRadius(1))
-    em.add_component(npc, components.UnlightRadius(6))
+    # em.add_component(npc, components.UnlightRadius(6))
     em.add_component(npc, components.AI('monster'))
     return npc
 
