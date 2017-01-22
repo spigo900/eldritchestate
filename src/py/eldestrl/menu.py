@@ -20,6 +20,8 @@ class SimpleMenu(App):
     def idx(self, val):
         num_opts = len(self.opts)
         new_idx = val
+        # Could replace with `new_idx % num_opts` when `new_idx >= 0` and
+        # `num_opts - (abs(new_idx) % num_opts)` when `new_idx < 0`.
         while not 0 <= new_idx < num_opts:
             if new_idx < 0:
                 new_idx = num_opts + val
